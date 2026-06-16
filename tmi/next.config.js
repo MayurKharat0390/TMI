@@ -4,7 +4,6 @@ if (typeof globalThis !== 'undefined' && globalThis.localStorage) {
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: "export",
 
   eslint: {
     ignoreDuringBuilds: true,
