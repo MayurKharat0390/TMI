@@ -1,24 +1,20 @@
 "use client";
 
 import { Mail, Linkedin } from "lucide-react";
-import Image from 'next/image';
 import { TiltCard } from "@/components/tilt-card";
+import ParticleImage from "@/components/particle-image";
 
 export default function MemberCard({ member }: { member: any }) {
     return (
         <div className="w-[280px] h-[430px] flex-shrink-0">
             <TiltCard className="bg-black/60 border border-[#D4A348]/10 backdrop-blur-md overflow-hidden relative flex flex-col h-full group">
                 <div className="relative h-[280px] w-full overflow-hidden">
-                    <Image
+                    <ParticleImage
                         src={member.image}
                         alt={member.name}
-                        width={400}
-                        height={400}
-                        loading="lazy"
-                        decoding="async"
-                        quality={85}
+                        width={300}
+                        height={300}
                         className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
-                        style={{ objectPosition: "top" }}
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black via-black/10 to-transparent opacity-60 group-hover:opacity-40 transition-opacity duration-300 pointer-events-none" />
                 </div>
