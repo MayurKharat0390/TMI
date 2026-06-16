@@ -1,20 +1,24 @@
 "use client";
 
+import { useState } from "react";
 import { Mail, Linkedin } from "lucide-react";
 import { TiltCard } from "@/components/tilt-card";
 import ParticleImage from "@/components/particle-image";
 
 export default function MemberCard({ member }: { member: any }) {
+    const [assembled, setAssembled] = useState(false);
+
     return (
         <div className="w-[280px] h-[430px] flex-shrink-0">
-            <TiltCard className="bg-black/60 border border-[#D4A348]/10 backdrop-blur-md overflow-hidden relative flex flex-col h-full group">
-                <div className="relative h-[280px] w-full overflow-hidden">
+            <TiltCard className={`bg-black/60 border border-[#D4A348]/10 backdrop-blur-md relative flex flex-col h-full group ${assembled ? "overflow-hidden" : "overflow-visible"}`}>
+                <div className={`relative h-[280px] w-full ${assembled ? "overflow-hidden" : "overflow-visible"}`}>
                     <ParticleImage
                         src={member.image}
                         alt={member.name}
                         width={300}
                         height={300}
                         className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
+                        onAssembled={() => setAssembled(true)}
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black via-black/10 to-transparent opacity-60 group-hover:opacity-40 transition-opacity duration-300 pointer-events-none" />
                 </div>

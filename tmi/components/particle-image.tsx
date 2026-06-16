@@ -10,6 +10,7 @@ interface ParticleImageProps {
   height: number;
   className?: string;
   style?: React.CSSProperties;
+  onAssembled?: () => void;
 }
 
 interface Particle {
@@ -26,23 +27,22 @@ interface Particle {
   delay: number;
 }
 
-export default function ParticleImage({ src, alt, width, height, className, style }: ParticleImageProps) {
+export default function ParticleImage({ src, alt, width, height, className, style, onAssembled }: ParticleImageProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [isAssembled, setIsAssembled] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const animationFrameRef = useRef<number | null>(null);
 
-  // Intersection Observer to run the canvas animation only when visible
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
           setIsVisible(true);
-          observer.disconnect(); // Only trigger once
+          observer.disconnect();
         }
       },
-      { threshold: 0.1 }
+      { threshold: 0.05 }
     );
 
     if (containerRef.current) {
@@ -68,13 +68,17 @@ export default function ParticleImage({ src, alt, width, height, className, styl
     img.src = src;
 
     img.onload = () => {
-      // Set canvas size matching the component size
       const displayWidth = containerRef.current?.clientWidth || width;
       const displayHeight = containerRef.current?.clientHeight || height;
-      canvas.width = displayWidth;
-      canvas.height = displayHeight;
+      
+      // Make canvas size larger than the bounding box to allow particles to fly outside (from the air)
+      const paddingX = 500; // Horizontal space around card
+      const paddingY = 600; // Vertical space around card (especially above)
+      canvas.width = displayWidth + paddingX * 2;
+      canvas.height = displayHeight + paddingY * 2;
+      canvas.style.left = `-${paddingX}px`;
+      canvas.style.top = `-${paddingY}px`;
 
-      // Scale down image to create a lightweight grid of particles
       const sampleWidth = 70;
       const sampleHeight = Math.round((sampleWidth * displayHeight) / displayWidth);
 
@@ -84,17 +88,17 @@ export default function ParticleImage({ src, alt, width, height, className, styl
       const offscreenCtx = offscreenCanvas.getContext("2d");
       if (!offscreenCtx) return;
 
-      // Draw and scale down the image
       offscreenCtx.drawImage(img, 0, 0, sampleWidth, sampleHeight);
       const imgData = offscreenCtx.getImageData(0, 0, sampleWidth, sampleHeight);
       const pixels = imgData.data;
 
-      // Create particles from non-transparent pixels
       const particles: Particle[] = [];
       const scaleX = displayWidth / sampleWidth;
       const scaleY = displayHeight / sampleHeight;
 
-      // Sample every 2nd pixel to optimize performance (~1200 particles max)
+      const winWidth = typeof window !== "undefined" ? window.innerWidth : 1000;
+      const winHeight = typeof window !== "undefined" ? window.innerHeight : 800;
+
       for (let y = 0; y < sampleHeight; y += 2) {
         for (let x = 0; x < sampleWidth; x += 2) {
           const idx = (y * sampleWidth + x) * 4;
@@ -103,15 +107,16 @@ export default function ParticleImage({ src, alt, width, height, className, styl
           const b = pixels[idx + 2];
           const a = pixels[idx + 3];
 
-          // Skip completely transparent background pixels
           if (a < 20) continue;
 
-          const targetX = x * scaleX;
-          const targetY = y * scaleY;
+          // Target position relative to the expanded canvas coordinate system
+          const targetX = x * scaleX + paddingX;
+          const targetY = y * scaleY + paddingY;
 
-          // Particles scatter starting from the air (falling from above and spread out)
-          const startX = targetX + (Math.random() - 0.5) * displayWidth * 1.5;
-          const startY = targetY - displayHeight * 0.8 - Math.random() * 150;
+          // Particles scatter from the air/sky (top/sides of the canvas)
+          // Ensure coordinates start strictly inside the canvas boundaries to avoid clipping
+          const startX = Math.random() * (canvas.width - 20) + 10;
+          const startY = Math.random() * (paddingY * 0.4); // Start in the top 40% of the padding (above the card)
 
           particles.push({
             x: startX,
@@ -124,27 +129,26 @@ export default function ParticleImage({ src, alt, width, height, className, styl
             a: a / 255,
             vx: 0,
             vy: 0,
-            delay: Math.random() * 20, // staggered start delays (in frames)
+            delay: Math.random() * 25,
           });
         }
       }
 
       let frameCount = 0;
-      const stiffness = 0.05; // Spring strength
-      const damping = 0.82;   // Velocity friction
+      const stiffness = 0.045; // Spring coefficient
+      const damping = 0.81;    // Speed damping
 
       const animate = () => {
         frameCount++;
-        ctx.clearRect(0, 0, displayWidth, displayHeight);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
 
         let closeCount = 0;
-        const size = scaleX * 1.95; // Slightly larger particles to fill gaps
+        const size = scaleX * 2.0;
 
         for (let i = 0; i < particles.length; i++) {
           const p = particles[i];
 
           if (frameCount > p.delay) {
-            // Spring force calculation toward target
             const ax = (p.targetX - p.x) * stiffness;
             const ay = (p.targetY - p.y) * stiffness;
 
@@ -155,22 +159,27 @@ export default function ParticleImage({ src, alt, width, height, className, styl
             p.y += p.vy;
           }
 
-          // Check if particle is close to target
           const dx = p.targetX - p.x;
           const dy = p.targetY - p.y;
           const distSq = dx * dx + dy * dy;
-          if (distSq < 0.6) {
+          if (distSq < 0.8) {
             closeCount++;
           }
 
-          // Draw particle
-          ctx.fillStyle = `rgba(${p.r}, ${p.g}, ${p.b}, ${p.a})`;
+          // Smoothly fade particles in over the first 40 frames to avoid popping artifacts
+          let currentAlpha = p.a;
+          if (frameCount < 40) {
+            currentAlpha = p.a * (frameCount / 40);
+          }
+          ctx.fillStyle = `rgba(${p.r}, ${p.g}, ${p.b}, ${currentAlpha})`;
           ctx.fillRect(p.x, p.y, size, size);
         }
 
-        // If 95% of the particles have arrived, fade in the high-res image
         if (particles.length > 0 && closeCount / particles.length > 0.94) {
           setIsAssembled(true);
+          if (onAssembled) {
+            onAssembled();
+          }
           if (animationFrameRef.current) {
             cancelAnimationFrame(animationFrameRef.current);
           }
@@ -191,25 +200,31 @@ export default function ParticleImage({ src, alt, width, height, className, styl
   }, [src, isVisible]);
 
   return (
-    <div ref={containerRef} className={`relative overflow-hidden ${className}`} style={style}>
-      {/* High-res actual Next.js Image fades in once assembly completes */}
+    <div 
+      ref={containerRef} 
+      className={`relative ${isAssembled ? "overflow-hidden" : "overflow-visible"} ${className}`} 
+      style={style}
+    >
       <Image
         src={src}
         alt={alt}
         width={width}
         height={height}
-        className={`w-full h-full object-cover transition-opacity duration-1000 ease-out`}
+        className="w-full h-full object-cover transition-opacity duration-1000 ease-out"
         style={{ 
           opacity: isAssembled ? 1 : 0,
           objectPosition: "top"
         }}
       />
 
-      {/* Hologram canvas assembly running on top */}
       {!isAssembled && (
         <canvas
           ref={canvasRef}
-          className="absolute inset-0 w-full h-full pointer-events-none"
+          className="absolute pointer-events-none z-30"
+          style={{
+            maxWidth: "none",
+            maxHeight: "none",
+          }}
         />
       )}
     </div>
