@@ -8,7 +8,9 @@ export default function GalleryPage() {
   return (
     <>
       <div className="relative min-h-screen pt-24 pb-20">
-        <StarryBackground />
+        <div className="hidden dark:block">
+          <StarryBackground />
+        </div>
 
         <div className="relative z-10 max-w-screen-2xl mx-auto px-4 sm:px-8 md:px-12 lg:px-16 xl:px-20 py-10">
 
@@ -16,7 +18,7 @@ export default function GalleryPage() {
           <div className="text-center mb-20">
             <p className="text-[#D4A348] text-xs font-semibold tracking-[0.25em] uppercase mb-4">Our Journey</p>
             <h1 className="text-5xl sm:text-7xl font-bold tracking-tight mb-4">Gallery</h1>
-            <p className="text-white/40 text-base sm:text-lg">
+            <p className="text-muted-foreground text-base sm:text-lg">
               Moments from our competition seasons
             </p>
             <div className="mt-8 flex items-center justify-center gap-4">

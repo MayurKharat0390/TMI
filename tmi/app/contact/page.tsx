@@ -11,10 +11,12 @@ import emailjs from 'emailjs-com';
 import Head from 'next/head';
 import { motion } from 'framer-motion';
 import dynamic from 'next/dynamic';
+import { useTheme } from 'next-themes';
 
 const StarryBackground = dynamic(() => import('@/components/StarryBackground'), { ssr: false });
 
 export default function ContactPage() {
+  const { resolvedTheme } = useTheme();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -57,18 +59,20 @@ export default function ContactPage() {
       </Head>
 
       <div className="pt-24 pb-16 relative min-h-screen bg-background scanlines grid-pattern">
-        <StarryBackground />
+        <div className="hidden dark:block">
+          <StarryBackground />
+        </div>
         
         <div className="container mx-auto px-6 relative z-10">
           
           {/* Header */}
           <div className="text-center mb-16">
             <span className="text-[#D4A348] text-xs font-bold uppercase tracking-[0.25em]">Sponsorship & Support</span>
-            <h1 className="text-4xl md:text-6xl font-extrabold uppercase tracking-wide text-white mt-2 mb-4 font-montserrat">
+            <h1 className="text-4xl md:text-6xl font-extrabold uppercase tracking-wide text-foreground mt-2 mb-4 font-montserrat">
               CONTACT <span className="text-[#D4A348] text-gold-glow">US</span>
             </h1>
             <div className="w-24 h-1 bg-[#D4A348] mx-auto rounded-full mb-6" />
-            <p className="text-white/60 text-sm tracking-wide max-w-xl mx-auto leading-relaxed">
+            <p className="text-muted-foreground text-sm tracking-wide max-w-xl mx-auto leading-relaxed">
               "Send telemetry, report anomalies, or initiate collaboration with the Wolves."
             </p>
           </div>
@@ -82,7 +86,7 @@ export default function ContactPage() {
               transition={{ duration: 0.5, delay: 0.1 }}
               className="space-y-8"
             >
-              <div className="glass-panel p-8 rounded-2xl border border-[#D4A348]/15 shadow-xl text-white">
+              <div className="glass-panel p-8 rounded-2xl border border-border/80 bg-card/60 backdrop-blur-md shadow-xl text-foreground">
                 <div className="flex items-center gap-3 mb-6">
                   <Terminal className="w-5 h-5 text-[#D4A348]" />
                   <h2 className="text-xl font-bold uppercase tracking-wider font-montserrat">COMMUNICATIONS HUB</h2>
@@ -94,28 +98,28 @@ export default function ContactPage() {
                       <MapPin className="h-5 w-5 text-[#D4A348]" />
                     </div>
                     <div>
-                      <h4 className="text-xs font-bold uppercase tracking-wider text-white/50 mb-0.5">Headquarters</h4>
-                      <p className="text-sm text-gray-200">Team Maverick India, PCCoE, Pradhikaran, Akurdi, Pune, India</p>
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-0.5">Headquarters</h4>
+                      <p className="text-sm text-foreground/90">Team Maverick India, PCCoE, Pradhikaran, Akurdi, Pune, India</p>
                     </div>
                   </div>
-
+ 
                   <div className="flex items-start space-x-4">
                     <div className="p-2.5 rounded-lg bg-[#D4A348]/10 border border-[#D4A348]/20 flex-shrink-0">
                       <Phone className="h-5 w-5 text-[#D4A348]" />
                     </div>
                     <div>
-                      <h4 className="text-xs font-bold uppercase tracking-wider text-white/50 mb-0.5">Primary Contacts</h4>
-                      <p className="text-sm text-gray-200">Mr. Ritik Lipate: +91 9284383901</p>
-                      <p className="text-sm text-gray-200 mt-1">Ms. Nimisha Halabe: +91 9028401706</p>
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-0.5">Primary Contacts</h4>
+                      <p className="text-sm text-foreground/90">Mr. Ritik Lipate: +91 9284383901</p>
+                      <p className="text-sm text-foreground/90 mt-1">Ms. Nimisha Halabe: +91 9028401706</p>
                     </div>
                   </div>
-
+ 
                   <div className="flex items-start space-x-4">
                     <div className="p-2.5 rounded-lg bg-[#D4A348]/10 border border-[#D4A348]/20 flex-shrink-0">
                       <Mail className="h-5 w-5 text-[#D4A348]" />
                     </div>
                     <div>
-                      <h4 className="text-xs font-bold uppercase tracking-wider text-white/50 mb-0.5">NOC Mailbox</h4>
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-0.5">NOC Mailbox</h4>
                       <p className="text-sm text-[#D4A348] hover:underline">
                         <a href="mailto:teammaverickindia@pccoepune.org">teammaverickindia@pccoepune.org</a>
                       </p>
@@ -125,12 +129,12 @@ export default function ContactPage() {
               </div>
 
               {/* Map panel */}
-              <div className="glass-panel overflow-hidden rounded-2xl border border-[#D4A348]/15 shadow-xl relative h-[320px]">
+              <div className="glass-panel overflow-hidden rounded-2xl border border-border/80 bg-card/60 backdrop-blur-md shadow-xl relative h-[320px]">
                 <iframe
                   src="https://maps.google.com/maps?width=600&amp;height=300&amp;hl=en&amp;q=Team%20Maverick%20Ind&amp;t=&amp;z=14&amp;ie=UTF8&amp;iwloc=B&amp;output=embed"
                   width="100%"
                   height="100%"
-                  style={{ border: 0, filter: "invert(90%) hue-rotate(180deg) opacity(80%)" }}
+                  style={{ border: 0, filter: resolvedTheme === "dark" ? "invert(90%) hue-rotate(180deg) opacity(80%)" : "opacity(90%)" }}
                   allowFullScreen
                   loading="lazy"
                   referrerPolicy="no-referrer-when-downgrade"
@@ -145,18 +149,18 @@ export default function ContactPage() {
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.2 }}
             >
-              <div className="glass-panel p-8 rounded-2xl border border-[#D4A348]/15 text-white shadow-xl">
+              <div className="glass-panel p-8 rounded-2xl border border-border/80 bg-card/60 backdrop-blur-md text-foreground shadow-xl">
                 <div className="flex items-center gap-3 mb-4">
                   <Terminal className="w-5 h-5 text-[#D4A348]" />
                   <h2 className="text-xl font-bold uppercase tracking-wider font-montserrat">SECURE CONSOLE</h2>
                 </div>
-                <p className="text-white/60 text-xs tracking-wide mb-6 leading-relaxed uppercase">
+                <p className="text-muted-foreground text-xs tracking-wide mb-6 leading-relaxed uppercase">
                   ENTER YOUR PAYLOAD INFORMATION BELOW TO DISPATCH MESSAGE
                 </p>
-
+ 
                 <form onSubmit={handleSubmit} className="space-y-6">
                   <div>
-                    <label htmlFor="name" className="block text-xs font-bold uppercase tracking-wider text-white/50 mb-2">
+                    <label htmlFor="name" className="block text-xs font-bold uppercase tracking-wider text-muted-foreground mb-2">
                       Sender Name
                     </label>
                     <Input
@@ -164,13 +168,13 @@ export default function ContactPage() {
                       value={formData.name}
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                       required
-                      className="bg-black/50 border-[#D4A348]/20 focus-visible:ring-[#D4A348] text-white hover:border-[#D4A348]/40 transition-colors py-6"
+                      className="bg-background/60 border-border focus-visible:ring-[#D4A348] text-foreground hover:border-[#D4A348]/40 transition-colors py-6"
                       placeholder="e.g. John Doe"
                     />
                   </div>
-
+ 
                   <div>
-                    <label htmlFor="email" className="block text-xs font-bold uppercase tracking-wider text-white/50 mb-2">
+                    <label htmlFor="email" className="block text-xs font-bold uppercase tracking-wider text-muted-foreground mb-2">
                       Sender Email
                     </label>
                     <Input
@@ -179,13 +183,13 @@ export default function ContactPage() {
                       value={formData.email}
                       onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                       required
-                      className="bg-black/50 border-[#D4A348]/20 focus-visible:ring-[#D4A348] text-white hover:border-[#D4A348]/40 transition-colors py-6"
+                      className="bg-background/60 border-border focus-visible:ring-[#D4A348] text-foreground hover:border-[#D4A348]/40 transition-colors py-6"
                       placeholder="e.g. john@example.com"
                     />
                   </div>
-
+ 
                   <div>
-                    <label htmlFor="message" className="block text-xs font-bold uppercase tracking-wider text-white/50 mb-2">
+                    <label htmlFor="message" className="block text-xs font-bold uppercase tracking-wider text-muted-foreground mb-2">
                       Message Payload
                     </label>
                     <Textarea
@@ -194,7 +198,7 @@ export default function ContactPage() {
                       onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                       required
                       rows={6}
-                      className="bg-black/50 border-[#D4A348]/20 focus-visible:ring-[#D4A348] text-white hover:border-[#D4A348]/40 transition-colors"
+                      className="bg-background/60 border-border focus-visible:ring-[#D4A348] text-foreground hover:border-[#D4A348]/40 transition-colors"
                       placeholder="Describe your request, project context or sponsorship details..."
                     />
                   </div>

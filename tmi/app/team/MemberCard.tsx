@@ -10,7 +10,7 @@ export default function MemberCard({ member }: { member: any }) {
 
     return (
         <div className="w-[280px] h-[430px] flex-shrink-0">
-            <TiltCard className={`bg-black/60 border border-[#D4A348]/10 backdrop-blur-md relative flex flex-col h-full group ${assembled ? "overflow-hidden" : "overflow-visible"}`}>
+            <TiltCard className={`bg-card/75 dark:bg-black/60 border border-[#D4A348]/10 backdrop-blur-md relative flex flex-col h-full group ${assembled ? "overflow-hidden" : "overflow-visible"}`}>
                 <div className={`relative h-[280px] w-full ${assembled ? "overflow-hidden" : "overflow-visible"}`}>
                     <ParticleImage
                         src={member.image}
@@ -25,17 +25,17 @@ export default function MemberCard({ member }: { member: any }) {
                 
                 <div className="p-5 flex flex-col justify-between flex-grow relative z-10">
                     <div>
-                        <h3 className="font-bold text-lg text-white transition-colors duration-300 group-hover:text-[#D4A348] tracking-wide font-montserrat truncate">
+                        <h3 className="font-bold text-lg text-foreground transition-colors duration-300 group-hover:text-[#D4A348] tracking-wide font-montserrat truncate">
                             {member.name}
                         </h3>
-                        <p className="text-xs text-white/50 font-semibold uppercase tracking-wider mt-0.5 truncate">
+                        <p className="text-xs text-muted-foreground font-semibold uppercase tracking-wider mt-0.5 truncate">
                             {member.role}
                         </p>
                     </div>
 
-                    <div className="flex items-center justify-between mt-4 pt-3 border-t border-white/5">
+                    <div className="flex items-center justify-between mt-4 pt-3 border-t border-border/40">
                         {member.team !== "Secretary" ? (
-                            <span className="text-xs text-white/40 tracking-wider">
+                            <span className="text-xs text-muted-foreground/80 tracking-wider">
                                 {member.year} Batch
                             </span>
                         ) : (
@@ -48,7 +48,7 @@ export default function MemberCard({ member }: { member: any }) {
                             {member.email && (
                                 <a
                                     href={`mailto:${member.email}`}
-                                    className="text-white/60 hover:text-[#D4A348] transition-colors p-1 rounded-md hover:bg-white/5"
+                                    className="text-muted-foreground hover:text-[#D4A348] transition-colors p-1 rounded-md hover:bg-accent"
                                 >
                                     <Mail className="w-4 h-4" />
                                 </a>
@@ -58,7 +58,7 @@ export default function MemberCard({ member }: { member: any }) {
                                     href={member.linkedin}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="text-white/60 hover:text-[#D4A348] transition-colors p-1 rounded-md hover:bg-white/5"
+                                    className="text-muted-foreground hover:text-[#D4A348] transition-colors p-1 rounded-md hover:bg-accent"
                                 >
                                     <Linkedin className="w-4 h-4" />
                                 </a>

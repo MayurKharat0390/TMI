@@ -162,7 +162,7 @@ html {
     overflow: hidden;
   }
   
-  .scanlines::before {
+  .dark .scanlines::before {
     content: " ";
     display: block;
     position: absolute;

@@ -2,12 +2,16 @@
 
 import React, { useRef, useState, useEffect } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { Stars } from "@react-three/drei";
+import { Stars, useTexture } from "@react-three/drei";
 import * as THREE from "three";
+import { useTheme } from "next-themes";
 
 // Glowing particle dust drifting around the hangar
 function ParticleField() {
   const pointsRef = useRef<THREE.Points>(null);
+  const { resolvedTheme } = useTheme();
+  const isDark = resolvedTheme === "dark";
+  const particleColor = isDark ? "#D4A348" : "#1E3A8A";
   
   useFrame((state) => {
     if (pointsRef.current) {
@@ -36,24 +40,35 @@ function ParticleField() {
         />
       </bufferGeometry>
       <pointsMaterial
-        color="#D4A348"
-        size={0.06}
+        color={particleColor}
+        size={isDark ? 0.06 : 0.045}
         sizeAttenuation
         transparent
-        opacity={0.6}
-        blending={THREE.AdditiveBlending}
+        opacity={isDark ? 0.6 : 0.2}
+        blending={isDark ? THREE.AdditiveBlending : THREE.NormalBlending}
       />
     </points>
   );
 }
 
 // Glowing cybernetic laser scanner sweeping the UAV
-function ScanningLaser() {
+function ScanningLaser({ active }: { active: boolean }) {
   const laserRef = useRef<THREE.Mesh>(null);
+  const { resolvedTheme } = useTheme();
+  const isDark = resolvedTheme === "dark";
+  const laserColor = isDark ? "#00E5FF" : "#0066FF";
+  const blendingMode = isDark ? THREE.AdditiveBlending : THREE.NormalBlending;
   
   useFrame((state) => {
     if (laserRef.current) {
-      laserRef.current.position.y = Math.sin(state.clock.getElapsedTime() * 1.8) * 1.5;
+      if (active) {
+        laserRef.current.position.y = 0;
+        const scale = 1.0 + Math.sin(state.clock.getElapsedTime() * 20) * 0.45;
+        laserRef.current.scale.set(scale, scale, scale);
+      } else {
+        laserRef.current.position.y = Math.sin(state.clock.getElapsedTime() * 1.8) * 1.5;
+        laserRef.current.scale.set(1, 1, 1);
+      }
     }
   });
 
@@ -61,11 +76,11 @@ function ScanningLaser() {
     <mesh ref={laserRef} rotation={[Math.PI / 2, 0, 0]}>
       <ringGeometry args={[0.23, 0.26, 32]} />
       <meshBasicMaterial 
-        color="#00E5FF" 
+        color={active ? (isDark ? "#D4A348" : "#E28B00") : laserColor} 
         transparent 
-        opacity={0.8} 
+        opacity={active ? 0.95 : 0.8} 
         side={THREE.DoubleSide}
-        blending={THREE.AdditiveBlending}
+        blending={blendingMode}
       />
     </mesh>
   );
@@ -74,6 +89,12 @@ function ScanningLaser() {
 // 3D Waving Team Maverick India Flag
 function WavingFlag() {
   const geomRef = useRef<THREE.PlaneGeometry>(null);
+  const { resolvedTheme } = useTheme();
+  const isDark = resolvedTheme === "dark";
+  const wireframeColor = isDark ? "#D4A348" : "#1E3A8A";
+  const blendingMode = isDark ? THREE.AdditiveBlending : THREE.NormalBlending;
+  const wireframeOpacity = isDark ? 0.6 : 0.8;
+  const flagColor = isDark ? "#151515" : "#f1f5f9";
 
   useFrame((state) => {
     if (geomRef.current) {
@@ -104,7 +125,7 @@ function WavingFlag() {
       <mesh>
         <planeGeometry ref={geomRef} args={[1.4, 0.8, 12, 12]} />
         <meshStandardMaterial 
-          color="#151515" 
+          color={flagColor} 
           metalness={0.8} 
           roughness={0.3} 
           side={THREE.DoubleSide} 
@@ -113,12 +134,12 @@ function WavingFlag() {
       <mesh scale={[1.01, 1.01, 1.01]}>
         <planeGeometry ref={geomRef} args={[1.4, 0.8, 12, 12]} />
         <meshStandardMaterial 
-          color="#D4A348" 
+          color={wireframeColor} 
           wireframe 
           transparent 
-          opacity={0.6} 
+          opacity={wireframeOpacity} 
           side={THREE.DoubleSide}
-          blending={THREE.AdditiveBlending}
+          blending={blendingMode}
         />
       </mesh>
     </group>
@@ -132,11 +153,18 @@ function UAVPart({ geometry, position, rotation, scale }: {
   rotation?: [number, number, number]; 
   scale?: [number, number, number];
 }) {
+  const { resolvedTheme } = useTheme();
+  const isDark = resolvedTheme === "dark";
+  const wireframeColor = isDark ? "#D4A348" : "#1E3A8A";
+  const blendingMode = isDark ? THREE.AdditiveBlending : THREE.NormalBlending;
+  const wireframeOpacity = isDark ? 0.35 : 0.55;
+  const bodyColor = isDark ? "#151515" : "#e2e8f0";
+
   return (
     <group position={position} rotation={rotation} scale={scale}>
       <mesh geometry={geometry}>
         <meshStandardMaterial 
-          color="#151515" 
+          color={bodyColor} 
           metalness={0.9} 
           roughness={0.25}
           flatShading
@@ -144,14 +172,36 @@ function UAVPart({ geometry, position, rotation, scale }: {
       </mesh>
       <mesh geometry={geometry} scale={[1.02, 1.02, 1.02]}>
         <meshBasicMaterial 
-          color="#D4A348" 
+          color={wireframeColor} 
           wireframe 
           transparent 
-          opacity={0.35} 
-          blending={THREE.AdditiveBlending}
+          opacity={wireframeOpacity} 
+          blending={blendingMode}
         />
       </mesh>
     </group>
+  );
+}
+
+// Helper component to render the gold Maverick logo as a flat texture decal on plane surfaces
+function UAVEmblem({ position, rotation, scale = [1, 1, 1] }: { 
+  position: [number, number, number]; 
+  rotation: [number, number, number];
+  scale?: [number, number, number];
+}) {
+  const logoTexture = useTexture("/images/logo.png");
+  
+  return (
+    <mesh position={position} rotation={rotation} scale={scale}>
+      <planeGeometry args={[0.35, 0.35]} />
+      <meshBasicMaterial 
+        map={logoTexture} 
+        transparent 
+        depthWrite={false}
+        polygonOffset
+        polygonOffsetFactor={-4}
+      />
+    </mesh>
   );
 }
 
@@ -159,16 +209,49 @@ function UAVModel({
   mouseX, 
   mouseY, 
   scrollY, 
-  onIntroComplete 
+  onIntroComplete,
+  onDroneClick
 }: { 
   mouseX: number; 
   mouseY: number; 
   scrollY: number;
   onIntroComplete?: () => void;
+  onDroneClick?: () => void;
 }) {
   const groupRef = useRef<THREE.Group>(null);
   const propRef = useRef<THREE.Mesh>(null);
+  const [hovered, setHovered] = useState(false);
+  const spinOffsetRef = useRef(0);
   
+  const barrelRollRef = useRef({
+    active: false,
+    progress: 0,
+  });
+
+  // Track hover and change browser cursor style
+  useEffect(() => {
+    if (typeof document !== 'undefined') {
+      document.body.style.cursor = hovered ? 'pointer' : 'auto';
+    }
+    return () => {
+      if (typeof document !== 'undefined') {
+        document.body.style.cursor = 'auto';
+      }
+    };
+  }, [hovered]);
+
+  const handleClick = (e: any) => {
+    e.stopPropagation();
+    if (!introRef.current.completed) return; // Ignore clicks during launch
+    if (!barrelRollRef.current.active) {
+      barrelRollRef.current.active = true;
+      barrelRollRef.current.progress = 0;
+      if (onDroneClick) {
+        onDroneClick();
+      }
+    }
+  };
+
   // Track intro takeoff progress (0 to 1)
   const introRef = useRef({
     progress: 0,
@@ -209,21 +292,23 @@ function UAVModel({
       const maxScroll = typeof window !== 'undefined' ? document.documentElement.scrollHeight - window.innerHeight : 1000;
       const scrollPercent = maxScroll > 0 ? scrollY / maxScroll : 0;
 
+      const isMobile = typeof window !== 'undefined' ? window.innerWidth < 1024 : false;
+
       // 1. Positioning based on scroll position
       let targetX = 0;
       let targetY = 0.25;
       let targetZ = 0;
 
       if (scrollPercent < 0.25) {
-        targetX = 0;
-        targetY = 0.25;
-        targetZ = 0;
+        targetX = isMobile ? 0 : 1.7;
+        targetY = isMobile ? 0.45 : 0.85;
+        targetZ = isMobile ? 0 : 1.35;
       } else if (scrollPercent >= 0.25 && scrollPercent < 0.55) {
-        targetX = 1.9;
+        targetX = isMobile ? 1.2 : 1.9;
         targetY = -0.3;
         targetZ = -0.6;
       } else if (scrollPercent >= 0.55 && scrollPercent < 0.8) {
-        targetX = -1.9;
+        targetX = isMobile ? -1.2 : -1.9;
         targetY = 0.1;
         targetZ = -0.4;
       } else {
@@ -254,7 +339,22 @@ function UAVModel({
       else if (groupRef.current.position.x > targetX) targetRoll -= 0.35;
 
       const targetPitch = (mouseY * 0.45 * ease) + flyInPitch;
-      const targetYaw = baseRotationY - (scrollPercent * Math.PI * 0.7) + (mouseX * 0.3 * ease) + flyInYaw;
+      let targetYaw = baseRotationY - (scrollPercent * Math.PI * 0.7) + (mouseX * 0.3 * ease) + flyInYaw + spinOffsetRef.current;
+
+      // Showcase Yaw Spin Maneuver Animation (Y-axis 360 degree rotation)
+      if (barrelRollRef.current.active) {
+        barrelRollRef.current.progress += 0.015; // Spins slightly slower for a premium look (~1.1s)
+        const rollP = barrelRollRef.current.progress;
+        if (rollP >= 1) {
+          barrelRollRef.current.active = false;
+          barrelRollRef.current.progress = 0;
+          spinOffsetRef.current += Math.PI * 2;
+        } else {
+          // Use smooth ease-in-out sine to execute a 360-degree horizontal spin (2 * Math.PI)
+          const easeSpin = Math.sin(rollP * Math.PI - Math.PI / 2) * 0.5 + 0.5;
+          targetYaw += easeSpin * Math.PI * 2;
+        }
+      }
 
       groupRef.current.rotation.x = THREE.MathUtils.lerp(groupRef.current.rotation.x, targetPitch, 0.05);
       groupRef.current.rotation.y = THREE.MathUtils.lerp(groupRef.current.rotation.y, targetYaw, 0.05);
@@ -262,14 +362,20 @@ function UAVModel({
     }
 
     if (propRef.current) {
-      propRef.current.rotation.x += 0.85;
+      const propSpeed = barrelRollRef.current.active ? 2.5 : 0.85;
+      propRef.current.rotation.x += propSpeed;
     }
   });
 
   return (
-    <group ref={groupRef}>
+    <group 
+      ref={groupRef}
+      onClick={handleClick}
+      onPointerOver={() => setHovered(true)}
+      onPointerOut={() => setHovered(false)}
+    >
       {/* Scanning Laser HUD Ring */}
-      <ScanningLaser />
+      <ScanningLaser active={barrelRollRef.current.active} />
 
       {/* Flag component attached to the UAV Hangar Platform */}
       <WavingFlag />
@@ -282,6 +388,8 @@ function UAVModel({
 
       {/* Main Wing */}
       <UAVPart geometry={geometries.wing} position={[0, 0.4, 0]} />
+      <UAVEmblem position={[-1.0, 0.421, 0.0]} rotation={[-Math.PI / 2, 0, 0]} />
+      <UAVEmblem position={[1.0, 0.421, 0.0]} rotation={[-Math.PI / 2, 0, 0]} />
 
       {/* Tail Booms */}
       <UAVPart geometry={geometries.boom} position={[-0.45, -0.7, 0]} />
@@ -293,6 +401,8 @@ function UAVModel({
       {/* Vertical Stabilizers */}
       <UAVPart geometry={geometries.tailVert} position={[-0.45, -1.4, 0.1]} />
       <UAVPart geometry={geometries.tailVert} position={[0.45, -1.4, 0.1]} />
+      <UAVEmblem position={[-0.462, -1.4, 0.1]} rotation={[0, -Math.PI / 2, 0]} scale={[0.55, 0.55, 1]} />
+      <UAVEmblem position={[0.462, -1.4, 0.1]} rotation={[0, Math.PI / 2, 0]} scale={[0.55, 0.55, 1]} />
 
       {/* Propeller Hub */}
       <mesh position={[0, 1.95, 0]}>
@@ -310,10 +420,13 @@ function UAVModel({
 }
 
 export default function HolographicUAV() {
+  const { resolvedTheme } = useTheme();
+  const isDark = resolvedTheme === "dark";
   const [mouse, setMouse] = useState({ x: 0, y: 0 });
   const [scrollY, setScrollY] = useState(0);
   const [introDone, setIntroDone] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [clickActive, setClickActive] = useState(false);
   const [hudStats, setHudStats] = useState({
     pitch: 0,
     roll: 0,
@@ -323,6 +436,13 @@ export default function HolographicUAV() {
     thrust: 0,
     status: "LAUNCHING",
   });
+
+  const handleDroneClick = () => {
+    setClickActive(true);
+    setTimeout(() => {
+      setClickActive(false);
+    }, 1500);
+  };
 
   useEffect(() => {
     setMounted(true);
@@ -356,7 +476,7 @@ export default function HolographicUAV() {
     const scrollPercent = maxScroll > 0 ? scrollY / maxScroll : 0;
     const yawDeg = Math.round((scrollY * 0.15) % 360);
     
-    const speedVal = !introDone 
+    let speedVal = !introDone 
       ? parseFloat((Math.random() * 20).toFixed(1))
       : scrollPercent < 0.1 
         ? 0.0 
@@ -364,7 +484,7 @@ export default function HolographicUAV() {
     
     const altVal = parseFloat((scrollY * 0.08).toFixed(1));
     
-    const thrustVal = !introDone
+    let thrustVal = !introDone
       ? 100
       : scrollPercent < 0.1 
         ? 0 
@@ -380,16 +500,22 @@ export default function HolographicUAV() {
       }
     }
 
+    if (clickActive && introDone) {
+      flightStatus = "EVASIVE_ROLL";
+      speedVal = parseFloat((120.4 + Math.random() * 15.2).toFixed(1));
+      thrustVal = 150;
+    }
+
     setHudStats({
-      pitch: pitchDeg,
-      roll: rollDeg,
+      pitch: clickActive ? Math.round(pitchDeg + Math.sin(Date.now() * 0.05) * 15) : pitchDeg,
+      roll: clickActive ? Math.round(rollDeg + Math.cos(Date.now() * 0.05) * 25) : rollDeg,
       yaw: yawDeg,
       speed: speedVal,
       altitude: altVal,
       thrust: thrustVal,
       status: flightStatus,
     });
-  }, [mouse, scrollY, introDone]);
+  }, [mouse, scrollY, introDone, clickActive]);
 
   const hudOpacity = Math.max(0, 1 - scrollY / 600);
 
@@ -398,24 +524,28 @@ export default function HolographicUAV() {
       <Canvas
         camera={{ position: [0, 2, 5.5], fov: 50 }}
         gl={{ antialias: true }}
+        style={{ pointerEvents: "auto" }}
       >
-        <ambientLight intensity={0.25} />
-        <directionalLight position={[6, 12, 6]} intensity={2.5} color="#D4A348" />
-        <pointLight position={[-6, -4, -3]} intensity={3.5} color="#00E5FF" />
-        <spotLight position={[0, 10, 2]} angle={0.4} penumbra={1} intensity={2} color="#FFFFFF" />
-        
-        <group rotation={[Math.PI / 3.2, 0, 0]}>
-          <UAVModel 
-            mouseX={mouse.x} 
-            mouseY={mouse.y} 
-            scrollY={scrollY} 
-            onIntroComplete={() => setIntroDone(true)}
-          />
-        </group>
+        <React.Suspense fallback={null}>
+          <ambientLight intensity={0.25} />
+          <directionalLight position={[6, 12, 6]} intensity={2.5} color="#D4A348" />
+          <pointLight position={[-6, -4, -3]} intensity={3.5} color="#00E5FF" />
+          <spotLight position={[0, 10, 2]} angle={0.4} penumbra={1} intensity={2} color="#FFFFFF" />
+          
+          <group rotation={[Math.PI / 3.2, 0, 0]}>
+            <UAVModel 
+              mouseX={mouse.x} 
+              mouseY={mouse.y} 
+              scrollY={scrollY} 
+              onIntroComplete={() => setIntroDone(true)}
+              onDroneClick={handleDroneClick}
+            />
+          </group>
 
-        <ParticleField />
+          <ParticleField />
+        </React.Suspense>
         
-        <Stars radius={120} depth={50} count={800} factor={4} saturation={0} fade speed={1} />
+        {isDark && <Stars radius={120} depth={50} count={800} factor={4} saturation={0} fade speed={1} />}
       </Canvas>
       <div className="absolute inset-0 bg-radial-glow" />
 

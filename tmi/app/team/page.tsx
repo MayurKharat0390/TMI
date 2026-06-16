@@ -85,11 +85,11 @@ export default function TeamsPage() {
           {/* Header */}
           <div className="text-center mb-16">
             <span className="text-[#D4A348] text-xs font-bold uppercase tracking-[0.25em]">Meet the Crew</span>
-            <h1 className="text-4xl md:text-6xl font-extrabold uppercase tracking-wide text-white mt-2 mb-4 font-montserrat">
+            <h1 className="text-4xl md:text-6xl font-extrabold uppercase tracking-wide text-foreground mt-2 mb-4 font-montserrat">
               OUR <span className="text-[#D4A348] text-gold-glow">TEAM</span>
             </h1>
             <div className="w-24 h-1 bg-[#D4A348] mx-auto rounded-full mb-6" />
-            <p className="text-white/60 text-sm tracking-wide max-w-xl mx-auto leading-relaxed">
+            <p className="text-muted-foreground text-sm tracking-wide max-w-xl mx-auto leading-relaxed">
               "Meet the passionate engineers, designers, and organizers crafting the future of flight."
             </p>
           </div>
@@ -100,24 +100,24 @@ export default function TeamsPage() {
               placeholder="Search by name or role..." 
               value={search} 
               onChange={(e) => setSearch(e.target.value)}
-              className="bg-black/40 border-[#D4A348]/20 focus:border-[#D4A348] text-white tracking-wide placeholder:text-white/30"
+              className="bg-background border-[#D4A348]/20 focus:border-[#D4A348] text-foreground tracking-wide placeholder:text-muted-foreground/50"
             />
             
             <Select value={selectedRole} onValueChange={setSelectedRole}>
-              <SelectTrigger className="bg-black/40 border-[#D4A348]/20 text-white">
+              <SelectTrigger className="bg-background border-[#D4A348]/20 text-foreground">
                 <SelectValue placeholder="Filter by role" />
               </SelectTrigger>
-              <SelectContent className="bg-black/90 border-[#D4A348]/30 text-white">
+              <SelectContent className="bg-popover border-[#D4A348]/30 text-popover-foreground">
                 <SelectItem value="all">All Roles</SelectItem>
                 {roles.map(role => <SelectItem key={role} value={role}>{role}</SelectItem>)}
               </SelectContent>
             </Select>
             
             <Select value={selectedYear} onValueChange={setSelectedYear}>
-              <SelectTrigger className="bg-black/40 border-[#D4A348]/20 text-white">
+              <SelectTrigger className="bg-background border-[#D4A348]/20 text-foreground">
                 <SelectValue placeholder="Filter by year" />
               </SelectTrigger>
-              <SelectContent className="bg-black/90 border-[#D4A348]/30 text-white">
+              <SelectContent className="bg-popover border-[#D4A348]/30 text-popover-foreground">
                 {years.map(year => <SelectItem key={year} value={year}>{year} Batch</SelectItem>)}
               </SelectContent>
             </Select>
@@ -166,7 +166,7 @@ export default function TeamsPage() {
                 );
               })
           ) : (
-            <div className="text-center text-xl text-white/50 tracking-wider font-semibold py-12">
+            <div className="text-center text-xl text-muted-foreground tracking-wider font-semibold py-12">
               No matching wolves found in this hangar.
             </div>
           )}
@@ -186,7 +186,7 @@ function Section({ title, badge, members }: { title: string; badge?: string; mem
             {badge}
           </p>
         )}
-        <h2 className="text-3xl md:text-4xl font-extrabold uppercase text-white font-montserrat">{title}</h2>
+        <h2 className="text-3xl md:text-4xl font-extrabold uppercase text-foreground font-montserrat">{title}</h2>
         <div className="w-16 h-0.5 bg-[#D4A348]/40 mx-auto mt-3 rounded-full" />
       </div>
       

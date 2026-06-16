@@ -82,8 +82,8 @@ export default function GalleryGrid() {
                             >
                                 <span
                                     className={`text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight transition-colors duration-200 ${hasImages
-                                        ? "text-white group-hover:text-[#D4A348]"
-                                        : "text-white/25"
+                                        ? "text-foreground group-hover:text-[#D4A348]"
+                                        : "text-muted-foreground/30"
                                         }`}
                                 >
                                     {year}
@@ -91,16 +91,16 @@ export default function GalleryGrid() {
 
                                 {hasImages ? (
                                     <>
-                                        <span className="text-white/35 text-sm sm:text-base font-medium">{images.length} photos</span>
-                                        <div className="flex-1 h-[1.5px] bg-white/8 group-hover:bg-[#D4A348]/25 transition-colors duration-200" />
-                                        <span className="text-white/30 text-sm">{isOpen ? "▲" : "▼"}</span>
+                                        <span className="text-muted-foreground/60 text-sm sm:text-base font-medium">{images.length} photos</span>
+                                        <div className="flex-1 h-[1.5px] bg-border group-hover:bg-[#D4A348]/25 transition-colors duration-200" />
+                                        <span className="text-muted-foreground/50 text-sm">{isOpen ? "▲" : "▼"}</span>
                                     </>
                                 ) : (
                                     <>
                                         <span className="text-xs font-semibold tracking-widest uppercase text-[#D4A348]/60 border border-[#D4A348]/20 rounded-full px-3 py-1">
                                             Coming Soon
                                         </span>
-                                        <div className="flex-1 h-[1.5px] bg-white/5" />
+                                        <div className="flex-1 h-[1.5px] bg-border/40" />
                                     </>
                                 )}
                             </button>
@@ -111,7 +111,7 @@ export default function GalleryGrid() {
                                     {images.map((image, index) => (
                                         <div
                                             key={image.id}
-                                            className="group relative aspect-video overflow-hidden rounded-xl bg-white/5 cursor-pointer border border-white/5 hover:border-[#D4A348]/30 transition-colors duration-300 [transform:translateZ(0)] [backface-visibility:hidden]"
+                                            className="group relative aspect-video overflow-hidden rounded-xl bg-card border border-border/50 hover:border-[#D4A348]/40 shadow-sm cursor-pointer transition-colors duration-300 [transform:translateZ(0)] [backface-visibility:hidden]"
                                             onClick={() => { setModalYear(year); setModalIndex(index); }}
                                         >
                                             <Image
@@ -137,12 +137,12 @@ export default function GalleryGrid() {
 
             {/* Lightbox */}
             <Dialog open={modalYear !== null && modalIndex !== null} onOpenChange={closeModal}>
-                <DialogContent className="max-w-5xl w-[95vw] md:w-[85vw] lg:w-[75vw] p-0 bg-black border border-white/10 rounded-xl overflow-hidden shadow-2xl">
+                <DialogContent className="max-w-5xl w-[95vw] md:w-[85vw] lg:w-[75vw] p-0 bg-background border border-border rounded-xl overflow-hidden shadow-2xl">
                     <DialogTitle className="sr-only">Image Preview</DialogTitle>
 
                     {/* Close */}
                     <button
-                        className="absolute right-3 top-3 z-50 w-8 h-8 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors"
+                        className="absolute right-3 top-3 z-50 w-8 h-8 flex items-center justify-center rounded-full bg-foreground/10 hover:bg-foreground/20 text-foreground transition-colors"
                         onClick={closeModal}
                     >
                         <X className="h-4 w-4" />
@@ -151,7 +151,7 @@ export default function GalleryGrid() {
                     {modalYear && modalIndex !== null && (
                         <div className="flex flex-col">
                             {/* Image */}
-                            <div className="relative w-full aspect-video bg-black">
+                            <div className="relative w-full aspect-video bg-black/95 dark:bg-black">
                                 <Image
                                     src={galleries[modalYear][modalIndex].src}
                                     alt={galleries[modalYear][modalIndex].alt}
@@ -162,13 +162,13 @@ export default function GalleryGrid() {
                                     decoding="async"
                                 />
                                 <button
-                                    className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 flex items-center justify-center rounded-full bg-black/60 hover:bg-[#D4A348]/20 border border-white/15 hover:border-[#D4A348]/40 text-white hover:text-[#D4A348] transition-all"
+                                    className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 flex items-center justify-center rounded-full bg-background/70 hover:bg-[#D4A348]/20 border border-border text-foreground hover:text-[#D4A348] transition-all"
                                     onClick={goPrev}
                                 >
                                     <ChevronLeft className="h-5 w-5" />
                                 </button>
                                 <button
-                                    className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 flex items-center justify-center rounded-full bg-black/60 hover:bg-[#D4A348]/20 border border-white/15 hover:border-[#D4A348]/40 text-white hover:text-[#D4A348] transition-all"
+                                    className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 flex items-center justify-center rounded-full bg-background/70 hover:bg-[#D4A348]/20 border border-border text-foreground hover:text-[#D4A348] transition-all"
                                     onClick={goNext}
                                 >
                                     <ChevronRight className="h-5 w-5" />
@@ -176,9 +176,9 @@ export default function GalleryGrid() {
                             </div>
 
                             {/* Counter */}
-                            <div className="flex items-center justify-between px-5 py-3 border-t border-white/8 bg-[#0a0a0a]">
-                                <span className="text-white/40 text-sm">{modalYear} Season</span>
-                                <span className="text-white/50 text-sm">
+                            <div className="flex items-center justify-between px-5 py-3 border-t border-border bg-card/60">
+                                <span className="text-muted-foreground text-sm">{modalYear} Season</span>
+                                <span className="text-muted-foreground text-sm">
                                     <span className="text-[#D4A348] font-bold">{modalIndex + 1}</span>
                                     {" / "}
                                     {galleries[modalYear].length}

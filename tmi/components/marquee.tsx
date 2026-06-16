@@ -34,7 +34,7 @@ export default function InfiniteMarquee() {
         {/* Track 1 */}
         <div className="flex justify-around items-center w-1/2 gap-16">
           {marqueeSponsors.map((sponsor, idx) => (
-            <div key={`track1-${idx}`} className="flex-shrink-0 group relative flex items-center justify-center h-16 w-32 filter grayscale contrast-125 brightness-200 hover:grayscale-0 transition-all duration-300">
+            <div key={`track1-${idx}`} className="flex-shrink-0 group relative flex items-center justify-center h-16 w-32 filter grayscale contrast-125 dark:brightness-200 hover:grayscale-0 transition-all duration-300">
               <Image
                 src={sponsor.logo}
                 alt={sponsor.name}
@@ -50,7 +50,7 @@ export default function InfiniteMarquee() {
         {/* Track 2 (Clone of Track 1 for infinite seamless wrap) */}
         <div className="flex justify-around items-center w-1/2 gap-16">
           {marqueeSponsors.map((sponsor, idx) => (
-            <div key={`track2-${idx}`} className="flex-shrink-0 group relative flex items-center justify-center h-16 w-32 filter grayscale contrast-125 brightness-200 hover:grayscale-0 transition-all duration-300">
+            <div key={`track2-${idx}`} className="flex-shrink-0 group relative flex items-center justify-center h-16 w-32 filter grayscale contrast-125 dark:brightness-200 hover:grayscale-0 transition-all duration-300">
               <Image
                 src={sponsor.logo}
                 alt={sponsor.name}

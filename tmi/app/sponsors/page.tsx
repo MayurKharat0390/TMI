@@ -57,15 +57,17 @@ export default function SponsorsPage() {
       </Head>
 
       <div className="pt-24 pb-16 min-h-screen relative">
-        <StarryBackground />
+        <div className="hidden dark:block">
+          <StarryBackground />
+        </div>
 
         <div className="max-w-6xl mx-auto px-6 py-20 relative z-10">
           {/* Main Title Section */}
           <div className="text-center mb-16">
-            <h1 className="text-4xl font-bold uppercase tracking-[0.25em] text-white mb-6">
+            <h1 className="text-4xl font-bold uppercase tracking-[0.25em] text-foreground mb-6">
               OUR SPONSORS
             </h1>
-            <p className="text-white/60 text-sm tracking-wide max-w-2xl mx-auto">
+            <p className="text-muted-foreground text-sm tracking-wide max-w-2xl mx-auto">
               "Supporting innovation, engineering excellence, and the future of aerospace development."
             </p>
           </div>

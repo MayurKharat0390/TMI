@@ -136,13 +136,13 @@ function SponsorCard({ sponsor }: { sponsor: Sponsor }) {
     <div className={cn(
       "w-full rounded-xl transition-all duration-300 ease-in-out group relative overflow-hidden",
       "flex items-center justify-center",
-      "before:absolute before:inset-0 before:rounded-xl before:bg-gradient-to-b before:from-white/5 before:to-transparent before:pointer-events-none before:z-10",
+      "before:absolute before:inset-0 before:rounded-xl before:bg-gradient-to-b before:from-foreground/5 before:to-transparent before:pointer-events-none before:z-10",
 
       isDiamond
-        ? "h-56 p-10 border border-white/20 bg-white/10 shadow-xl shadow-black/40 backdrop-blur-sm hover:scale-105 hover:translate-y-[-4px] hover:border-white/40 hover:shadow-2xl hover:shadow-black/50"
+        ? "h-56 p-10 border border-border bg-card/60 shadow-xl dark:shadow-black/40 backdrop-blur-sm hover:scale-105 hover:translate-y-[-4px] hover:border-[#D4A348]/40 hover:shadow-2xl hover:shadow-black/50"
         : isPlatinum
-          ? "h-48 p-8 border border-white/15 bg-white/5 shadow-lg shadow-black/30 hover:scale-105 hover:translate-y-[-3px] hover:border-white/30 hover:shadow-xl hover:shadow-black/40"
-          : "h-40 p-6 border border-white/10 bg-white/5 shadow-md shadow-black/20 hover:scale-105 hover:border-white/20 hover:shadow-lg hover:shadow-black/30"
+          ? "h-48 p-8 border border-border/80 bg-card/40 shadow-lg dark:shadow-black/30 hover:scale-105 hover:translate-y-[-3px] hover:border-[#D4A348]/30 hover:shadow-xl hover:shadow-black/40"
+          : "h-40 p-6 border border-border/60 bg-card/30 shadow-md dark:shadow-black/20 hover:scale-105 hover:border-[#D4A348]/20 hover:shadow-lg hover:shadow-black/30"
     )}>
       <Image
         src={sponsor.logo}
@@ -153,8 +153,8 @@ function SponsorCard({ sponsor }: { sponsor: Sponsor }) {
         decoding="async"
         quality={85}
         className={cn(
-          "object-contain grayscale transition duration-300 ease-in-out relative z-20",
-          "group-hover:grayscale-0 group-hover:brightness-110",
+          "object-contain grayscale dark:brightness-200 transition duration-300 ease-in-out relative z-20",
+          "group-hover:grayscale-0 group-hover:brightness-100 group-hover:dark:brightness-110",
           isDiamond ? "max-h-28" : "max-h-24"
         )}
       />

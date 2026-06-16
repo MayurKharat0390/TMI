@@ -6,6 +6,7 @@ import { OrbitControls, Html } from "@react-three/drei";
 import { Info, X, Zap, Cpu, Activity, Disc, Target } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import * as THREE from "three";
+import { useTheme } from "next-themes";
 
 interface Hotspot {
   id: string;
@@ -200,6 +201,10 @@ function InteractiveUAV({
   const groupRef = useRef<THREE.Group>(null);
   const mainPropRef = useRef<THREE.Mesh>(null);
   const liftPropRefs = useRef<(THREE.Mesh | null)[]>([]);
+  const { resolvedTheme } = useTheme();
+  const isDark = resolvedTheme === "dark";
+  const wireframeColor = isDark ? "#D4A348" : "#1E3A8A";
+  const accentWireframeColor = isDark ? "#00E5FF" : "#0066FF";
 
   // Spin propellers
   useFrame((state) => {
@@ -261,47 +266,47 @@ function InteractiveUAV({
           {/* Main Fuselage */}
           <mesh>
             <cylinderGeometry args={[0.2, 0.05, 2.6, 8, 4]} />
-            <meshBasicMaterial color="#D4A348" wireframe transparent opacity={0.3} />
+            <meshBasicMaterial color={wireframeColor} wireframe transparent opacity={0.3} />
           </mesh>
           <mesh position={[0, 1.3, 0]}>
             <coneGeometry args={[0.2, 0.4, 8]} />
-            <meshBasicMaterial color="#D4A348" wireframe transparent opacity={0.4} />
+            <meshBasicMaterial color={wireframeColor} wireframe transparent opacity={0.4} />
           </mesh>
 
           {/* Main Wing */}
           <mesh position={[0, 0.4, 0]}>
             <boxGeometry args={[4.2, 0.04, 0.6]} />
-            <meshBasicMaterial color="#D4A348" wireframe transparent opacity={0.3} />
+            <meshBasicMaterial color={wireframeColor} wireframe transparent opacity={0.3} />
           </mesh>
 
           {/* Twin Booms */}
           <mesh position={[-0.45, -0.4, 0]} rotation={[0, 0, 0]}>
             <cylinderGeometry args={[0.03, 0.02, 1.8, 4]} />
-            <meshBasicMaterial color="#D4A348" wireframe transparent opacity={0.2} />
+            <meshBasicMaterial color={wireframeColor} wireframe transparent opacity={0.2} />
           </mesh>
           <mesh position={[0.45, -0.4, 0]} rotation={[0, 0, 0]}>
             <cylinderGeometry args={[0.03, 0.02, 1.8, 4]} />
-            <meshBasicMaterial color="#D4A348" wireframe transparent opacity={0.2} />
+            <meshBasicMaterial color={wireframeColor} wireframe transparent opacity={0.2} />
           </mesh>
 
           {/* Tail assembly */}
           <mesh position={[0, -1.3, 0]}>
             <boxGeometry args={[1.1, 0.02, 0.3]} />
-            <meshBasicMaterial color="#D4A348" wireframe transparent opacity={0.3} />
+            <meshBasicMaterial color={wireframeColor} wireframe transparent opacity={0.3} />
           </mesh>
           <mesh position={[-0.45, -1.2, 0.1]}>
             <boxGeometry args={[0.02, 0.35, 0.2]} />
-            <meshBasicMaterial color="#D4A348" wireframe transparent opacity={0.3} />
+            <meshBasicMaterial color={wireframeColor} wireframe transparent opacity={0.3} />
           </mesh>
           <mesh position={[0.45, -1.2, 0.1]}>
             <boxGeometry args={[0.02, 0.35, 0.2]} />
-            <meshBasicMaterial color="#D4A348" wireframe transparent opacity={0.3} />
+            <meshBasicMaterial color={wireframeColor} wireframe transparent opacity={0.3} />
           </mesh>
 
           {/* Pusher Propeller (Spinning) */}
           <mesh ref={mainPropRef} position={[0, -1.35, 0]}>
             <boxGeometry args={[1.0, 0.02, 0.05]} />
-            <meshBasicMaterial color="#D4A348" />
+            <meshBasicMaterial color={wireframeColor} />
           </mesh>
         </group>
       )}
@@ -312,33 +317,33 @@ function InteractiveUAV({
           {/* Main Fuselage */}
           <mesh>
             <cylinderGeometry args={[0.16, 0.04, 2.8, 8, 4]} />
-            <meshBasicMaterial color="#D4A348" wireframe transparent opacity={0.3} />
+            <meshBasicMaterial color={wireframeColor} wireframe transparent opacity={0.3} />
           </mesh>
           <mesh position={[0, 1.4, 0]}>
             <coneGeometry args={[0.16, 0.3, 8]} />
-            <meshBasicMaterial color="#00E5FF" wireframe transparent opacity={0.5} />
+            <meshBasicMaterial color={accentWireframeColor} wireframe transparent opacity={0.5} />
           </mesh>
 
           {/* Main Wing */}
           <mesh position={[0, 0.3, 0]}>
             <boxGeometry args={[3.6, 0.03, 0.5]} />
-            <meshBasicMaterial color="#D4A348" wireframe transparent opacity={0.3} />
+            <meshBasicMaterial color={wireframeColor} wireframe transparent opacity={0.3} />
           </mesh>
 
           {/* Tail vertical fin & Horizontal stabilizer */}
           <mesh position={[0, -1.3, 0]}>
             <boxGeometry args={[0.9, 0.02, 0.25]} />
-            <meshBasicMaterial color="#D4A348" wireframe transparent opacity={0.3} />
+            <meshBasicMaterial color={wireframeColor} wireframe transparent opacity={0.3} />
           </mesh>
           <mesh position={[0, -1.2, 0.1]} rotation={[0, Math.PI / 2, 0]}>
             <boxGeometry args={[0.25, 0.4, 0.02]} />
-            <meshBasicMaterial color="#00E5FF" wireframe transparent opacity={0.4} />
+            <meshBasicMaterial color={accentWireframeColor} wireframe transparent opacity={0.4} />
           </mesh>
 
           {/* Tractor Propeller (Front Spinning) */}
           <mesh ref={mainPropRef} position={[0, 1.58, 0]}>
             <boxGeometry args={[0.9, 0.02, 0.04]} />
-            <meshBasicMaterial color="#00E5FF" />
+            <meshBasicMaterial color={accentWireframeColor} />
           </mesh>
         </group>
       )}
@@ -349,23 +354,23 @@ function InteractiveUAV({
           {/* Main Fuselage */}
           <mesh>
             <cylinderGeometry args={[0.22, 0.06, 2.6, 8, 4]} />
-            <meshBasicMaterial color="#D4A348" wireframe transparent opacity={0.3} />
+            <meshBasicMaterial color={wireframeColor} wireframe transparent opacity={0.3} />
           </mesh>
 
           {/* Main Wing */}
           <mesh position={[0, 0.3, 0]}>
             <boxGeometry args={[3.8, 0.04, 0.6]} />
-            <meshBasicMaterial color="#D4A348" wireframe transparent opacity={0.3} />
+            <meshBasicMaterial color={wireframeColor} wireframe transparent opacity={0.3} />
           </mesh>
 
           {/* Quad Booms */}
           <mesh position={[-0.8, -0.1, 0.05]} rotation={[0, 0, 0]}>
             <boxGeometry args={[0.04, 1.8, 0.04]} />
-            <meshBasicMaterial color="#00E5FF" wireframe transparent opacity={0.3} />
+            <meshBasicMaterial color={accentWireframeColor} wireframe transparent opacity={0.3} />
           </mesh>
           <mesh position={[0.8, -0.1, 0.05]} rotation={[0, 0, 0]}>
             <boxGeometry args={[0.04, 1.8, 0.04]} />
-            <meshBasicMaterial color="#00E5FF" wireframe transparent opacity={0.3} />
+            <meshBasicMaterial color={accentWireframeColor} wireframe transparent opacity={0.3} />
           </mesh>
 
           {/* Four lift props */}
@@ -378,7 +383,7 @@ function InteractiveUAV({
             <group key={idx} position={pos as [number, number, number]}>
               <mesh>
                 <cylinderGeometry args={[0.03, 0.03, 0.1, 4]} />
-                <meshBasicMaterial color="#D4A348" />
+                <meshBasicMaterial color={wireframeColor} />
               </mesh>
               {/* Spinning prop */}
               <mesh
@@ -388,7 +393,7 @@ function InteractiveUAV({
                 position={[0, 0, 0.06]}
               >
                 <boxGeometry args={[0.4, 0.015, 0.02]} />
-                <meshBasicMaterial color="#00E5FF" />
+                <meshBasicMaterial color={accentWireframeColor} />
               </mesh>
             </group>
           ))}
@@ -396,13 +401,13 @@ function InteractiveUAV({
           {/* Tail Horizontal assembly */}
           <mesh position={[0, -1.2, 0.1]}>
             <boxGeometry args={[1.5, 0.02, 0.3]} />
-            <meshBasicMaterial color="#D4A348" wireframe transparent opacity={0.3} />
+            <meshBasicMaterial color={wireframeColor} wireframe transparent opacity={0.3} />
           </mesh>
 
           {/* Pusher Cruise Prop (Spinning) */}
           <mesh ref={mainPropRef} position={[0, -1.35, 0]}>
             <boxGeometry args={[0.9, 0.02, 0.04]} />
-            <meshBasicMaterial color="#D4A348" />
+            <meshBasicMaterial color={wireframeColor} />
           </mesh>
         </group>
       )}
@@ -416,6 +421,8 @@ function InteractiveUAV({
 export default function UAVHotspots() {
   const [selectedAircraft, setSelectedAircraft] = useState("mohav");
   const [selectedHotspot, setSelectedHotspot] = useState<Hotspot | null>(null);
+  const { resolvedTheme } = useTheme();
+  const isDark = resolvedTheme === "dark";
 
   // Clear selected hotspot when changing aircraft
   const handleAircraftChange = (type: string) => {
@@ -428,7 +435,7 @@ export default function UAVHotspots() {
   return (
     <div className="flex flex-col lg:flex-row gap-8 items-stretch w-full max-w-6xl mx-auto px-4 md:px-0">
       {/* Left: Aircraft Selector Hangar Panel */}
-      <div className="w-full lg:w-[280px] bg-black/50 border border-[#D4A348]/20 p-6 rounded-2xl flex flex-col gap-6 backdrop-blur-md shadow-2xl relative z-20">
+      <div className="w-full lg:w-[280px] bg-card/70 dark:bg-black/50 border border-[#D4A348]/20 p-6 rounded-2xl flex flex-col gap-6 backdrop-blur-md shadow-2xl relative z-20">
         <div className="flex items-center gap-2 border-b border-[#D4A348]/20 pb-3">
           <Activity className="w-4 h-4 text-[#D4A348]" />
           <h3 className="font-mono text-xs font-bold tracking-widest text-[#D4A348] uppercase">
@@ -445,8 +452,8 @@ export default function UAVHotspots() {
                 onClick={() => handleAircraftChange(key)}
                 className={`w-full flex items-center justify-between p-4 rounded-xl border text-left transition-all duration-300 font-mono ${
                   isActive
-                    ? "bg-[#D4A348]/10 border-[#D4A348] text-white shadow-[0_0_15px_rgba(212,163,72,0.1)]"
-                    : "bg-black/60 border-white/5 text-white/50 hover:border-white/20 hover:text-white"
+                    ? "bg-[#D4A348]/10 border-[#D4A348] text-foreground dark:text-white shadow-[0_0_15px_rgba(212,163,72,0.1)]"
+                    : "bg-background/40 dark:bg-black/60 border-border dark:border-white/5 text-muted-foreground dark:text-white/50 hover:border-foreground/25 dark:hover:border-white/20 hover:text-foreground dark:hover:text-white"
                 }`}
               >
                 <div>
@@ -465,14 +472,14 @@ export default function UAVHotspots() {
 
         {/* Specifications panel */}
         <div className="mt-auto border-t border-[#D4A348]/10 pt-4 flex flex-col gap-3">
-          <div className="text-[10px] font-bold text-white/40 uppercase tracking-widest">
+          <div className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
             Hangar Specifications
           </div>
           <div className="grid grid-cols-2 gap-3 text-[10px] font-mono">
             {currentUav.specs.map((spec, i) => (
-              <div key={i} className="flex flex-col bg-white/5 p-2.5 rounded border border-white/5">
-                <span className="text-white/40 uppercase">{spec.label}</span>
-                <span className="text-white font-bold mt-0.5">{spec.value}</span>
+              <div key={i} className="flex flex-col bg-accent/40 dark:bg-white/5 p-2.5 rounded border border-border dark:border-white/5">
+                <span className="text-muted-foreground uppercase">{spec.label}</span>
+                <span className="text-foreground font-bold mt-0.5">{spec.value}</span>
               </div>
             ))}
           </div>
@@ -480,7 +487,7 @@ export default function UAVHotspots() {
       </div>
 
       {/* Middle: 3D Hangar Canvas (Full pointer interaction) */}
-      <div className="flex-1 h-[450px] lg:h-[600px] bg-gradient-to-b from-black/60 to-black/20 border border-[#D4A348]/15 rounded-2xl overflow-hidden backdrop-blur-md relative shadow-2xl">
+      <div className="flex-1 h-[450px] lg:h-[600px] bg-gradient-to-b from-slate-100 to-slate-50 dark:from-black/60 dark:to-black/20 border border-[#D4A348]/15 rounded-2xl overflow-hidden backdrop-blur-md relative shadow-2xl">
         {/* Title HUD Overlay inside canvas frame */}
         <div className="absolute top-4 left-4 z-20 font-mono text-[9px] text-[#D4A348]/70 flex items-center gap-2 pointer-events-none">
           <Disc className="w-3.5 h-3.5 animate-spin" />
@@ -523,18 +530,18 @@ export default function UAVHotspots() {
               animate={{ opacity: 1, x: 0, scale: 1 }}
               exit={{ opacity: 0, x: 20, scale: 0.98 }}
               transition={{ duration: 0.25 }}
-              className="bg-black/85 backdrop-blur-xl border border-yellow-500/30 p-6 rounded-2xl shadow-[0_0_25px_rgba(212,163,72,0.15)] text-white h-full flex flex-col"
+              className="bg-card/90 dark:bg-black/85 backdrop-blur-xl border border-yellow-500/30 p-6 rounded-2xl shadow-[0_0_25px_rgba(212,163,72,0.15)] text-foreground dark:text-white h-full flex flex-col"
             >
               <div className="flex justify-between items-start border-b border-[#D4A348]/20 pb-3 mb-4">
                 <div className="flex items-center gap-2">
-                  <Cpu className="w-4 h-4 text-yellow-400" />
-                  <span className="font-mono text-xs font-bold uppercase tracking-wider text-yellow-400">
+                  <Cpu className="w-4 h-4 text-yellow-500 dark:text-yellow-400" />
+                  <span className="font-mono text-xs font-bold uppercase tracking-wider text-yellow-500 dark:text-yellow-400">
                     DIAGNOSTIC DATA
                   </span>
                 </div>
                 <button
                   onClick={() => setSelectedHotspot(null)}
-                  className="text-gray-400 hover:text-white p-1 hover:bg-white/5 rounded transition-all"
+                  className="text-muted-foreground hover:text-foreground p-1 hover:bg-accent rounded transition-all"
                 >
                   <X className="w-4 h-4" />
                 </button>
@@ -543,19 +550,19 @@ export default function UAVHotspots() {
               <h3 className="text-xl font-extrabold text-[#D4A348] mb-2 tracking-wide font-montserrat uppercase">
                 {selectedHotspot.title}
               </h3>
-              <p className="text-xs text-gray-300 leading-relaxed mb-6 font-light">
+              <p className="text-xs text-muted-foreground leading-relaxed mb-6 font-light">
                 {selectedHotspot.description}
               </p>
 
               <div className="mt-auto">
-                <h4 className="text-[10px] font-bold uppercase tracking-wider text-white/40 mb-3 font-mono">
+                <h4 className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground/60 mb-3 font-mono">
                   Core Modules & Components
                 </h4>
                 <ul className="space-y-2">
                   {selectedHotspot.specs.map((spec, i) => (
                     <li
                       key={i}
-                      className="text-xs font-mono flex items-start gap-2 text-gray-200 bg-white/5 p-2 rounded border border-white/5"
+                      className="text-xs font-mono flex items-start gap-2 text-foreground bg-accent/40 dark:bg-white/5 p-2 rounded border border-border dark:border-white/5"
                     >
                       <Zap className="w-3.5 h-3.5 text-[#D4A348] mt-0.5 shrink-0" />
                       <span>{spec}</span>
@@ -568,16 +575,16 @@ export default function UAVHotspots() {
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="bg-black/55 backdrop-blur-md border border-[#D4A348]/15 p-6 rounded-2xl text-center flex flex-col justify-center items-center h-full gap-4 text-xs tracking-wider text-gray-300 shadow-xl border-dashed"
+              className="bg-card/60 dark:bg-black/55 backdrop-blur-md border border-[#D4A348]/15 p-6 rounded-2xl text-center flex flex-col justify-center items-center h-full gap-4 text-xs tracking-wider text-muted-foreground shadow-xl border-dashed"
             >
               <div className="w-10 h-10 rounded-full border border-[#D4A348]/30 flex items-center justify-center bg-[#D4A348]/5">
                 <Info className="w-5 h-5 text-[#D4A348]" />
               </div>
               <div>
-                <h4 className="font-bold text-white mb-1 uppercase tracking-widest font-mono">
+                <h4 className="font-bold text-foreground mb-1 uppercase tracking-widest font-mono">
                   Diagnostics Offline
                 </h4>
-                <p className="text-[10px] text-white/50 leading-relaxed font-mono max-w-[200px] mx-auto">
+                <p className="text-[10px] text-muted-foreground/60 leading-relaxed font-mono max-w-[200px] mx-auto">
                   CLICK ON THE GLOWING HOTSPOTS MOUNTED ON THE 3D MODEL TO LOAD DETAILED COMPONENT SYSTEMS.
                 </p>
               </div>

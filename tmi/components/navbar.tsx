@@ -1,14 +1,14 @@
 "use client";
 
-import { useState } from "react";
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, Youtube, Linkedin, Instagram } from "lucide-react";
+import { Menu, Youtube, Linkedin, Instagram, Sun, Moon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
+import { useTheme } from "next-themes";
 
 const navLinks = [
   { href: "/", label: "Home" },
@@ -25,6 +25,12 @@ const navLinks = [
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
+  const { resolvedTheme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const isActive = (path: string) => pathname === path;
 
@@ -72,6 +78,17 @@ export function Navbar() {
                   </Link>
                 </Button>
               ))}
+              {mounted && (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
+                  className="hover:text-[#D4A348] text-foreground"
+                  aria-label="Toggle Theme"
+                >
+                  {resolvedTheme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+                </Button>
+              )}
             </div>
 
             <Sheet open={isOpen} onOpenChange={setIsOpen}>
@@ -100,6 +117,20 @@ export function Navbar() {
                         </Link>
                       </Button>
                     ))}
+                    {mounted && (
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => {
+                          setTheme(resolvedTheme === "dark" ? "light" : "dark");
+                          setIsOpen(false);
+                        }}
+                        className="hover:text-[#D4A348] text-foreground"
+                        aria-label="Toggle Theme"
+                      >
+                        {resolvedTheme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+                      </Button>
+                    )}
                   </div>
                 </div>
               </SheetContent>
