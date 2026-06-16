@@ -68,9 +68,9 @@ export default function Home() {
 
         <div className="relative z-10 text-center max-w-4xl mx-auto flex flex-col items-center">
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
+            initial={{ opacity: 0, x: -120, skewX: -10 }}
+            animate={{ opacity: 1, x: 0, skewX: 0 }}
+            transition={{ duration: 1.0, delay: 0.4, ease: "easeOut" }}
             className="mb-4"
           >
             <span className="px-3 py-1 rounded-full border border-[#D4A348]/30 bg-[#D4A348]/5 text-xs font-semibold uppercase tracking-[0.2em] text-[#D4A348] shadow-[0_0_15px_rgba(212,163,72,0.1)]">
@@ -79,27 +79,27 @@ export default function Home() {
           </motion.div>
 
           <motion.h1
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.15 }}
+            initial={{ opacity: 0, x: -160, skewX: -15 }}
+            animate={{ opacity: 1, x: 0, skewX: 0 }}
+            transition={{ duration: 1.2, delay: 0.6, ease: "easeOut" }}
             className="text-4xl md:text-7xl font-extrabold uppercase tracking-tight text-white mb-6 font-montserrat"
           >
             ENGINEERING THE FUTURE OF <span className="text-[#D4A348] text-gold-glow">FLIGHT</span>
           </motion.h1>
 
           <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.3 }}
+            initial={{ opacity: 0, x: -120, skewX: -8 }}
+            animate={{ opacity: 1, x: 0, skewX: 0 }}
+            transition={{ duration: 1.1, delay: 0.8, ease: "easeOut" }}
             className="text-white/60 text-lg md:text-xl max-w-2xl mx-auto mb-10 tracking-wide font-light leading-relaxed"
           >
             Team Maverick India: Wolves of the Sky. Developing cutting-edge autonomous fixed-wing UAVs pushing the boundaries of aerodynamic design.
           </motion.p>
 
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.45 }}
+            initial={{ opacity: 0, x: -80, skewX: -5 }}
+            animate={{ opacity: 1, x: 0, skewX: 0 }}
+            transition={{ duration: 1.0, delay: 1.0, ease: "easeOut" }}
             className="flex flex-col sm:flex-row gap-4 justify-center items-center w-full max-w-md"
           >
             <Button

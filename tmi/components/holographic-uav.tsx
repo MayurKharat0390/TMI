@@ -232,11 +232,11 @@ function UAVModel({
         targetZ = 1.1;
       }
 
-      // Interpolate from start (takeoff) positions
-      const currentTargetX = THREE.MathUtils.lerp(0, targetX, ease);
-      const currentTargetY = THREE.MathUtils.lerp(-4.5, targetY, ease); // Rising from -4.5
-      const currentTargetZ = THREE.MathUtils.lerp(-2.0, targetZ, ease);
-      const currentScale = THREE.MathUtils.lerp(0.01, 1.0, ease);
+      // Interpolate from start (left-to-right fly-in) positions
+      const currentTargetX = THREE.MathUtils.lerp(-10.0, targetX, ease); // Fly in from left (-10) to targetX
+      const currentTargetY = THREE.MathUtils.lerp(1.2, targetY, ease);   // Swoop from slightly higher altitude (1.2) to targetY
+      const currentTargetZ = THREE.MathUtils.lerp(-1.5, targetZ, ease);  // Fly from slightly further back
+      const currentScale = THREE.MathUtils.lerp(0.5, 1.0, ease);        // Scale from mid-size to full size
 
       groupRef.current.position.x = THREE.MathUtils.lerp(groupRef.current.position.x, currentTargetX, 0.045);
       groupRef.current.position.y = THREE.MathUtils.lerp(groupRef.current.position.y, currentTargetY, 0.045);
@@ -244,17 +244,17 @@ function UAVModel({
       groupRef.current.scale.setScalar(currentScale);
 
       // 2. Responsive mouse-tracking rotations
-      let targetRoll = -mouseX * 0.65 * ease;
+      // Fly-in rotation behavior: bank/roll as it speeds in from the left
+      const flyInRoll = (1 - ease) * -0.9;     // Strong banking to the left (wing dipped)
+      const flyInPitch = (1 - ease) * -0.15;   // Slight nose-down attitude during fast entry
+      const flyInYaw = (1 - ease) * 1.2;       // Yaw pointing to the right (direction of travel)
+
+      let targetRoll = (-mouseX * 0.65 * ease) + flyInRoll;
       if (groupRef.current.position.x < targetX) targetRoll += 0.35;
       else if (groupRef.current.position.x > targetX) targetRoll -= 0.35;
 
-      // Climb pitch during takeoff
-      const takeoffPitch = (1 - ease) * 0.8;
-      const targetPitch = (mouseY * 0.45 * ease) + takeoffPitch;
-
-      // Yaw rotation (spins during climb out)
-      const takeoffSpin = (1 - ease) * Math.PI * 3.5;
-      const targetYaw = baseRotationY - (scrollPercent * Math.PI * 0.7) + (mouseX * 0.3 * ease) - takeoffSpin;
+      const targetPitch = (mouseY * 0.45 * ease) + flyInPitch;
+      const targetYaw = baseRotationY - (scrollPercent * Math.PI * 0.7) + (mouseX * 0.3 * ease) + flyInYaw;
 
       groupRef.current.rotation.x = THREE.MathUtils.lerp(groupRef.current.rotation.x, targetPitch, 0.05);
       groupRef.current.rotation.y = THREE.MathUtils.lerp(groupRef.current.rotation.y, targetYaw, 0.05);
@@ -313,6 +313,7 @@ export default function HolographicUAV() {
   const [mouse, setMouse] = useState({ x: 0, y: 0 });
   const [scrollY, setScrollY] = useState(0);
   const [introDone, setIntroDone] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const [hudStats, setHudStats] = useState({
     pitch: 0,
     roll: 0,
@@ -322,6 +323,10 @@ export default function HolographicUAV() {
     thrust: 0,
     status: "LAUNCHING",
   });
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
@@ -417,9 +422,9 @@ export default function HolographicUAV() {
       {/* --- CINEMATIC INITIAL BLACKOUT OVERLAY --- */}
       <div 
         className={`fixed inset-0 bg-black z-50 transition-opacity ease-out pointer-events-none ${
-          introDone ? "opacity-0" : "opacity-100"
+          mounted ? "opacity-0" : "opacity-100"
         }`}
-        style={{ transitionDuration: "2000ms" }}
+        style={{ transitionDuration: "1500ms" }}
       />
 
       {/* --- HUD OVERLAY --- */}
