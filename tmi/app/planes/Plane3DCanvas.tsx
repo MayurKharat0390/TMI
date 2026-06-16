@@ -298,7 +298,7 @@ function HexacopterModel() {
 }
 
 // Group that slowly auto-rotates
-function SpinningScene({ type }: { type: "tractor" | "twin-boom" | "vtol" | "hexacopter" }) {
+function SpinningScene({ type, isMobile }: { type: "tractor" | "twin-boom" | "vtol" | "hexacopter"; isMobile: boolean }) {
   const modelRef = useRef<THREE.Group>(null);
 
   useFrame((state) => {
@@ -310,8 +310,10 @@ function SpinningScene({ type }: { type: "tractor" | "twin-boom" | "vtol" | "hex
     }
   });
 
+  const scale = isMobile ? 0.75 : 1.0;
+
   return (
-    <group ref={modelRef} rotation={[0.08, -Math.PI / 6, 0.05]}>
+    <group ref={modelRef} scale={[scale, scale, scale]} rotation={[0.08, -Math.PI / 6, 0.05]}>
       {type === "tractor" && <TractorModel />}
       {type === "twin-boom" && <TwinBoomModel />}
       {type === "vtol" && <VTOLModel />}
@@ -335,8 +337,19 @@ export default function Plane3DCanvas({
   type: "tractor" | "twin-boom" | "vtol" | "hexacopter";
   onReady?: () => void;
 }) {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
   return (
-    <div className="w-full h-full min-h-[260px] md:min-h-[300px] relative bg-slate-900/10 dark:bg-black/20 overflow-hidden flex items-center justify-center">
+    <div className="w-full h-full relative bg-slate-900/10 dark:bg-black/20 overflow-hidden flex items-center justify-center">
       {/* Tech grid blueprint markings in backdrop */}
       <div className="absolute inset-0 bg-radial-glow opacity-80" />
       <div className="absolute inset-0 opacity-10 bg-[linear-gradient(to_right,rgba(212,163,72,0.1)_1px,transparent_1px),linear-gradient(to_bottom,rgba(212,163,72,0.1)_1px,transparent_1px)] bg-[size:24px_24px] pointer-events-none" />
@@ -344,14 +357,14 @@ export default function Plane3DCanvas({
       <Canvas
         camera={{ position: [0, 0.9, 2.3], fov: 45 }}
         gl={{ antialias: true }}
-        style={{ width: "100%", height: "100%", pointerEvents: "auto" }}
+        style={{ width: "100%", height: "100%", pointerEvents: "auto", touchAction: "pan-y" }}
       >
         <ambientLight intensity={0.4} />
         <directionalLight position={[4, 8, 4]} intensity={2.0} color="#D4A348" />
         <pointLight position={[-4, -4, -3]} intensity={1.5} color="#00E5FF" />
         
         <React.Suspense fallback={null}>
-          <SpinningScene type={type} />
+          <SpinningScene type={type} isMobile={isMobile} />
           {onReady && <SuspenseTrigger onReady={onReady} />}
         </React.Suspense>
 
