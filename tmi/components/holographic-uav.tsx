@@ -145,13 +145,21 @@ function UAVModel({ mouseX, mouseY, scrollY }: { mouseX: number; mouseY: number;
 export default function HolographicUAV() {
   const [mouse, setMouse] = useState({ x: 0, y: 0 });
   const [scrollY, setScrollY] = useState(0);
+  const [hudStats, setHudStats] = useState({
+    pitch: 0,
+    roll: 0,
+    yaw: 0,
+    speed: 0,
+    altitude: 0,
+    thrust: 0,
+    status: "STANDBY",
+  });
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
-      setMouse({
-        x: (e.clientX / window.innerWidth) * 2 - 1,
-        y: -(e.clientY / window.innerHeight) * 2 + 1,
-      });
+      const x = (e.clientX / window.innerWidth) * 2 - 1;
+      const y = -(e.clientY / window.innerHeight) * 2 + 1;
+      setMouse({ x, y });
     };
 
     const handleScroll = () => {
@@ -160,8 +168,6 @@ export default function HolographicUAV() {
 
     window.addEventListener("mousemove", handleMouseMove);
     window.addEventListener("scroll", handleScroll);
-    
-    // Set initial scroll
     setScrollY(window.scrollY);
 
     return () => {
@@ -169,6 +175,45 @@ export default function HolographicUAV() {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
+
+  useEffect(() => {
+    // Calculate live telemetry values based on mouse and scroll positions
+    const pitchDeg = Math.round(mouse.y * 15);
+    const rollDeg = Math.round(-mouse.x * 25);
+    const maxScroll = typeof window !== "undefined" ? document.documentElement.scrollHeight - window.innerHeight : 1000;
+    const scrollPercent = maxScroll > 0 ? scrollY / maxScroll : 0;
+    const yawDeg = Math.round((scrollY * 0.15) % 360);
+    
+    const speedVal = scrollPercent < 0.1 
+      ? 0.0 
+      : parseFloat((14.2 + Math.sin(scrollY * 0.005) * 2.8 + Math.random() * 0.2).toFixed(1));
+    
+    const altVal = parseFloat((scrollY * 0.08).toFixed(1));
+    
+    const thrustVal = scrollPercent < 0.1 
+      ? 0 
+      : Math.round(75 + Math.sin(scrollY * 0.005) * 12 + Math.random() * 2);
+
+    let flightStatus = "STANDBY";
+    if (scrollPercent > 0.05) {
+      flightStatus = mouse.x > 0.5 || mouse.x < -0.5 || mouse.y > 0.5 || mouse.y < -0.5
+        ? "ATTITUDE_CORRECT"
+        : "CRUISE_AUTO";
+    }
+
+    setHudStats({
+      pitch: pitchDeg,
+      roll: rollDeg,
+      yaw: yawDeg,
+      speed: speedVal,
+      altitude: altVal,
+      thrust: thrustVal,
+      status: flightStatus,
+    });
+  }, [mouse, scrollY]);
+
+  // Calculate HUD opacity: fades out completely after scrolling down 600px
+  const hudOpacity = Math.max(0, 1 - scrollY / 600);
 
   return (
     <div className="fixed inset-0 w-screen h-screen z-0 pointer-events-none">
@@ -179,7 +224,6 @@ export default function HolographicUAV() {
         <ambientLight intensity={0.5} />
         <pointLight position={[10, 10, 10]} intensity={1.5} />
         
-        {/* The UAV Model that responds to scroll and mouse */}
         <group rotation={[Math.PI / 3.2, 0, 0]}>
           <UAVModel mouseX={mouse.x} mouseY={mouse.y} scrollY={scrollY} />
         </group>
@@ -187,6 +231,108 @@ export default function HolographicUAV() {
         <Stars radius={120} depth={50} count={800} factor={4} saturation={0} fade speed={1} />
       </Canvas>
       <div className="absolute inset-0 bg-radial-glow" />
+
+      {/* --- FUTURISTIC COCKPIT HUD OVERLAY --- */}
+      {hudOpacity > 0 && (
+        <div 
+          className="absolute inset-0 flex flex-col justify-between p-6 md:p-10 font-mono transition-opacity duration-300 pointer-events-none select-none text-[10px] md:text-xs tracking-wider"
+          style={{ opacity: hudOpacity }}
+        >
+          {/* Top Panel */}
+          <div className="flex justify-between items-start w-full border-b border-[#D4A348]/20 pb-4 bg-gradient-to-b from-black/40 to-transparent px-4">
+            <div className="flex flex-col gap-1">
+              <div className="flex items-center gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#D4A348] animate-ping" />
+                <span className="text-[#D4A348] font-bold">LINK STATUS: ONLINE</span>
+              </div>
+              <span className="text-white/40">SYS_CONSOLE: V3.89_MAVERIK</span>
+            </div>
+            
+            <div className="text-center hidden md:block">
+              <span className="text-white/60">AUTOPILOT: </span>
+              <span className="text-[#D4A348] font-semibold">{hudStats.status}</span>
+            </div>
+
+            <div className="text-right">
+              <span className="text-white/40">FREQ: 915.00 MHz</span>
+              <div className="text-[#D4A348] font-semibold">SIG: 98% (EXCELLENT)</div>
+            </div>
+          </div>
+
+          {/* Center Crosshair Reticle */}
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 border border-white/5 rounded-full flex items-center justify-center">
+            {/* Center target dot */}
+            <div className="w-1 h-1 bg-[#D4A348] rounded-full" />
+            {/* Crosshair ticks */}
+            <div className="absolute top-0 w-[1px] h-3 bg-[#D4A348]/40" />
+            <div className="absolute bottom-0 w-[1px] h-3 bg-[#D4A348]/40" />
+            <div className="absolute left-0 w-3 h-[1px] bg-[#D4A348]/40" />
+            <div className="absolute right-0 w-3 h-[1px] bg-[#D4A348]/40" />
+            
+            {/* Corner Bracket decorations */}
+            <div className="absolute -top-2 -left-2 w-3 h-3 border-t border-l border-[#D4A348]/30" />
+            <div className="absolute -top-2 -right-2 w-3 h-3 border-t border-r border-[#D4A348]/30" />
+            <div className="absolute -bottom-2 -left-2 w-3 h-3 border-b border-l border-[#D4A348]/30" />
+            <div className="absolute -bottom-2 -right-2 w-3 h-3 border-b border-r border-[#D4A348]/30" />
+          </div>
+
+          {/* Mid-screen HUD Left & Right indicators */}
+          <div className="flex justify-between items-center w-full px-2 md:px-12 pointer-events-none">
+            {/* Left Box: Speed & Altitude */}
+            <div className="bg-black/50 border border-[#D4A348]/20 p-4 rounded backdrop-blur-md flex flex-col gap-2 min-w-[120px] md:min-w-[160px] shadow-[0_0_15px_rgba(212,163,72,0.05)]">
+              <div className="border-b border-[#D4A348]/10 pb-1 text-[#D4A348] font-bold text-[11px] md:text-sm">FLIGHT DATA</div>
+              <div className="flex justify-between">
+                <span className="text-white/40">AIRSPEED:</span>
+                <span className="text-white font-bold">{hudStats.speed} m/s</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-white/40">ALTITUDE:</span>
+                <span className="text-white font-bold">{hudStats.altitude} m</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-white/40">THRUST:</span>
+                <span className="text-white font-bold">{hudStats.thrust}%</span>
+              </div>
+            </div>
+
+            {/* Right Box: Attitude Yaw, Pitch, Roll */}
+            <div className="bg-black/50 border border-[#D4A348]/20 p-4 rounded backdrop-blur-md flex flex-col gap-2 min-w-[120px] md:min-w-[160px] shadow-[0_0_15px_rgba(212,163,72,0.05)]">
+              <div className="border-b border-[#D4A348]/10 pb-1 text-[#D4A348] font-bold text-[11px] md:text-sm">GYROSCOPE</div>
+              <div className="flex justify-between">
+                <span className="text-white/40">PITCH:</span>
+                <span className={hudStats.pitch >= 0 ? "text-green-400" : "text-red-400"}>
+                  {hudStats.pitch > 0 ? `+${hudStats.pitch}` : hudStats.pitch}°
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-white/40">ROLL:</span>
+                <span className={hudStats.roll >= 0 ? "text-green-400" : "text-red-400"}>
+                  {hudStats.roll > 0 ? `+${hudStats.roll}` : hudStats.roll}°
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-white/40">YAW (HDG):</span>
+                <span className="text-white font-bold">{hudStats.yaw}°</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Bottom Panel */}
+          <div className="flex justify-between items-end w-full border-t border-[#D4A348]/20 pt-4 bg-gradient-to-t from-black/40 to-transparent px-4">
+            <div>
+              <span className="text-white/40">SYS_TEMP: </span>
+              <span className="text-green-400">32.4°C (STABLE)</span>
+            </div>
+            <div className="hidden sm:block text-center text-white/30 text-[9px]">
+              TMI UAV HANGAR SYSTEM INC. // PUNE, IN // 18°39'N 73°50'E
+            </div>
+            <div className="text-right">
+              <span className="text-white/40">POWER: </span>
+              <span className="text-white font-bold">22.8V [LI-PO]</span>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
