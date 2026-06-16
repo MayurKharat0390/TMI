@@ -1,0 +1,35 @@
+import StarryBackground from "@/components/StarryBackground";
+import dynamic from "next/dynamic";
+
+const GalleryGrid = dynamic(() => import("./GalleryGrid"), { ssr: true });
+
+export default function GalleryPage() {
+
+  return (
+    <>
+      <div className="relative min-h-screen pt-24 pb-20">
+        <StarryBackground />
+
+        <div className="relative z-10 max-w-screen-2xl mx-auto px-4 sm:px-8 md:px-12 lg:px-16 xl:px-20 py-10">
+
+          {/* Header */}
+          <div className="text-center mb-20">
+            <p className="text-[#D4A348] text-xs font-semibold tracking-[0.25em] uppercase mb-4">Our Journey</p>
+            <h1 className="text-5xl sm:text-7xl font-bold tracking-tight mb-4">Gallery</h1>
+            <p className="text-white/40 text-base sm:text-lg">
+              Moments from our competition seasons
+            </p>
+            <div className="mt-8 flex items-center justify-center gap-4">
+              <div className="h-px w-24 bg-gradient-to-r from-transparent to-[#D4A348]/50" />
+              <div className="w-1.5 h-1.5 rounded-full bg-[#D4A348]" />
+              <div className="h-px w-24 bg-gradient-to-l from-transparent to-[#D4A348]/50" />
+            </div>
+          </div>
+
+          {/* Year Sections */}
+          <GalleryGrid />
+        </div>
+      </div>
+    </>
+  );
+}

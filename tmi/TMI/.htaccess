@@ -1,0 +1,18 @@
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+
+  # Directly serve existing files (HTML, CSS, JS, images, etc.)
+  RewriteCond %{REQUEST_FILENAME} -f
+  RewriteRule ^ - [L]
+
+  # Directly serve existing directories
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteRule ^ - [L]
+
+  # Redirect all other requests to index.html for client-side routing
+  RewriteRule ^(.*)$ /index.html [L,QSA]
+
+  # Custom 404 error page
+  ErrorDocument 404 /404.html
+</IfModule>

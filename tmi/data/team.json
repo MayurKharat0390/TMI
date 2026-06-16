@@ -1,0 +1,552 @@
+{
+  "faculty": [
+    {
+      "id": 1,
+      "name": "Chandan Ingole",
+      "role": "Faculty Advisor",
+      "image": "/images/team/CRIngole.webp",
+      "email": "chandan.ingole@pccoepune.org",
+      "linkedin": "https://www.linkedin.com/in/chandan-ingole-04328241/",
+      "active": true,
+      "team": "Secretary",
+      "year": ""
+    }
+  ],
+  "founding": [
+    {
+      "id": 1,
+      "name": "Mihir Zambre",
+      "role": "Founder Ex-Managing Director",
+      "year": "2023",
+      "image": "/images/team/mihir.webp",
+      "linkedin": "https://www.linkedin.com/in/mihir-zambare-b543b7171/",
+      "active": true,
+      "team": "Founding Team"
+    },
+    {
+      "id": 2,
+      "name": "Anikett Pingle",
+      "role": "Founder Ex-Executive Director",
+      "year": "2023",
+      "image": "/images/team/aniket.webp",
+      "linkedin": "https://www.linkedin.com/in/anikett-pingle-ba2256231/",
+      "active": true,
+      "team": "Founding Team"
+    }
+  ],
+  "members": [
+    {
+      "id": 1,
+      "name": "Dwaipayan Dhar",
+      "role": "Ex-Managing Director",
+      "year": "2026",
+      "image": "/images/team/dp.webp",
+      "linkedin": "https://www.linkedin.com/in/dwaipayan-dhar-109783259/",
+      "email": "dwaipayan.dhar22@pccoepune.org",
+      "active": true,
+      "team": "Ex-Management"
+    },
+    {
+      "id": 2,
+      "name": "Riddhi Sonkusare",
+      "role": "Ex-Executive Director",
+      "year": "2026",
+      "image": "/images/team/riddhi.webp",
+      "email": "riddhi.sonkusare22@pccoepune.org",
+      "linkedin": "https://www.linkedin.com/in/riddhi-sonkusare-4b5671259/",
+      "active": true,
+      "team": "Ex-Management"
+    },
+    {
+      "id": 3,
+      "name": "Maheshwar Dhone",
+      "role": "Ex-Chief Flight Inspector",
+      "year": "2026",
+      "email": "maheshwar.dhone22@pccoepune.org",
+      "image": "/images/team/maheshwar.webp",
+      "active": true,
+      "team": "Ex-Management"
+    },
+    {
+      "id": 4,
+      "name": "Apoorva Chougule",
+      "role": "Ex-Chief Technical Officer",
+      "year": "2026",
+      "image": "/images/team/apoorva.webp",
+      "email": "apoorva.chougule22@pccoepune.org",
+      "linkedin": "https://www.linkedin.com/in/apoorva-chougule-a37479259/",
+      "active": true,
+      "team": "Ex-Management"
+    },
+    {
+      "id": 5,
+      "name": "Aditi Rade",
+      "role": "Ex-Director of Design",
+      "year": "2026",
+      "image": "/images/team/aditi.webp",
+      "email": "aditi.rade22@pccoepune.org",
+      "linkedin": "https://www.linkedin.com/in/aditi-rade-924a14259/",
+      "active": true,
+      "team": "Ex-Management"
+    },
+    {
+      "id": 6,
+      "name": "Bhumika Shekawat",
+      "role": "Ex-Director of Avionics",
+      "year": "2026",
+      "image": "/images/team/bhumika.webp",
+      "email": "bhumika.shekawat22@pccoepune.org",
+      "linkedin": "https://www.linkedin.com/in/bhumika-shekhawat-a2612225a/",
+      "active": true,
+      "team": "Ex-Management"
+    },
+    {
+      "id": 7,
+      "name": "Atharva Shitole",
+      "role": "Ex-Director of Analysis",
+      "year": "2026",
+      "image": "/images/team/atharva.webp",
+      "email": "atharva.shitole22@pccoepune.org",
+      "linkedin": "https://linkedin.com/in/janesmith",
+      "active": false,
+      "team": "Ex-Management"
+    },
+    {
+      "id": 8,
+      "name": "Anjali Rade",
+      "role": "Ex-HR Manager",
+      "year": "2026",
+      "image": "/images/team/anjali.webp",
+      "email": "anjali.rade22@pccoepune.org",
+      "linkedin": "https://www.linkedin.com/in/anjali-rade-9ab784259/",
+      "active": true,
+      "team": "Ex-Management"
+    },
+    {
+      "id": 9,
+      "name": "Mrunal Sagare",
+      "role": "Avionics Engineer",
+      "year": "2026",
+      "image": "/images/team/mrunal.webp",
+      "email": "mrunal.sagare22@pccoepune.org",
+      "linkedin": "https://www.linkedin.com/in/mrunal-sagare-b78672259/",
+      "active": true,
+      "team": "Avionics Team"
+    },
+    {
+      "id": 10,
+      "name": "Aaditi Gurav",
+      "role": "Design Engineer",
+      "year": "2026",
+      "image": "/images/team/aaditi.webp",
+      "email": "aaditi.gurav2222@pccoepune.org",
+      "linkedin": "https://www.linkedin.com/in/aaditi-gurav-b5147a259/",
+      "active": false,
+      "team": "Design Team"
+    },
+    {
+      "id": 11,
+      "name": "Veena Waghmare",
+      "role": "Design Engineer",
+      "year": "2026",
+      "image": "/images/team/veena.webp",
+      "email": "apoorva.chougule22@pccoepune.org",
+      "linkedin": "https://www.linkedin.com/in/veena-waghmare-46447a259/",
+      "active": true,
+      "team": "Design Team"
+    },
+    {
+      "id": 12,
+      "name": "Sarvesh Patil",
+      "role": "Avionics Engineer",
+      "year": "2026",
+      "image": "/images/team/sarvesh.webp",
+      "email": "sarvesh.patil22@pccoepune.org",
+      "linkedin": "https://www.linkedin.com/in/sarvesh-patil-/",
+      "active": false,
+      "team": "Avionics Team"
+    },
+    {
+      "id": 13,
+      "name": "Krupa Rao",
+      "role": "Avionics Engineer",
+      "year": "2026",
+      "image": "/images/team/krupa.webp",
+      "email": "krupa.rao22@pccoepune.org",
+      "linkedin": "https://www.linkedin.com/in/krupa-rao-215485259/",
+      "active": false,
+      "team": "Avionics Team"
+    },
+    {
+      "id": 14,
+      "name": "Aayush Bodkhe",
+      "role": "Autonomous Engineer",
+      "year": "2026",
+      "image": "/images/team/ayush.webp",
+      "email": "aayush.bodkhe22@pccoepune.org",
+      "linkedin": "https://www.linkedin.com/in/aayush-bodkhe/",
+      "github": "https://github.com/aayushbodkhe/aayushbodkhe",
+      "active": false,
+      "team": "Autonomous Team"
+    },
+    {
+      "id": 15,
+      "name": "Aditya Suryawanshi",
+      "role": "Design Engineer",
+      "year": "2026",
+      "image": "/images/team/aditya.webp",
+      "email": "aditya.suryawanshi22@pccoepune.org",
+      "linkedin": "https://www.linkedin.com/in/adityas2004/",
+      "active": false,
+      "team": "Design Team"
+    },
+    {
+      "id": 16,
+      "name": "Janhavi Ugalmugale",
+      "role": "Avionics Engineer",
+      "year": "2026",
+      "image": "/images/team/janhavi.webp",
+      "email": "janhavi.ugalmugale22@pccoepune.org",
+      "linkedin": "https://www.linkedin.com/in/janhavi-ugalmugale-331479259/",
+      "active": false,
+      "team": "Avionics Team"
+    },
+    {
+      "id": 17,
+      "name": "Ankur Fulzele",
+      "role": "Content Creator",
+      "year": "2026",
+      "image": "/images/team/ankur.webp",
+      "email": "ankur.fulzele22@pccoepune.org",
+      "linkedin": "https://www.linkedin.com/in/ankur-fulzele/",
+      "active": false,
+      "team": "Content Creation Team"
+    },
+    {
+      "id": 19,
+      "name": "Mihik Shah",
+      "role": "Autonomous Engineer",
+      "year": "2027",
+      "image": "/images/team/mihik.webp",
+      "linkedin": "https://www.linkedin.com/in/mihik-shah-7633a1311/",
+      "github": "https://github.com/Mihik30",
+      "active": false,
+      "team": "Autonomous Team"
+    },
+    {
+      "id": 21,
+      "name": "Mrudula Lele",
+      "role": "Design Engineer",
+      "year": "2027",
+      "image": "/images/team/mrudula.webp",
+      "linkedin": "https://www.linkedin.com/in/mrudula-lele-7b61b2318/",
+      "active": true,
+      "team": "Design Team"
+    },
+    {
+      "id": 22,
+      "name": "Om kshirsagar",
+      "role": "Design Engineer",
+      "year": "2027",
+      "image": "/images/team/om.webp",
+      "linkedin": "https://www.linkedin.com/in/omkshirsagar627/",
+      "active": false,
+      "team": "Design Team"
+    },
+    {
+      "id": 23,
+      "name": "Hemal Khairnar",
+      "role": "Design Engineer",
+      "year": "2027",
+      "image": "/images/team/hemal.webp",
+      "active": false,
+      "team": "Design Team"
+    },
+    {
+      "id": 24,
+      "name": "Mansi Kushwaha",
+      "role": "Avionics Engineer",
+      "year": "2027",
+      "image": "/images/team/mansi.webp",
+      "linkedin": "https://www.linkedin.com/in/mansi-kushwaha-6579ab292/",
+      "active": true,
+      "team": "Avionics Team"
+    },
+    {
+      "id": 25,
+      "name": "Ishani Lohote",
+      "role": "Avionics Engineer",
+      "year": "2027",
+      "image": "/images/team/ishani.webp",
+      "linkedin": "https://www.linkedin.com/in/ishani-lohote-80a558292/",
+      "active": true,
+      "team": "Avionics Team"
+    },
+    {
+      "id": 27,
+      "name": "Aryan Kakulte",
+      "role": "Structural Engineer",
+      "year": "2027",
+      "image": "/images/team/aryan.webp",
+      "linkedin": "https://www.linkedin.com/in/aryan-kakulte-700553292/",
+      "active": true,
+      "team": "Structural Team"
+    },
+    {
+      "id": 28,
+      "name": "Vishalraju Laguduva",
+      "role": "Analysis Engineer",
+      "year": "2027",
+      "image": "/images/team/vishalraju.webp",
+      "linkedin": "https://www.linkedin.com/in/vishalraju-laguduva-37b0a0315/",
+      "active": true,
+      "team": "Analysis Team"
+    },
+    {
+      "id": 33,
+      "name": "Aniruddha Patil",
+      "role": "Autonomous Engineer",
+      "year": "2026",
+      "image": "/images/team/aniruddha.webp",
+      "linkedin": "https://www.linkedin.com/in/aniruddha-patil-20290824b/",
+      "github": "https://github.com/",
+      "active": false,
+      "team": "Autonomous Team"
+    },
+    {
+      "id": 34,
+      "name": "Tanish Patil",
+      "role": "Analysis Engineer",
+      "year": "2027",
+      "image": "/images/team/tanish.webp",
+      "linkedin": "https://www.linkedin.com/in/tanish-patil-515bb2317/",
+      "active": false,
+      "team": "Analysis Team"
+    },
+    {
+      "id": 36,
+      "name": "Tanmay Rajput",
+      "role": "Ex-Managing Director",
+      "year": "2025",
+      "image": "/images/team/tanmay.webp",
+      "linkedin": "https://www.linkedin.com/in/tanmayrajput11/",
+      "active": false,
+      "team": "Ex-Management"
+    },
+    {
+      "id": 37,
+      "name": "Vedant Bharsakle",
+      "role": "Ex-Executive Director",
+      "year": "2025",
+      "image": "/images/team/vedant.webp",
+      "linkedin": "https://www.linkedin.com/in/vedant-bharsakle-529a0b266/",
+      "active": false,
+      "team": "Ex-Management"
+    },
+    {
+      "id": 35,
+      "name": "Varadraj Patil",
+      "role": "Avionics Engineer",
+      "year": "2027",
+      "image": "/images/team/varad.webp",
+      "linkedin": "https://www.linkedin.com/in/varadraj-patil-66b00631b/",
+      "active": false,
+      "team": "Avionics Team"
+    },
+    {
+      "id": 38,
+      "name": "Rohit Tambade",
+      "role": "Ex-Chief Technical Officer",
+      "year": "2025",
+      "image": "/images/team/rohit.webp",
+      "linkedin": "https://www.linkedin.com/in/rohit-tambade/",
+      "active": false,
+      "team": "Ex-Management"
+    },
+    {
+      "id": 39,
+      "name": "Sujay Ambadkar",
+      "role": "Ex-Project Manager",
+      "year": "2025",
+      "image": "/images/team/sujay.webp",
+      "linkedin": "https://www.linkedin.com/in/sujay-ambadkar/",
+      "active": false,
+      "team": "Ex-Management"
+    },
+    {
+      "id": 40,
+      "name": "Pranali Magdum",
+      "role": "Ex-HR Manager",
+      "year": "2025",
+      "image": "/images/team/pranali.webp",
+      "linkedin": "https://www.linkedin.com/in/magdum-pranali/",
+      "active": false,
+      "team": "Ex-Management"
+    },
+    {
+      "id": 41,
+      "name": "Harshwardhan Karanje",
+      "role": "Autonomous Engineer",
+      "year": "2028",
+      "image": "/images/team/harshwardhan.webp",
+      "linkedin": "",
+      "email": "",
+      "github": "",
+      "team": "Autonomous Team"
+    },
+    {
+      "id": 42,
+      "name": "UDAY Lingayat",
+      "role": "Autonomous Engineer",
+      "year": "2028",
+      "image": "/images/team/uday.webp",
+      "linkedin": "",
+      "email": "",
+      "github": "",
+      "team": "Autonomous Team"
+    },
+    {
+      "id": 43,
+      "name": "Yash Gaikwad",
+      "role": "Structural Engineer",
+      "year": "2028",
+      "image": "/images/team/yash.webp",
+      "linkedin": "",
+      "email": "",
+      "github": "",
+      "team": "Structural Team"
+    },
+    {
+      "id": 44,
+      "name": "Ganesh Pujari",
+      "role": "Structural Engineer",
+      "year": "2028",
+      "image": "/images/team/ganesh.webp",
+      "linkedin": "",
+      "email": "",
+      "github": "",
+      "team": "Structural Team"
+    },
+    {
+      "id": 45,
+      "name": "Parth Marotkar",
+      "role": "Design Engineer",
+      "year": "2028",
+      "image": "/images/team/parth.webp",
+      "linkedin": "",
+      "email": "",
+      "github": "",
+      "team": "Design Team"
+    },
+    {
+      "id": 46,
+      "name": "Nishta Desai",
+      "role": "Autonomous Engineer",
+      "year": "2028",
+      "image": "/images/team/nishta.webp",
+      "linkedin": "",
+      "email": "",
+      "github": "",
+      "team": "Autonomous Team"
+    },
+    {
+      "id": 47,
+      "name": "Anuska Deshmukh",
+      "role": "Design Engineer",
+      "year": "2028",
+      "image": "/images/team/anuska.webp",
+      "linkedin": "",
+      "email": "",
+      "github": "",
+      "team": "Design Team"
+    },
+    {
+      "id": 48,
+      "name": "Ritik Lipate",
+      "role": "Managing Director",
+      "year": "2027",
+      "image": "/images/team/ritik1.webp",
+      "linkedin": "",
+      "email": "",
+      "github": "",
+      "team": "Management Team"
+    },
+    {
+      "id": 49,
+      "name": "Darshan Nair",
+      "role": "Project Manager",
+      "year": "2027",
+      "image": "/images/team/darshan1.webp",
+      "linkedin": "",
+      "email": "",
+      "github": "",
+      "team": "Management Team"
+    },
+    {
+      "id": 50,
+      "name": "Nimisha Halabe",
+      "role": "Executive Director",
+      "year": "2027",
+      "image": "/images/team/nimisha1.webp",
+      "linkedin": "",
+      "email": "",
+      "github": "",
+      "team": "Management Team"
+    },
+    {
+      "id": 51,
+      "name": "Anshul Shelke",
+      "role": "Chief Technical Officer",
+      "year": "2027",
+      "image": "/images/team/anshul1.webp",
+      "linkedin": "",
+      "email": "",
+      "github": "",
+      "team": "Management Team"
+    },
+    {
+      "id": 52,
+      "name": "Kedar Kulkarni",
+      "role": "Director of Analysis",
+      "year": "2027",
+      "image": "/images/team/kedar.webp",
+      "linkedin": "",
+      "email": "",
+      "github": "",
+      "team": "Directors"
+    },
+    {
+      "id": 53,
+      "name": "Kshitij Jadhav",
+      "role": "Director of Structures",
+      "year": "2027",
+      "image": "/images/team/kshitij.webp",
+      "linkedin": "",
+      "email": "",
+      "github": "",
+      "team": "Directors"
+    },
+    {
+      "id": 54,
+      "name": "Sammed Vhora",
+      "role": "Director of Manufacturing",
+      "year": "2027",
+      "image": "/images/team/sameed.webp",
+      "linkedin": "",
+      "email": "",
+      "github": "",
+      "team": "Directors"
+    },
+    {
+      "id": 55,
+      "name": "Atharva Kale",
+      "role": "Structural Engineer",
+      "year": "2028",
+      "image": "/images/team/atharva.webp",
+      "linkedin": "",
+      "email": "",
+      "github": "",
+      "team": "Structural Team"
+    }
+  ]
+}
