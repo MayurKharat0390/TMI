@@ -29,7 +29,7 @@ function RealityOverlay({
       // Reveal 3D model first, then fade in the real image representation
       const timer = setTimeout(() => {
         setShowReality(true);
-      }, 700);
+      }, 600);
       return () => clearTimeout(timer);
     } else {
       setShowReality(false);
@@ -39,9 +39,11 @@ function RealityOverlay({
   return (
     <div
       className={cn(
-        "absolute inset-0 w-full h-full transition-all duration-500 ease-in-out pointer-events-none z-10",
-        "group-hover/canvas:opacity-0 group-hover/canvas:scale-105",
-        showReality ? "opacity-100 scale-100" : "opacity-0 scale-95"
+        "absolute inset-0 w-full h-full transition-all duration-700 cubic-bezier(0.16, 1, 0.3, 1) pointer-events-none z-10 origin-center",
+        "group-hover/canvas:opacity-0 group-hover/canvas:scale-105 group-hover/canvas:translate-x-0 group-hover/canvas:rotate-0 group-hover/canvas:duration-300",
+        showReality 
+          ? "opacity-100 scale-100 translate-x-0 rotate-0" 
+          : "opacity-0 scale-90 -translate-x-8 -rotate-2"
       )}
     >
       <Image
@@ -64,6 +66,38 @@ function RealityOverlay({
           Reality
         </div>
       )}
+    </div>
+  );
+}
+
+function SciFiHUD({ active }: { active: boolean }) {
+  return (
+    <div className={cn(
+      "absolute inset-0 w-full h-full pointer-events-none z-20 transition-all duration-500",
+      active ? "opacity-100 scale-100" : "opacity-0 scale-95"
+    )}>
+      {/* Corner Brackets */}
+      <div className="absolute top-2 left-2 w-3.5 h-3.5 border-t-2 border-l-2 border-[#D4A348]/80 transition-all duration-500 group-hover/canvas:translate-x-[-2px] group-hover/canvas:translate-y-[-2px]" />
+      <div className="absolute top-2 right-2 w-3.5 h-3.5 border-t-2 border-r-2 border-[#D4A348]/80 transition-all duration-500 group-hover/canvas:translate-x-[2px] group-hover/canvas:translate-y-[2px]" />
+      <div className="absolute bottom-2 left-2 w-3.5 h-3.5 border-b-2 border-l-2 border-[#D4A348]/80 transition-all duration-500 group-hover/canvas:translate-x-[-2px] group-hover/canvas:translate-y-[2px]" />
+      <div className="absolute bottom-2 right-2 w-3.5 h-3.5 border-b-2 border-r-2 border-[#D4A348]/80 transition-all duration-500 group-hover/canvas:translate-x-[2px] group-hover/canvas:translate-y-[2px]" />
+      
+      {/* Scanning laser line - only visible on hover */}
+      <div className="absolute left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-[#D4A348]/80 to-transparent shadow-[0_0_10px_rgba(212,163,72,0.6)] opacity-0 group-hover/canvas:opacity-100 animate-tech-scan pointer-events-none" />
+
+      {/* Floating telemetries (only visible on hover) */}
+      <div className="absolute top-3 left-1/2 -translate-x-1/2 bg-black/85 backdrop-blur-sm border border-[#D4A348]/40 px-2.5 py-0.5 rounded text-[8px] text-[#D4A348] font-mono tracking-widest uppercase opacity-0 group-hover/canvas:opacity-100 transition-opacity duration-300 flex items-center gap-1.5 z-30">
+        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+        SYS DIAGNOSTIC: INSPECTING
+      </div>
+      
+      <div className="absolute bottom-3 left-3 text-[7px] text-[#D4A348]/60 font-mono tracking-widest uppercase opacity-0 group-hover/canvas:opacity-100 transition-opacity duration-300">
+        TELEMETRY: ACTIVE
+      </div>
+      <div className="absolute bottom-3 right-3 text-[7px] text-[#D4A348]/60 font-mono tracking-widest uppercase opacity-0 group-hover/canvas:opacity-100 transition-opacity duration-300 flex items-center gap-1">
+        <span className="w-1 h-1 rounded-full bg-emerald-500" />
+        LINK: OK
+      </div>
     </div>
   );
 }
@@ -198,17 +232,35 @@ const planes: Plane[] = [
   }
 ];
 
-function ProjectSubCard({ project }: { project: Project }) {
-  const [is3DReady, setIs3DReady] = useState(false);
-
+function ProjectSubCard({ 
+  project, 
+  isActive, 
+  onHover 
+}: { 
+  project: Project; 
+  isActive: boolean; 
+  onHover: (hovered: boolean) => void;
+}) {
   return (
-    <div className="group relative overflow-hidden rounded-xl border border-border bg-background/80 dark:bg-black/60 transition-all duration-300 hover:border-[#D4A348]/30 p-2 h-48 sm:h-52 group/canvas">
+    <div 
+      className={cn(
+        "group relative overflow-hidden rounded-xl border border-border bg-background/80 dark:bg-black/60 transition-all duration-300 hover:border-[#D4A348]/30 p-2 h-48 sm:h-52 group/canvas",
+        isActive ? "z-20" : "z-10"
+      )}
+      onMouseEnter={() => onHover(true)}
+      onMouseLeave={() => onHover(false)}
+    >
       {project.modelType ? (
         <div className="w-full h-full relative rounded-lg overflow-hidden">
-          <Plane3DCanvas type={project.modelType} onReady={() => setIs3DReady(true)} />
+          {/* Dom anchor placeholder for WebGL positioning */}
+          <div id={`plane-placeholder-1-${project.modelType}`} className="w-full h-full" />
+          
           {project.image && (
-            <RealityOverlay src={project.image} alt={project.name} isMini active={is3DReady} />
+            <RealityOverlay src={project.image} alt={project.name} isMini active={isActive} />
           )}
+          
+          <SciFiHUD active={isActive} />
+          
           {/* Small overlay badge with name */}
           <div className="absolute top-2 left-2 bg-black/60 backdrop-blur-sm border border-[#D4A348]/30 px-2 py-0.5 rounded text-[11px] text-[#D4A348] font-bold z-20 pointer-events-none">
             {project.name}
@@ -227,8 +279,19 @@ function ProjectSubCard({ project }: { project: Project }) {
   );
 }
 
-function PlaneTimelineItem({ plane, index }: { plane: Plane; index: number }) {
-  const [is3DReady, setIs3DReady] = useState(false);
+function PlaneTimelineItem({ 
+  plane, 
+  index, 
+  activeTargetId, 
+  onHover 
+}: { 
+  plane: Plane; 
+  index: number; 
+  activeTargetId: string; 
+  onHover: (hovered: boolean) => void;
+}) {
+  const isMainActive = activeTargetId === plane.id.toString();
+  const isAnyActive = isMainActive || (plane.projects?.some(p => activeTargetId === `1-${p.modelType}`) ?? false);
 
   return (
     <div className="relative">
@@ -241,15 +304,27 @@ function PlaneTimelineItem({ plane, index }: { plane: Plane; index: number }) {
       <div className={`md:flex ${index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'} items-center gap-12 ml-10 md:ml-0`}>
         <div className={`w-full md:w-1/2 ${index % 2 === 0 ? 'md:pr-14' : 'md:pl-14'}`}>
           
-          <TiltCard className="glass-panel text-foreground overflow-hidden relative flex flex-col h-full border border-white/5 shadow-2xl">
+          <TiltCard className={cn(
+            "glass-panel text-foreground overflow-hidden relative flex flex-col h-full border border-white/5 shadow-2xl transition-all duration-300",
+            isAnyActive ? "z-20" : "z-10"
+          )}>
             
             {/* 3D Canvas / Image */}
             {plane.modelType ? (
-              <div className="relative h-64 sm:h-80 w-full overflow-hidden group/canvas">
-                <Plane3DCanvas type={plane.modelType} onReady={() => setIs3DReady(true)} />
+              <div 
+                className="relative h-64 sm:h-80 w-full overflow-hidden group/canvas"
+                onMouseEnter={() => onHover(true)}
+                onMouseLeave={() => onHover(false)}
+              >
+                {/* Dom anchor placeholder for WebGL positioning */}
+                <div id={`plane-placeholder-${plane.id}`} className="w-full h-full" />
+                
                 {plane.image && (
-                  <RealityOverlay src={plane.image} alt={plane.name} active={is3DReady} />
+                  <RealityOverlay src={plane.image} alt={plane.name} active={isMainActive} />
                 )}
+                
+                <SciFiHUD active={isMainActive} />
+                
                 {/* Year badge on canvas — mobile only */}
                 <div className="md:hidden absolute top-3 right-3 bg-black/80 backdrop-blur-sm border border-[#D4A348]/40 rounded-full px-3 py-1 z-10 pointer-events-none">
                   <span className="text-[#D4A348] text-xs font-bold tracking-widest">{plane.year}</span>
@@ -287,7 +362,12 @@ function PlaneTimelineItem({ plane, index }: { plane: Plane; index: number }) {
               {plane.projects && (
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-8 mb-8">
                   {plane.projects.map((project, idx) => (
-                    <ProjectSubCard key={idx} project={project} />
+                    <ProjectSubCard 
+                      key={idx} 
+                      project={project} 
+                      isActive={activeTargetId === `1-${project.modelType}`}
+                      onHover={onHover}
+                    />
                   ))}
                 </div>
               )}
@@ -313,8 +393,41 @@ function PlaneTimelineItem({ plane, index }: { plane: Plane; index: number }) {
             
           </TiltCard>
         </div>
-        {/* Empty placeholder for timeline balance */}
-        <div className="hidden md:block w-1/2" />
+        {/* Empty space container for timeline balance */}
+        <div className={cn(
+          "hidden md:block w-1/2",
+          index % 2 === 0 ? "md:pl-14" : "md:pr-14"
+        )}>
+          {plane.id === 1 ? (
+            // NIDAR sub-hangars side-by-side
+            <div className="grid grid-cols-2 gap-4 h-full items-center">
+              {plane.projects?.map((proj, idx) => (
+                <div 
+                  key={idx}
+                  className="group relative overflow-hidden h-48 sm:h-52 group/canvas"
+                  onMouseEnter={() => onHover(true)}
+                  onMouseLeave={() => onHover(false)}
+                >
+                  <div id={`plane-placeholder-1-${proj.modelType}-empty`} className="w-full h-full" />
+                  <SciFiHUD active={activeTargetId === `1-${proj.modelType}`} />
+                </div>
+              ))}
+            </div>
+          ) : (
+            // Main plane hangar
+            <div 
+              className={cn(
+                "group relative overflow-hidden h-64 sm:h-80 w-full group/canvas",
+                activeTargetId === plane.id.toString() ? "z-20" : "z-10"
+              )}
+              onMouseEnter={() => onHover(true)}
+              onMouseLeave={() => onHover(false)}
+            >
+              <div id={`plane-placeholder-${plane.id}-empty`} className="w-full h-full" />
+              <SciFiHUD active={activeTargetId === plane.id.toString()} />
+            </div>
+          )}
+        </div>
       </div>
 
     </div>
@@ -322,6 +435,77 @@ function PlaneTimelineItem({ plane, index }: { plane: Plane; index: number }) {
 }
 
 export default function PlanesPage() {
+  const [activeTargetId, setActiveTargetId] = useState<string>("1-hexacopter");
+  const [activeModelType, setActiveModelType] = useState<"tractor" | "twin-boom" | "vtol" | "hexacopter">("hexacopter");
+  const [canvasInteractive, setCanvasInteractive] = useState(false);
+  const [scrollY, setScrollY] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrollY(window.scrollY);
+
+      let closestId = "1-hexacopter";
+      let closestType: "tractor" | "twin-boom" | "vtol" | "hexacopter" = "hexacopter";
+      let minDistance = Infinity;
+
+      // Check sub-projects of NIDAR
+      const nidar = planes[0];
+      nidar.projects?.forEach((proj) => {
+        const id = `1-${proj.modelType}`;
+        const element = document.getElementById(`plane-placeholder-${id}`);
+        if (element) {
+          const rect = element.getBoundingClientRect();
+          const distance = Math.abs(rect.top + rect.height / 2 - window.innerHeight / 2);
+          if (distance < minDistance) {
+            minDistance = distance;
+            closestId = id;
+            closestType = proj.modelType || "vtol";
+          }
+        }
+      });
+
+      // Check main planes
+      planes.slice(1).forEach((plane) => {
+        const id = plane.id.toString();
+        const element = document.getElementById(`plane-placeholder-${id}`);
+        if (element) {
+          const rect = element.getBoundingClientRect();
+          const distance = Math.abs(rect.top + rect.height / 2 - window.innerHeight / 2);
+          if (distance < minDistance) {
+            minDistance = distance;
+            closestId = id;
+            closestType = plane.modelType || "tractor";
+          }
+        }
+      });
+
+      setActiveTargetId(closestId);
+      setActiveModelType(closestType);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    
+    // Trigger scroll check after layout finishes rendering
+    const loadTimer = setTimeout(() => {
+      handleScroll();
+    }, 600);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      clearTimeout(loadTimer);
+    };
+  }, []);
+
   return (
     <>
       <Head>
@@ -339,7 +523,27 @@ export default function PlanesPage() {
 
       <div className="pt-24 pb-20 relative min-h-screen bg-background scanlines grid-pattern">
         <StarryBackground />
-        <div className="container mx-auto px-6 relative z-10">
+        
+        {/* Keyframe scan animation stylesheet */}
+        <style dangerouslySetInnerHTML={{__html: `
+          @keyframes tech-scan {
+            0% { top: 0%; }
+            100% { top: 100%; }
+          }
+          .animate-tech-scan {
+            animation: tech-scan 2.5s linear infinite;
+          }
+        `}} />
+
+        {/* Viewport-fixed background WebGL canvas tracking active cards */}
+        <div 
+          className="fixed inset-0 w-screen h-screen z-[15] transition-all duration-300 pointer-events-none"
+          style={{ pointerEvents: (!isMobile && canvasInteractive) ? "auto" : "none" }}
+        >
+          <Plane3DCanvas type={activeModelType} activeId={activeTargetId} isHovered={canvasInteractive} />
+        </div>
+
+        <div className="container mx-auto px-6 relative">
 
           {/* Page Header */}
           <div className="text-center mb-20">
@@ -361,7 +565,13 @@ export default function PlanesPage() {
 
             <div className="space-y-20">
               {planes.map((plane, index) => (
-                <PlaneTimelineItem key={plane.id} plane={plane} index={index} />
+                <PlaneTimelineItem 
+                  key={plane.id} 
+                  plane={plane} 
+                  index={index} 
+                  activeTargetId={activeTargetId}
+                  onHover={(hovered) => setCanvasInteractive(hovered)}
+                />
               ))}
             </div>
           </div>

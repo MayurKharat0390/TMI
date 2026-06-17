@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useRef, useState, useEffect } from "react";
-import { Canvas, useFrame } from "@react-three/fiber";
-import { OrbitControls, useTexture } from "@react-three/drei";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
+import { useTexture } from "@react-three/drei";
 import * as THREE from "three";
 import { useTheme } from "next-themes";
 
@@ -66,7 +66,7 @@ function ModelPart({ geometry, position, rotation, scale }: {
 }
 
 // Tractor model (Vayutej, Shourya, etc.)
-function TractorModel() {
+function TractorModel({ speedMultiplier }: { speedMultiplier: React.MutableRefObject<number> }) {
   const propRef = useRef<THREE.Mesh>(null);
   
   const geometries = React.useMemo(() => ({
@@ -79,7 +79,7 @@ function TractorModel() {
   }), []);
 
   useFrame(() => {
-    if (propRef.current) propRef.current.rotation.x += 0.8;
+    if (propRef.current) propRef.current.rotation.x += 0.8 * speedMultiplier.current;
   });
 
   return (
@@ -107,7 +107,7 @@ function TractorModel() {
 }
 
 // Twin Boom model (Mohav-I, Mohav-II)
-function TwinBoomModel() {
+function TwinBoomModel({ speedMultiplier }: { speedMultiplier: React.MutableRefObject<number> }) {
   const propRef = useRef<THREE.Mesh>(null);
   
   const geometries = React.useMemo(() => ({
@@ -119,7 +119,7 @@ function TwinBoomModel() {
   }), []);
 
   useFrame(() => {
-    if (propRef.current) propRef.current.rotation.x += 0.8;
+    if (propRef.current) propRef.current.rotation.x += 0.8 * speedMultiplier.current;
   });
 
   return (
@@ -151,7 +151,7 @@ function TwinBoomModel() {
 }
 
 // VTOL model (Daredevil/NIDAR VTOL)
-function VTOLModel() {
+function VTOLModel({ speedMultiplier }: { speedMultiplier: React.MutableRefObject<number> }) {
   const pusherPropRef = useRef<THREE.Mesh>(null);
   const vtolProps = [
     useRef<THREE.Mesh>(null),
@@ -172,9 +172,9 @@ function VTOLModel() {
   }), []);
 
   useFrame(() => {
-    if (pusherPropRef.current) pusherPropRef.current.rotation.x += 0.8;
+    if (pusherPropRef.current) pusherPropRef.current.rotation.x += 0.8 * speedMultiplier.current;
     vtolProps.forEach((prop) => {
-      if (prop.current) prop.current.rotation.y += 1.4;
+      if (prop.current) prop.current.rotation.y += 1.4 * speedMultiplier.current;
     });
   });
 
@@ -232,7 +232,7 @@ function VTOLModel() {
 }
 
 // Hexacopter Model (NIDAR Hexacopter)
-function HexacopterModel() {
+function HexacopterModel({ speedMultiplier }: { speedMultiplier: React.MutableRefObject<number> }) {
   const motorProps = [
     useRef<THREE.Mesh>(null),
     useRef<THREE.Mesh>(null),
@@ -251,7 +251,7 @@ function HexacopterModel() {
 
   useFrame(() => {
     motorProps.forEach((prop) => {
-      if (prop.current) prop.current.rotation.y += 1.6;
+      if (prop.current) prop.current.rotation.y += 1.6 * speedMultiplier.current;
     });
   });
 
@@ -297,27 +297,248 @@ function HexacopterModel() {
   );
 }
 
-// Group that slowly auto-rotates
-function SpinningScene({ type, isMobile }: { type: "tractor" | "twin-boom" | "vtol" | "hexacopter"; isMobile: boolean }) {
-  const modelRef = useRef<THREE.Group>(null);
+interface SpinningSceneProps {
+  type: "tractor" | "twin-boom" | "vtol" | "hexacopter";
+  activeId: string;
+  isHovered: boolean;
+  isMobile: boolean;
+  userRotation: React.MutableRefObject<{ x: number; y: number }>;
+  isDragging: React.MutableRefObject<boolean>;
+}
 
-  useFrame((state) => {
-    if (modelRef.current) {
-      // Slow showcase yaw spin
-      modelRef.current.rotation.y = state.clock.getElapsedTime() * 0.22;
-      // Slight aerodynamic hover pitch wobble
-      modelRef.current.position.y = Math.sin(state.clock.getElapsedTime() * 1.5) * 0.06;
+// Camera lookAt setup helper
+function CameraSetup() {
+  const { camera } = useThree();
+  useEffect(() => {
+    camera.lookAt(0, 0, 0);
+  }, [camera]);
+  return null;
+}
+
+// Group that flies between placeholders and auto-rotates/banks
+function SpinningScene({
+  type,
+  activeId,
+  isHovered,
+  isMobile,
+  userRotation,
+  isDragging
+}: SpinningSceneProps) {
+  const modelRef = useRef<THREE.Group>(null);
+  
+  const lastActiveId = useRef<string | null>(null);
+  const targetWorldPos = useRef<THREE.Vector3>(new THREE.Vector3(0, 0, 0));
+  const currentWorldPos = useRef<THREE.Vector3>(new THREE.Vector3(0, 0, 0));
+  const prevWorldPos = useRef<THREE.Vector3>(new THREE.Vector3(0, 0, 0));
+  
+  const flightVelocity = useRef<THREE.Vector2>(new THREE.Vector2(0, 0));
+  const flightInfluence = useRef(0);
+  const autoRotationY = useRef(0);
+
+  // Flight height arc & hover depth refs
+  const flightStartPos = useRef<THREE.Vector3>(new THREE.Vector3(0, 0, 0));
+  const flightTotalDist = useRef<number>(0);
+  const currentBaseZ = useRef(-0.45);
+  const speedMultiplier = useRef(1.0);
+  
+  // Transition model scale when type swaps
+  const [renderedType, setRenderedType] = useState(type);
+  const typeScale = useRef(1);
+  const isTransitioning = useRef(false);
+
+  useEffect(() => {
+    if (type !== renderedType) {
+      isTransitioning.current = true;
     }
+  }, [type, renderedType]);
+
+  useFrame((state, delta) => {
+    // 1. Swapping/Morphing Transition Scale
+    if (isTransitioning.current) {
+      typeScale.current = THREE.MathUtils.lerp(typeScale.current, 0, 0.15);
+      if (typeScale.current < 0.05) {
+        setRenderedType(type);
+        isTransitioning.current = false;
+      }
+    } else {
+      typeScale.current = THREE.MathUtils.lerp(typeScale.current, 1, 0.15);
+    }
+
+    // 2. Track DOM Position & Map to 3D World space
+    // On desktop (screen >= 768px), we target the hangar in the empty side space.
+    // On mobile, we fall back to targeting the card placeholder.
+    const suffix = (window.innerWidth >= 768) ? "-empty" : "";
+    const el = document.getElementById(`plane-placeholder-${activeId}${suffix}`);
+    if (el) {
+      const rect = el.getBoundingClientRect();
+      
+      // Center coordinates of placeholder in client screen
+      const cx = rect.left + rect.width / 2;
+      const cy = rect.top + rect.height / 2;
+      
+      // Map to Normalized Device Coordinates (NDC)
+      const ndcX = (cx / window.innerWidth) * 2 - 1;
+      const ndcY = -(cy / window.innerHeight) * 2 + 1;
+      
+      // Unproject to world coordinates at Z=0
+      const ndcVec = new THREE.Vector3(ndcX, ndcY, 0.5);
+      ndcVec.unproject(state.camera);
+      
+      const camPos = state.camera.position;
+      const dir = ndcVec.sub(camPos).normalize();
+      
+      if (Math.abs(dir.z) > 0.0001) {
+        const t = -camPos.z / dir.z;
+        targetWorldPos.current.set(
+          camPos.x + t * dir.x,
+          camPos.y + t * dir.y,
+          0
+        );
+      }
+    }
+
+    // 3. Move the model to the target position
+    if (lastActiveId.current === null && el) {
+      // First frame load: snap position directly to prevent initial fly-in
+      currentWorldPos.current.copy(targetWorldPos.current);
+      prevWorldPos.current.copy(targetWorldPos.current);
+      lastActiveId.current = activeId;
+    }
+
+    // Capture starting parameters when activeTarget changes to trigger flight arc
+    if (activeId !== lastActiveId.current && lastActiveId.current !== null) {
+      flightStartPos.current.copy(currentWorldPos.current);
+      // We calculate 2D distance on XY plane for flight arc progress
+      const p1 = new THREE.Vector2(currentWorldPos.current.x, currentWorldPos.current.y);
+      const p2 = new THREE.Vector2(targetWorldPos.current.x, targetWorldPos.current.y);
+      flightTotalDist.current = p1.distanceTo(p2);
+      lastActiveId.current = activeId;
+    }
+
+    // Store previous position for velocity calculation
+    prevWorldPos.current.copy(currentWorldPos.current);
+
+    // Interpolate current position to target position (XY plane)
+    // X interpolates faster so the plane quickly slides into the empty side column and glides down it
+    currentWorldPos.current.x = THREE.MathUtils.lerp(currentWorldPos.current.x, targetWorldPos.current.x, 0.20);
+    currentWorldPos.current.y = THREE.MathUtils.lerp(currentWorldPos.current.y, targetWorldPos.current.y, 0.06);
+
+    // Calculate flight arc Z lift & takeoff/landing pitch
+    let zLift = 0;
+    let liftPitch = 0;
+    
+    if (flightTotalDist.current > 0.1) {
+      const pos2D = new THREE.Vector2(currentWorldPos.current.x, currentWorldPos.current.y);
+      const target2D = new THREE.Vector2(targetWorldPos.current.x, targetWorldPos.current.y);
+      const currentDist = pos2D.distanceTo(target2D);
+      
+      if (currentDist < 0.03) {
+        // Settled at destination
+        flightTotalDist.current = 0;
+      } else {
+        // Progress of flight: 0 (start) to 1 (destination)
+        const progress = Math.max(0, Math.min(1, 1 - (currentDist / flightTotalDist.current)));
+        // Lift plane closer to user (camera is at Z=2.3, so lift towards +Z)
+        // This makes the plane look like it flies "up" out of the card and drops back in
+        zLift = Math.sin(progress * Math.PI) * 0.95;
+        // Takeoff/landing pitch: cos is positive during takeoff -> pitch nose up.
+        // cos is negative during landing -> pitch nose down.
+        liftPitch = Math.cos(progress * Math.PI) * 0.35;
+      }
+    }
+
+    // Interpolate base Z position based on hover inspection state
+    // When inactive or not hovered, plane stays settled deep in the card (-0.45)
+    // When hovered for inspection, it pops up slightly (0.05) to be close to user
+    const targetBaseZ = isHovered ? 0.05 : -0.45;
+    currentBaseZ.current = THREE.MathUtils.lerp(currentBaseZ.current, targetBaseZ, 0.08);
+    currentWorldPos.current.z = currentBaseZ.current + zLift;
+
+    // Calculate instantaneous velocity in world units
+    const vx = currentWorldPos.current.x - prevWorldPos.current.x;
+    const vy = currentWorldPos.current.y - prevWorldPos.current.y;
+    
+    // Smooth the velocity
+    flightVelocity.current.x = THREE.MathUtils.lerp(flightVelocity.current.x, vx, 0.2);
+    flightVelocity.current.y = THREE.MathUtils.lerp(flightVelocity.current.y, vy, 0.2);
+
+    const speed = flightVelocity.current.length();
+
+    // 4. Update the Model Position & Rotations
+    if (modelRef.current) {
+      modelRef.current.position.copy(currentWorldPos.current);
+      
+      // Slight hover wobble when speed is low
+      const hoverWobble = Math.sin(state.clock.getElapsedTime() * 1.8) * 0.04;
+      modelRef.current.position.y += hoverWobble;
+
+      // Flight Rotation Dynamics (Roll, Pitch, Yaw)
+      // When flying, the plane rolls into horizontal turns and pitches into vertical ascents/descents
+      // If speed is high, blend out showcase spin and blend in flight rotation
+      const targetFlightInfluence = Math.min(speed * 30, 1);
+      flightInfluence.current = THREE.MathUtils.lerp(flightInfluence.current, targetFlightInfluence, 0.1);
+
+      // Manual User Drag Rotation Damping
+      if (!isDragging.current) {
+        userRotation.current.x = THREE.MathUtils.lerp(userRotation.current.x, 0, 0.08);
+        userRotation.current.y = THREE.MathUtils.lerp(userRotation.current.y, 0, 0.08);
+      }
+
+      // Base yaw (showcase auto-rotation)
+      autoRotationY.current += delta * 0.22;
+
+      // Calculate flight rotations
+      // Roll: bank left/right proportional to horizontal velocity
+      const flightRoll = -flightVelocity.current.x * 2.8; 
+      
+      // Pitch: pitch nose up/down proportional to vertical velocity + lift pitch
+      const flightPitch = -flightVelocity.current.y * 2.0 + liftPitch;
+
+      // Yaw: face the direction of travel during flight
+      const flightYaw = -Math.PI / 6 + flightVelocity.current.x * 1.5;
+
+      // Blend showcase rotation and flight rotation
+      const currentYaw = THREE.MathUtils.lerp(
+        autoRotationY.current - Math.PI / 6, 
+        flightYaw, 
+        flightInfluence.current
+      );
+      const currentPitch = THREE.MathUtils.lerp(
+        0.08, 
+        flightPitch, 
+        flightInfluence.current
+      );
+      const currentRoll = THREE.MathUtils.lerp(
+        0.05, 
+        flightRoll, 
+        flightInfluence.current
+      );
+
+      // Apply rotations including user dragging
+      modelRef.current.rotation.set(
+        currentPitch + userRotation.current.x,
+        currentYaw + userRotation.current.y,
+        currentRoll - userRotation.current.y * 0.1
+      );
+
+      // Apply morph scale and mobile scaling
+      // Use slightly smaller scales so it fits perfectly inside placeholder boundaries
+      const baseScale = isMobile ? 0.45 : 0.65;
+      const activeScale = baseScale * typeScale.current;
+      modelRef.current.scale.set(activeScale, activeScale, activeScale);
+    }
+    
+    // Interpolate propeller speed multiplier based on hover state
+    const targetSpeedMult = isHovered ? 2.8 : 1.0;
+    speedMultiplier.current = THREE.MathUtils.lerp(speedMultiplier.current, targetSpeedMult, 0.08);
   });
 
-  const scale = isMobile ? 0.75 : 1.0;
-
   return (
-    <group ref={modelRef} scale={[scale, scale, scale]} rotation={[0.08, -Math.PI / 6, 0.05]}>
-      {type === "tractor" && <TractorModel />}
-      {type === "twin-boom" && <TwinBoomModel />}
-      {type === "vtol" && <VTOLModel />}
-      {type === "hexacopter" && <HexacopterModel />}
+    <group ref={modelRef} rotation={[0.08, -Math.PI / 6, 0.05]}>
+      {renderedType === "tractor" && <TractorModel speedMultiplier={speedMultiplier} />}
+      {renderedType === "twin-boom" && <TwinBoomModel speedMultiplier={speedMultiplier} />}
+      {renderedType === "vtol" && <VTOLModel speedMultiplier={speedMultiplier} />}
+      {renderedType === "hexacopter" && <HexacopterModel speedMultiplier={speedMultiplier} />}
     </group>
   );
 }
@@ -332,12 +553,19 @@ function SuspenseTrigger({ onReady }: { onReady: () => void }) {
 // Main Canvas wrapper
 export default function Plane3DCanvas({
   type,
+  activeId,
+  isHovered,
   onReady
 }: {
   type: "tractor" | "twin-boom" | "vtol" | "hexacopter";
+  activeId: string;
+  isHovered: boolean;
   onReady?: () => void;
 }) {
   const [isMobile, setIsMobile] = useState(false);
+  const userRotation = useRef({ x: 0, y: 0 });
+  const isDragging = useRef(false);
+  const prevPointer = useRef({ x: 0, y: 0 });
 
   useEffect(() => {
     const checkMobile = () => {
@@ -348,6 +576,29 @@ export default function Plane3DCanvas({
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
+  const handlePointerDown = (e: React.PointerEvent) => {
+    isDragging.current = true;
+    prevPointer.current = { x: e.clientX, y: e.clientY };
+  };
+
+  const handlePointerMove = (e: React.PointerEvent) => {
+    if (!isDragging.current) return;
+    const deltaX = e.clientX - prevPointer.current.x;
+    const deltaY = e.clientY - prevPointer.current.y;
+    prevPointer.current = { x: e.clientX, y: e.clientY };
+
+    // Update user rotation offsets
+    userRotation.current.y += deltaX * 0.007;
+    userRotation.current.x += deltaY * 0.007;
+    
+    // Clamp vertical rotation to prevent flipping
+    userRotation.current.x = Math.max(-Math.PI / 3, Math.min(Math.PI / 3, userRotation.current.x));
+  };
+
+  const handlePointerUp = () => {
+    isDragging.current = false;
+  };
+
   return (
     <div className="w-full h-full relative bg-slate-900/10 dark:bg-black/20 overflow-hidden flex items-center justify-center">
       {/* Tech grid blueprint markings in backdrop */}
@@ -357,28 +608,34 @@ export default function Plane3DCanvas({
       <Canvas
         camera={{ position: [0, 0.9, 2.3], fov: 45 }}
         gl={{ antialias: true }}
-        style={{ width: "100%", height: "100%", pointerEvents: "auto", touchAction: "pan-y" }}
+        style={{ width: "100%", height: "100%", pointerEvents: "auto", touchAction: "none" }}
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={handlePointerUp}
+        onPointerLeave={handlePointerUp}
       >
         <ambientLight intensity={0.4} />
         <directionalLight position={[4, 8, 4]} intensity={2.0} color="#D4A348" />
         <pointLight position={[-4, -4, -3]} intensity={1.5} color="#00E5FF" />
         
+        <CameraSetup />
+        
         <React.Suspense fallback={null}>
-          <SpinningScene type={type} isMobile={isMobile} />
+          <SpinningScene
+            type={type}
+            activeId={activeId}
+            isHovered={isHovered}
+            isMobile={isMobile}
+            userRotation={userRotation}
+            isDragging={isDragging}
+          />
           {onReady && <SuspenseTrigger onReady={onReady} />}
         </React.Suspense>
-
-        <OrbitControls
-          enableZoom={true}
-          enablePan={false}
-          maxDistance={3.5}
-          minDistance={1.4}
-        />
       </Canvas>
       
       {/* Help tooltip overlay */}
       <div className="absolute bottom-3 right-3 text-[9px] uppercase tracking-wider text-muted-foreground bg-black/40 backdrop-blur-sm px-2 py-0.5 rounded pointer-events-none select-none">
-        Drag to rotate • Pinch to zoom
+        Drag to rotate
       </div>
     </div>
   );
