@@ -121,8 +121,64 @@ export default function Home() {
             </motion.div>
           </div>
 
-          {/* Space slot for the WebGL canvas drone positioning on the right */}
-          <div className="w-full lg:w-1/2 h-[300px] lg:h-[500px] pointer-events-none lg:block hidden" />
+          {/* Right side: Coordinated Drone Space and Holographic Team Frame */}
+          <div className="w-full lg:w-1/2 flex items-center justify-center relative min-h-[320px] lg:min-h-[500px]">
+            
+            {/* Floating Holographic Team Frame */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8, y: 50, rotateY: 15 }}
+              animate={{ opacity: 1, scale: 1, y: 0, rotateY: 0 }}
+              transition={{ duration: 1.2, delay: 1.2, ease: "easeOut" }}
+              className="relative w-full max-w-lg aspect-[16/10] rounded-xl border border-[#D4A348]/20 bg-slate-950/40 backdrop-blur-md overflow-hidden p-1.5 group shadow-[0_0_50px_rgba(212,163,72,0.1)] pointer-events-auto z-10"
+              style={{ perspective: 1000 }}
+            >
+              {/* Tech corner accents */}
+              <div className="absolute top-0 left-0 w-3 h-3 border-t-2 border-l-2 border-[#D4A348]" />
+              <div className="absolute top-0 right-0 w-3 h-3 border-t-2 border-r-2 border-[#D4A348]" />
+              <div className="absolute bottom-0 left-0 w-3 h-3 border-b-2 border-l-2 border-[#D4A348]" />
+              <div className="absolute bottom-0 right-0 w-3 h-3 border-b-2 border-r-2 border-[#D4A348]" />
+
+              {/* Scanline hologram overlay */}
+              <div className="absolute inset-0 bg-scanlines opacity-10 pointer-events-none z-10" />
+
+              <div className="relative w-full h-full rounded-lg overflow-hidden border border-white/5 bg-slate-900/20">
+                <Image
+                  src="/images/home/newabout.png"
+                  alt="Team Maverick India Crew"
+                  fill
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                  className="object-cover opacity-75 group-hover:opacity-95 group-hover:scale-103 transition-all duration-700 ease-out"
+                  priority
+                />
+                
+                {/* Grid gridlines */}
+                <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(212,163,72,0.05)_1px,transparent_1px),linear-gradient(to_bottom,rgba(212,163,72,0.05)_1px,transparent_1px)] bg-[size:20px_20px] pointer-events-none" />
+
+                {/* Gradient shadow */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent pointer-events-none" />
+
+                {/* Holographic labels */}
+                <div className="absolute top-3 left-3 bg-black/60 backdrop-blur-sm border border-[#D4A348]/30 px-2 py-0.5 rounded text-[8px] font-mono tracking-widest text-[#D4A348] z-20 flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#D4A348] animate-ping" />
+                  CREW_SYS_CAPTURE // ACTIVE
+                </div>
+
+                <div className="absolute bottom-4 left-4 right-4 z-20 flex justify-between items-end">
+                  <div className="text-left">
+                    <span className="text-[9px] font-mono tracking-wider text-[#D4A348] block mb-0.5">MAVERICK CORE TEAM</span>
+                    <h3 className="text-base sm:text-lg font-bold text-white tracking-wide font-montserrat uppercase">THE WOLVES OF THE SKY</h3>
+                  </div>
+                  <div className="text-right text-[8px] font-mono text-white/50 hidden sm:block">
+                    <div>SYS: OPERATIONAL</div>
+                    <div>LOC: PUNE_HANGAR</div>
+                  </div>
+                </div>
+
+                {/* Scanning laser sweep line */}
+                <div className="absolute left-0 right-0 h-[1.5px] bg-gradient-to-r from-transparent via-[#D4A348] to-transparent opacity-70 shadow-[0_0_8px_#D4A348] animate-[scan_4s_infinite_linear] pointer-events-none z-20" />
+              </div>
+            </motion.div>
+          </div>
         </div>
         
         {/* Animated scroll indicator */}
