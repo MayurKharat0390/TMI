@@ -895,7 +895,7 @@ export default function HolographicUAV() {
   const hudOpacity = Math.max(0, 1 - scrollY / 600);
 
   return (
-    <div className={`fixed inset-0 w-screen h-screen transition-all duration-500 pointer-events-none ${scrollY > 600 ? "z-0 opacity-30" : "z-[20] opacity-100"}`}>
+    <div className={`fixed inset-0 w-screen h-screen transition-all duration-500 pointer-events-none ${isMobile ? "z-0 opacity-30" : scrollY > 600 ? "z-0 opacity-30" : "z-[20] opacity-100"}`}>
       <Canvas
         camera={{ position: [0, 2, 5.5], fov: 50 }}
         gl={{ antialias: true }}
@@ -990,102 +990,104 @@ export default function HolographicUAV() {
             {/* Left Box (Removed as requested) */}
             <div />
 
-            {/* Right Container (Gyroscope + Sim Control Panel) */}
-            <div className="flex flex-col">
-              {/* Gyroscope Box */}
-              <div className="bg-black/50 border border-[#DFBA73]/20 p-4 rounded backdrop-blur-md flex flex-col gap-2 min-w-[120px] md:min-w-[160px] shadow-[0_0_15px_rgba(212,163,72,0.05)]">
-                <div className="border-b border-[#DFBA73]/10 pb-1 text-[#DFBA73] font-bold text-[11px] md:text-sm">GYROSCOPE</div>
-                <div className="flex justify-between">
-                  <span className="text-white/40">PITCH:</span>
-                  <span className={hudStats.pitch >= 0 ? "text-green-400" : "text-red-400"}>
-                    {hudStats.pitch > 0 ? `+${hudStats.pitch}` : hudStats.pitch}°
-                  </span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-white/40">ROLL:</span>
-                  <span className={hudStats.roll >= 0 ? "text-green-400" : "text-red-400"}>
-                    {hudStats.roll > 0 ? `+${hudStats.roll}` : hudStats.roll}°
-                  </span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-white/40">YAW (HDG):</span>
-                  <span className="text-white font-bold">{hudStats.yaw}°</span>
-                </div>
-              </div>
-
-              {/* Simulation Interactive Control Panel */}
-              <div className="bg-black/85 border border-[#DFBA73]/25 p-3 rounded backdrop-blur-md flex flex-col gap-2.5 min-w-[120px] md:min-w-[160px] shadow-[0_0_20px_rgba(212,163,72,0.1)] pointer-events-auto mt-4 transition-all z-30">
-                <div className="border-b border-[#DFBA73]/20 pb-0.5 text-[#DFBA73] font-bold text-[9px] md:text-[10px] tracking-wider uppercase">SIM_CONTROL</div>
-                
-                {/* Mesh Mode */}
-                <div className="flex flex-col gap-1">
-                  <span className="text-white/40 text-[7px] md:text-[8px] uppercase">MESH MODE</span>
-                  <div className="grid grid-cols-3 gap-0.5 md:gap-1">
-                    {(["solid", "wireframe", "particles"] as const).map((mode) => (
-                      <button
-                        key={mode}
-                        onClick={() => setModelViewMode(mode)}
-                        className={`px-0.5 py-0.5 rounded text-[6.5px] md:text-[8px] border transition-all uppercase ${
-                          modelViewMode === mode
-                            ? "bg-[#DFBA73]/20 border-[#DFBA73] text-[#DFBA73] font-bold"
-                            : "bg-black/40 border-white/5 text-white/50 hover:border-white/20"
-                        }`}
-                      >
-                        {mode === "wireframe" ? "wire" : mode === "particles" ? "part" : "solid"}
-                      </button>
-                    ))}
+            {/* Right Container (Gyroscope + Sim Control Panel) - Hidden on Mobile */}
+            {!isMobile && (
+              <div className="flex flex-col">
+                {/* Gyroscope Box */}
+                <div className="bg-black/50 border border-[#DFBA73]/20 p-4 rounded backdrop-blur-md flex flex-col gap-2 min-w-[120px] md:min-w-[160px] shadow-[0_0_15px_rgba(212,163,72,0.05)]">
+                  <div className="border-b border-[#DFBA73]/10 pb-1 text-[#DFBA73] font-bold text-[11px] md:text-sm">GYROSCOPE</div>
+                  <div className="flex justify-between">
+                    <span className="text-white/40">PITCH:</span>
+                    <span className={hudStats.pitch >= 0 ? "text-green-400" : "text-red-400"}>
+                      {hudStats.pitch > 0 ? `+${hudStats.pitch}` : hudStats.pitch}°
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-white/40">ROLL:</span>
+                    <span className={hudStats.roll >= 0 ? "text-green-400" : "text-red-400"}>
+                      {hudStats.roll > 0 ? `+${hudStats.roll}` : hudStats.roll}°
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-white/40">YAW (HDG):</span>
+                    <span className="text-white font-bold">{hudStats.yaw}°</span>
                   </div>
                 </div>
 
-                {/* Beacon Color */}
-                <div className="flex flex-col gap-1">
-                  <span className="text-white/40 text-[7px] md:text-[8px] uppercase">LASER COLOR</span>
-                  <div className="grid grid-cols-2 gap-0.5 md:gap-1">
-                    {(["gold", "cyan"] as const).map((color) => (
-                      <button
-                        key={color}
-                        onClick={() => setThemeColor(color)}
-                        className={`px-1 py-0.5 rounded text-[6.5px] md:text-[8px] border transition-all uppercase ${
-                          themeColor === color
-                            ? color === "gold"
+                {/* Simulation Interactive Control Panel */}
+                <div className="bg-black/85 border border-[#DFBA73]/25 p-3 rounded backdrop-blur-md flex flex-col gap-2.5 min-w-[120px] md:min-w-[160px] shadow-[0_0_20px_rgba(212,163,72,0.1)] pointer-events-auto mt-4 transition-all z-30">
+                  <div className="border-b border-[#DFBA73]/20 pb-0.5 text-[#DFBA73] font-bold text-[9px] md:text-[10px] tracking-wider uppercase">SIM_CONTROL</div>
+                  
+                  {/* Mesh Mode */}
+                  <div className="flex flex-col gap-1">
+                    <span className="text-white/40 text-[7px] md:text-[8px] uppercase">MESH MODE</span>
+                    <div className="grid grid-cols-3 gap-0.5 md:gap-1">
+                      {(["solid", "wireframe", "particles"] as const).map((mode) => (
+                        <button
+                          key={mode}
+                          onClick={() => setModelViewMode(mode)}
+                          className={`px-0.5 py-0.5 rounded text-[6.5px] md:text-[8px] border transition-all uppercase ${
+                            modelViewMode === mode
                               ? "bg-[#DFBA73]/20 border-[#DFBA73] text-[#DFBA73] font-bold"
-                              : "bg-[#00E5FF]/20 border-[#00E5FF] text-[#00E5FF] font-bold"
-                            : "bg-black/40 border-white/5 text-white/50 hover:border-white/20"
-                        }`}
-                      >
-                        {color}
-                      </button>
-                    ))}
+                              : "bg-black/40 border-white/5 text-white/50 hover:border-white/20"
+                          }`}
+                        >
+                          {mode === "wireframe" ? "wire" : mode === "particles" ? "part" : "solid"}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Beacon Color */}
+                  <div className="flex flex-col gap-1">
+                    <span className="text-white/40 text-[7px] md:text-[8px] uppercase">LASER COLOR</span>
+                    <div className="grid grid-cols-2 gap-0.5 md:gap-1">
+                      {(["gold", "cyan"] as const).map((color) => (
+                        <button
+                          key={color}
+                          onClick={() => setThemeColor(color)}
+                          className={`px-1 py-0.5 rounded text-[6.5px] md:text-[8px] border transition-all uppercase ${
+                            themeColor === color
+                              ? color === "gold"
+                                ? "bg-[#DFBA73]/20 border-[#DFBA73] text-[#DFBA73] font-bold"
+                                : "bg-[#00E5FF]/20 border-[#00E5FF] text-[#00E5FF] font-bold"
+                              : "bg-black/40 border-white/5 text-white/50 hover:border-white/20"
+                          }`}
+                        >
+                          {color}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Rotation toggle */}
+                  <div className="flex flex-col gap-1">
+                    <span className="text-white/40 text-[7px] md:text-[8px] uppercase">ROTATION</span>
+                    <button
+                      onClick={() => setRotationSpeed(rotationSpeed === 0 ? 0.06 : 0)}
+                      className={`w-full py-0.5 rounded text-[6.5px] md:text-[8px] border transition-all uppercase ${
+                        rotationSpeed > 0
+                          ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-400 font-bold"
+                          : "bg-red-500/10 border-red-500/30 text-red-400 font-bold"
+                      }`}
+                    >
+                      {rotationSpeed > 0 ? "SPIN: ON" : "SPIN: OFF"}
+                    </button>
+                  </div>
+
+                  {/* Stunt trigger */}
+                  <div className="flex flex-col gap-1">
+                    <span className="text-white/40 text-[7px] md:text-[8px] uppercase">MANEUVER</span>
+                    <button
+                      onClick={handleDroneClick}
+                      className="w-full py-0.5 md:py-1 rounded text-[6.5px] md:text-[8px] border border-[#DFBA73]/40 hover:border-[#DFBA73] bg-[#DFBA73]/10 hover:bg-[#DFBA73]/20 text-[#DFBA73] font-bold uppercase transition-all"
+                    >
+                      ROLL STUNT
+                    </button>
                   </div>
                 </div>
-
-                {/* Rotation toggle */}
-                <div className="flex flex-col gap-1">
-                  <span className="text-white/40 text-[7px] md:text-[8px] uppercase">ROTATION</span>
-                  <button
-                    onClick={() => setRotationSpeed(rotationSpeed === 0 ? 0.06 : 0)}
-                    className={`w-full py-0.5 rounded text-[6.5px] md:text-[8px] border transition-all uppercase ${
-                      rotationSpeed > 0
-                        ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-400 font-bold"
-                        : "bg-red-500/10 border-red-500/30 text-red-400 font-bold"
-                    }`}
-                  >
-                    {rotationSpeed > 0 ? "SPIN: ON" : "SPIN: OFF"}
-                  </button>
-                </div>
-
-                {/* Stunt trigger */}
-                <div className="flex flex-col gap-1">
-                  <span className="text-white/40 text-[7px] md:text-[8px] uppercase">MANEUVER</span>
-                  <button
-                    onClick={handleDroneClick}
-                    className="w-full py-0.5 md:py-1 rounded text-[6.5px] md:text-[8px] border border-[#DFBA73]/40 hover:border-[#DFBA73] bg-[#DFBA73]/10 hover:bg-[#DFBA73]/20 text-[#DFBA73] font-bold uppercase transition-all"
-                  >
-                    ROLL STUNT
-                  </button>
-                </div>
               </div>
-            </div>
+            )}
           </div>
 
           {/* Bottom Panel */}
