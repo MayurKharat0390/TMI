@@ -110,7 +110,7 @@ export default function GalleryGrid() {
                     const cardWidth = firstChild?.clientWidth || 240;
                     container.scrollBy({ left: cardWidth + 16, behavior: "smooth" });
                 }
-            }, 4500); // Trigger scroll every 4.5 seconds
+            }, 3000); // Trigger scroll every 3 seconds
         });
 
         return () => {
