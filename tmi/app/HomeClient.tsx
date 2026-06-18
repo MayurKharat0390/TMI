@@ -70,7 +70,7 @@ export default function Home() {
         {/* Soft radial overlay behind text */}
         <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-background/60 to-background z-0 pointer-events-none" />
 
-        <div className="relative z-10 max-w-screen-2xl mx-auto px-4 sm:px-8 md:px-12 lg:px-16 xl:px-20 w-full flex flex-col lg:flex-row items-center justify-between gap-10">
+        <div className="relative z-30 max-w-screen-2xl mx-auto px-4 sm:px-8 md:px-12 lg:px-16 xl:px-20 w-full flex flex-col lg:flex-row items-center justify-between gap-10">
           <div className="flex flex-col items-center lg:items-start text-center lg:text-left max-w-2xl">
             <motion.div
               initial={{ opacity: 0, x: -120, skewX: -10 }}

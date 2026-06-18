@@ -533,14 +533,14 @@ export default function PlanesPage() {
         {/* Viewport-fixed background WebGL canvas tracking active cards - disabled on mobile to prevent scroll hijacking */}
         {!isMobile && (
           <div 
-            className="fixed inset-0 w-screen h-screen z-[15] transition-all duration-300 pointer-events-none"
+            className="fixed inset-0 w-screen h-screen z-0 transition-all duration-300 pointer-events-none"
             style={{ pointerEvents: canvasInteractive ? "auto" : "none" }}
           >
             <Plane3DCanvas type={activeModelType} activeId={activeTargetId} isHovered={canvasInteractive} />
           </div>
         )}
 
-        <div className="container mx-auto px-6 relative">
+        <div className="container mx-auto px-6 relative z-10">
 
           {/* Page Header */}
           <div className="text-center mb-20">

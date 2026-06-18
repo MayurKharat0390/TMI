@@ -177,8 +177,8 @@ function Section({ title, badge, members }: { title: string; badge?: string; mem
       </div>
       
       <div className="flex flex-wrap justify-center gap-8 max-w-6xl mx-auto">
-        {members.map(member => (
-          <MemberCard key={member.id} member={member} />
+        {members.map((member, idx) => (
+          <MemberCard key={member.id} member={member} index={idx} />
         ))}
       </div>
     </div>
