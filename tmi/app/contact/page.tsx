@@ -1,45 +1,67 @@
 "use client";
 
-import { useState } from 'react';
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { MapPin, Phone, Mail, Terminal, Send } from 'lucide-react';
+import { MapPin, Phone, Mail, Terminal, Send, Loader2 } from 'lucide-react';
 import { toast } from "sonner";
-import emailjs from 'emailjs-com';
 import Head from 'next/head';
 import { motion } from 'framer-motion';
 import dynamic from 'next/dynamic';
 import { useTheme } from 'next-themes';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
 
 const StarryBackground = dynamic(() => import('@/components/StarryBackground'), { ssr: false });
 
+const contactFormSchema = z.object({
+  name: z.string().min(1, 'Name is required').max(100, 'Name cannot exceed 100 characters'),
+  email: z.string().min(1, 'Email is required').email('Invalid email address'),
+  message: z.string().min(10, 'Message must be at least 10 characters').max(2000, 'Message cannot exceed 2000 characters')
+});
+
+type ContactFormValues = z.infer<typeof contactFormSchema>;
+
 export default function ContactPage() {
   const { resolvedTheme } = useTheme();
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    message: ''
+  
+  const { 
+    register, 
+    handleSubmit, 
+    reset, 
+    formState: { errors, isSubmitting } 
+  } = useForm<ContactFormValues>({
+    resolver: zodResolver(contactFormSchema),
+    defaultValues: {
+      name: '',
+      email: '',
+      message: ''
+    }
   });
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
+  const onSubmit = async (data: ContactFormValues) => {
     try {
-      const result = await emailjs.send(
-        'service_68199oj',
-        'template_k605p7u',
-        formData,
-        'ZBJImsgABlXQ5aiOt'
-      );
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      });
 
-      console.log('Email Sent:', result.text);
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || 'Failed to send message');
+      }
+
       toast.success('Message sent successfully!');
-      setFormData({ name: '', email: '', message: '' });
-    } catch (error) {
-      console.error('Error sending email:', error);
-      toast.error('Failed to send message. Please try again.');
+      reset();
+    } catch (error: any) {
+      console.error('Error sending message:', error);
+      toast.error(error.message || 'Failed to send message. Please try again.');
     }
   };
 
@@ -102,7 +124,7 @@ export default function ContactPage() {
                       <p className="text-sm text-foreground/90">Team Maverick India, PCCoE, Pradhikaran, Akurdi, Pune, India</p>
                     </div>
                   </div>
- 
+
                   <div className="flex items-start space-x-4">
                     <div className="p-2.5 rounded-lg bg-[#DFBA73]/10 border border-[#DFBA73]/20 flex-shrink-0">
                       <Phone className="h-5 w-5 text-[#DFBA73]" />
@@ -113,7 +135,7 @@ export default function ContactPage() {
                       <p className="text-sm text-foreground/90 mt-1">Ms. Nimisha Halabe: +91 9028401706</p>
                     </div>
                   </div>
- 
+
                   <div className="flex items-start space-x-4">
                     <div className="p-2.5 rounded-lg bg-[#DFBA73]/10 border border-[#DFBA73]/20 flex-shrink-0">
                       <Mail className="h-5 w-5 text-[#DFBA73]" />
@@ -157,22 +179,23 @@ export default function ContactPage() {
                 <p className="text-muted-foreground text-xs tracking-wide mb-6 leading-relaxed uppercase">
                   ENTER YOUR PAYLOAD INFORMATION BELOW TO DISPATCH MESSAGE
                 </p>
- 
-                <form onSubmit={handleSubmit} className="space-y-6">
+
+                <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                   <div>
                     <label htmlFor="name" className="block text-xs font-bold uppercase tracking-wider text-muted-foreground mb-2">
                       Sender Name
                     </label>
                     <Input
                       id="name"
-                      value={formData.name}
-                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                      required
+                      {...register('name')}
                       className="bg-background/60 border-border focus-visible:ring-[#DFBA73] text-foreground hover:border-[#DFBA73]/40 transition-colors py-6"
                       placeholder="e.g. John Doe"
                     />
+                    {errors.name && (
+                      <p className="text-red-500 text-xs mt-1 font-mono">{errors.name.message}</p>
+                    )}
                   </div>
- 
+
                   <div>
                     <label htmlFor="email" className="block text-xs font-bold uppercase tracking-wider text-muted-foreground mb-2">
                       Sender Email
@@ -180,32 +203,47 @@ export default function ContactPage() {
                     <Input
                       id="email"
                       type="email"
-                      value={formData.email}
-                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                      required
+                      {...register('email')}
                       className="bg-background/60 border-border focus-visible:ring-[#DFBA73] text-foreground hover:border-[#DFBA73]/40 transition-colors py-6"
                       placeholder="e.g. john@example.com"
                     />
+                    {errors.email && (
+                      <p className="text-red-500 text-xs mt-1 font-mono">{errors.email.message}</p>
+                    )}
                   </div>
- 
+
                   <div>
                     <label htmlFor="message" className="block text-xs font-bold uppercase tracking-wider text-muted-foreground mb-2">
                       Message Payload
                     </label>
                     <Textarea
                       id="message"
-                      value={formData.message}
-                      onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                      required
+                      {...register('message')}
                       rows={6}
                       className="bg-background/60 border-border focus-visible:ring-[#DFBA73] text-foreground hover:border-[#DFBA73]/40 transition-colors"
                       placeholder="Describe your request, project context or sponsorship details..."
                     />
+                    {errors.message && (
+                      <p className="text-red-500 text-xs mt-1 font-mono">{errors.message.message}</p>
+                    )}
                   </div>
 
-                  <Button type="submit" className="w-full bg-[#DFBA73] hover:bg-yellow-400 text-black font-bold uppercase tracking-wider py-6 transition-all duration-300 hover:scale-[1.02] shadow-[0_0_20px_rgba(212,163,72,0.2)] active:scale-[0.98] flex items-center justify-center gap-2">
-                    <Send className="w-4 h-4" />
-                    Transmit Signal
+                  <Button 
+                    type="submit" 
+                    disabled={isSubmitting}
+                    className="w-full bg-[#DFBA73] hover:bg-yellow-400 text-black font-bold uppercase tracking-wider py-6 transition-all duration-300 hover:scale-[1.02] shadow-[0_0_20px_rgba(212,163,72,0.2)] active:scale-[0.98] flex items-center justify-center gap-2"
+                  >
+                    {isSubmitting ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        Transmitting...
+                      </>
+                    ) : (
+                      <>
+                        <Send className="w-4 h-4" />
+                        Transmit Signal
+                      </>
+                    )}
                   </Button>
                 </form>
               </div>

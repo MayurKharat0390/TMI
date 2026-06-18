@@ -31,8 +31,17 @@
   ExpiresByType text/javascript "access 1 month"
   ExpiresByType text/html "access 1 month"
 </IfModule>
-
-
-
-
-
+# Enforce Security Headers
+<IfModule mod_headers.c>
+  # Clickjacking Protection (Prevent unauthorized framing)
+  Header set X-Frame-Options "DENY"
+  
+  # MIME Sniffing Protection
+  Header set X-Content-Type-Options "nosniff"
+  
+  # Referrer leak protection
+  Header set Referrer-Policy "strict-origin-when-cross-origin"
+  
+  # Cross-Site Scripting filter (Legacy fallback support)
+  Header set X-XSS-Protection "1; mode=block"
+</IfModule>
