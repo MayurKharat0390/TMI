@@ -1,5 +1,5 @@
 
-import Head from 'next/head';
+import type { Metadata } from 'next';
 import StarryBackground from "@/components/StarryBackground";
 import { cn } from "@/lib/utils";
 
@@ -7,18 +7,15 @@ import dynamic from "next/dynamic";
 
 const ForumSections = dynamic(() => import("./ForumSections"), { ssr: true });
 
+export const metadata: Metadata = {
+    title: 'Forum | Team Maverick India',
+    description: "Explore Team Maverick India's engagement and activities including workshops, technical sessions, and collaborative events.",
+    authors: [{ name: 'Team Maverick India' }],
+};
+
 export default function ForumPage() {
     return (
         <>
-            <Head>
-                <title>Forum | Team Maverick India</title>
-                <meta
-                    name="description"
-                    content="Explore Team Maverick India's engagement and activities including workshops, technical sessions, and collaborative events."
-                />
-                <meta name="author" content="Team Maverick India" />
-            </Head>
-
             <div className="pt-24 pb-20 min-h-screen relative">
                 <StarryBackground />
 

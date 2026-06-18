@@ -1,7 +1,20 @@
+import type { Metadata } from 'next';
 import StarryBackground from "@/components/StarryBackground";
 import dynamic from "next/dynamic";
 
 const GalleryGrid = dynamic(() => import("./GalleryGrid"), { ssr: true });
+
+export const metadata: Metadata = {
+  title: 'Gallery | Flight Tests & Competition History',
+  description: 'Browse the visual history of Team Maverick India. Discover images and videos of our UAV flights, design reviews, manufacturing processes, and international competition seasons.',
+  keywords: [
+    'Team Maverick India gallery',
+    'UAV flight test videos',
+    'aerospace competition images',
+    'PCCOE Pune drone flight',
+    'SAE Aero Design photos'
+  ],
+};
 
 export default function GalleryPage() {
 

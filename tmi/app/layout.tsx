@@ -13,6 +13,7 @@ import { CustomCursor } from '@/components/custom-cursor';
 const inter = Inter({ subsets: ['latin'], display: 'swap' });
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://www.team-maverick-india.com'),
   title: {
     default: seoConfig.title,
     template: `%s | ${seoConfig.title}`,
