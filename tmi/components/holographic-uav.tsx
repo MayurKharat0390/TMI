@@ -52,11 +52,13 @@ function ParticleField() {
 }
 
 // Glowing cybernetic laser scanner sweeping the UAV
-function ScanningLaser({ active }: { active: boolean }) {
+function ScanningLaser({ active, themeColor }: { active: boolean; themeColor: "gold" | "cyan" }) {
   const laserRef = useRef<THREE.Mesh>(null);
   const { resolvedTheme } = useTheme();
   const isDark = resolvedTheme === "dark";
-  const laserColor = isDark ? "#00E5FF" : "#0066FF";
+  const laserColor = themeColor === "gold"
+    ? (isDark ? "#D4A348" : "#E28B00")
+    : (isDark ? "#00E5FF" : "#0066FF");
   const blendingMode = isDark ? THREE.AdditiveBlending : THREE.NormalBlending;
   
   useFrame((state) => {
@@ -76,7 +78,7 @@ function ScanningLaser({ active }: { active: boolean }) {
     <mesh ref={laserRef} rotation={[Math.PI / 2, 0, 0]}>
       <ringGeometry args={[0.23, 0.26, 32]} />
       <meshBasicMaterial 
-        color={active ? (isDark ? "#D4A348" : "#E28B00") : laserColor} 
+        color={laserColor} 
         transparent 
         opacity={active ? 0.95 : 0.8} 
         side={THREE.DoubleSide}
@@ -87,11 +89,13 @@ function ScanningLaser({ active }: { active: boolean }) {
 }
 
 // 3D Waving Team Maverick India Flag
-function WavingFlag() {
+function WavingFlag({ themeColor }: { themeColor: "gold" | "cyan" }) {
   const geomRef = useRef<THREE.PlaneGeometry>(null);
   const { resolvedTheme } = useTheme();
   const isDark = resolvedTheme === "dark";
-  const wireframeColor = isDark ? "#D4A348" : "#1E3A8A";
+  const wireframeColor = themeColor === "gold"
+    ? (isDark ? "#D4A348" : "#1E3A8A")
+    : (isDark ? "#00E5FF" : "#0066FF");
   const blendingMode = isDark ? THREE.AdditiveBlending : THREE.NormalBlending;
   const wireframeOpacity = isDark ? 0.6 : 0.8;
   const flagColor = isDark ? "#151515" : "#f1f5f9";
@@ -147,38 +151,60 @@ function WavingFlag() {
 }
 
 // Sub-component for individual parts, combining metallic body and glowing wireframe overlay
-function UAVPart({ geometry, position, rotation, scale }: { 
+function UAVPart({ geometry, position, rotation, scale, viewMode, themeColor }: { 
   geometry: THREE.BufferGeometry; 
   position?: [number, number, number]; 
   rotation?: [number, number, number]; 
   scale?: [number, number, number];
+  viewMode: "wireframe" | "solid" | "particles";
+  themeColor: "gold" | "cyan";
 }) {
   const { resolvedTheme } = useTheme();
   const isDark = resolvedTheme === "dark";
-  const wireframeColor = isDark ? "#D4A348" : "#1E3A8A";
+  const wireframeColor = themeColor === "gold"
+    ? (isDark ? "#D4A348" : "#1E3A8A")
+    : (isDark ? "#00E5FF" : "#0066FF");
   const blendingMode = isDark ? THREE.AdditiveBlending : THREE.NormalBlending;
   const wireframeOpacity = isDark ? 0.35 : 0.55;
   const bodyColor = isDark ? "#151515" : "#e2e8f0";
 
   return (
     <group position={position} rotation={rotation} scale={scale}>
-      <mesh geometry={geometry}>
-        <meshStandardMaterial 
-          color={bodyColor} 
-          metalness={0.9} 
-          roughness={0.25}
-          flatShading
-        />
-      </mesh>
-      <mesh geometry={geometry} scale={[1.02, 1.02, 1.02]}>
-        <meshBasicMaterial 
-          color={wireframeColor} 
-          wireframe 
-          transparent 
-          opacity={wireframeOpacity} 
-          blending={blendingMode}
-        />
-      </mesh>
+      {viewMode === "solid" && (
+        <mesh geometry={geometry}>
+          <meshStandardMaterial 
+            color={bodyColor} 
+            metalness={0.9} 
+            roughness={0.25}
+            flatShading
+          />
+        </mesh>
+      )}
+      
+      {(viewMode === "wireframe" || viewMode === "solid") && (
+        <mesh geometry={geometry} scale={[1.01, 1.01, 1.01]}>
+          <meshBasicMaterial 
+            color={wireframeColor} 
+            wireframe 
+            transparent 
+            opacity={viewMode === "wireframe" ? wireframeOpacity : 0.2} 
+            blending={blendingMode}
+          />
+        </mesh>
+      )}
+
+      {viewMode === "particles" && (
+        <points geometry={geometry}>
+          <pointsMaterial 
+            color={wireframeColor} 
+            size={0.045} 
+            sizeAttenuation 
+            transparent 
+            opacity={0.8} 
+            blending={blendingMode}
+          />
+        </points>
+      )}
     </group>
   );
 }
@@ -210,13 +236,19 @@ function UAVModel({
   mouseY, 
   scrollY, 
   onIntroComplete,
-  onDroneClick
+  onDroneClick,
+  viewMode,
+  themeColor,
+  rotationSpeed
 }: { 
   mouseX: number; 
   mouseY: number; 
   scrollY: number;
   onIntroComplete?: () => void;
   onDroneClick?: () => void;
+  viewMode: "wireframe" | "solid" | "particles";
+  themeColor: "gold" | "cyan";
+  rotationSpeed: number;
 }) {
   const groupRef = useRef<THREE.Group>(null);
   const propRef = useRef<THREE.Mesh>(null);
@@ -288,7 +320,7 @@ function UAVModel({
     const ease = easeOutCubic(p);
 
     if (groupRef.current) {
-      const baseRotationY = state.clock.getElapsedTime() * 0.06;
+      const baseRotationY = state.clock.getElapsedTime() * rotationSpeed;
       const maxScroll = typeof window !== 'undefined' ? document.documentElement.scrollHeight - window.innerHeight : 1000;
       const scrollPercent = maxScroll > 0 ? scrollY / maxScroll : 0;
 
@@ -375,45 +407,53 @@ function UAVModel({
       onPointerOut={() => setHovered(false)}
     >
       {/* Scanning Laser HUD Ring */}
-      <ScanningLaser active={barrelRollRef.current.active} />
+      <ScanningLaser active={barrelRollRef.current.active} themeColor={themeColor} />
 
       {/* Flag component attached to the UAV Hangar Platform */}
-      <WavingFlag />
+      <WavingFlag themeColor={themeColor} />
 
       {/* Fuselage */}
-      <UAVPart geometry={geometries.fuselage} />
+      <UAVPart geometry={geometries.fuselage} viewMode={viewMode} themeColor={themeColor} />
       
       {/* Nose Cone */}
-      <UAVPart geometry={geometries.nose} position={[0, 1.7, 0]} />
+      <UAVPart geometry={geometries.nose} position={[0, 1.7, 0]} viewMode={viewMode} themeColor={themeColor} />
 
       {/* Main Wing */}
-      <UAVPart geometry={geometries.wing} position={[0, 0.4, 0]} />
-      <UAVEmblem position={[-1.0, 0.421, 0.0]} rotation={[-Math.PI / 2, 0, 0]} />
-      <UAVEmblem position={[1.0, 0.421, 0.0]} rotation={[-Math.PI / 2, 0, 0]} />
+      <UAVPart geometry={geometries.wing} position={[0, 0.4, 0]} viewMode={viewMode} themeColor={themeColor} />
+      {viewMode !== "particles" && (
+        <>
+          <UAVEmblem position={[-1.0, 0.421, 0.0]} rotation={[-Math.PI / 2, 0, 0]} />
+          <UAVEmblem position={[1.0, 0.421, 0.0]} rotation={[-Math.PI / 2, 0, 0]} />
+        </>
+      )}
 
       {/* Tail Booms */}
-      <UAVPart geometry={geometries.boom} position={[-0.45, -0.7, 0]} />
-      <UAVPart geometry={geometries.boom} position={[0.45, -0.7, 0]} />
+      <UAVPart geometry={geometries.boom} position={[-0.45, -0.7, 0]} viewMode={viewMode} themeColor={themeColor} />
+      <UAVPart geometry={geometries.boom} position={[0.45, -0.7, 0]} viewMode={viewMode} themeColor={themeColor} />
 
       {/* Horizontal Stabilizer */}
-      <UAVPart geometry={geometries.tailHoriz} position={[0, -1.5, 0]} />
+      <UAVPart geometry={geometries.tailHoriz} position={[0, -1.5, 0]} viewMode={viewMode} themeColor={themeColor} />
 
       {/* Vertical Stabilizers */}
-      <UAVPart geometry={geometries.tailVert} position={[-0.45, -1.4, 0.1]} />
-      <UAVPart geometry={geometries.tailVert} position={[0.45, -1.4, 0.1]} />
-      <UAVEmblem position={[-0.462, -1.4, 0.1]} rotation={[0, -Math.PI / 2, 0]} scale={[0.55, 0.55, 1]} />
-      <UAVEmblem position={[0.462, -1.4, 0.1]} rotation={[0, Math.PI / 2, 0]} scale={[0.55, 0.55, 1]} />
+      <UAVPart geometry={geometries.tailVert} position={[-0.45, -1.4, 0.1]} viewMode={viewMode} themeColor={themeColor} />
+      <UAVPart geometry={geometries.tailVert} position={[0.45, -1.4, 0.1]} viewMode={viewMode} themeColor={themeColor} />
+      {viewMode !== "particles" && (
+        <>
+          <UAVEmblem position={[-0.462, -1.4, 0.1]} rotation={[0, -Math.PI / 2, 0]} scale={[0.55, 0.55, 1]} />
+          <UAVEmblem position={[0.462, -1.4, 0.1]} rotation={[0, Math.PI / 2, 0]} scale={[0.55, 0.55, 1]} />
+        </>
+      )}
 
       {/* Propeller Hub */}
       <mesh position={[0, 1.95, 0]}>
         <sphereGeometry args={[0.08, 8, 8]} />
-        <meshBasicMaterial color="#FFFFFF" wireframe />
+        <meshBasicMaterial color={themeColor === "gold" ? "#D4A348" : "#00E5FF"} wireframe />
       </mesh>
 
       {/* Propeller Blades */}
       <mesh ref={propRef} position={[0, 1.95, 0]}>
         <boxGeometry args={[1.0, 0.02, 0.05]} />
-        <meshStandardMaterial color="#D4A348" metalness={0.9} roughness={0.1} />
+        <meshStandardMaterial color={themeColor === "gold" ? "#D4A348" : "#00E5FF"} metalness={0.9} roughness={0.1} />
       </mesh>
     </group>
   );
@@ -427,6 +467,12 @@ export default function HolographicUAV() {
   const [introDone, setIntroDone] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [clickActive, setClickActive] = useState(false);
+
+  // Simulation Console States
+  const [modelViewMode, setModelViewMode] = useState<"wireframe" | "solid" | "particles">("wireframe");
+  const [themeColor, setThemeColor] = useState<"gold" | "cyan">("gold");
+  const [rotationSpeed, setRotationSpeed] = useState<number>(0.06);
+
   const [hudStats, setHudStats] = useState({
     pitch: 0,
     roll: 0,
@@ -528,8 +574,16 @@ export default function HolographicUAV() {
       >
         <React.Suspense fallback={null}>
           <ambientLight intensity={0.25} />
-          <directionalLight position={[6, 12, 6]} intensity={2.5} color="#D4A348" />
-          <pointLight position={[-6, -4, -3]} intensity={3.5} color="#00E5FF" />
+          <directionalLight 
+            position={[6, 12, 6]} 
+            intensity={2.5} 
+            color={themeColor === "gold" ? "#D4A348" : "#00E5FF"} 
+          />
+          <pointLight 
+            position={[-6, -4, -3]} 
+            intensity={3.5} 
+            color={themeColor === "gold" ? "#00E5FF" : "#D4A348"} 
+          />
           <spotLight position={[0, 10, 2]} angle={0.4} penumbra={1} intensity={2} color="#FFFFFF" />
           
           <group rotation={[Math.PI / 3.2, 0, 0]}>
@@ -539,6 +593,9 @@ export default function HolographicUAV() {
               scrollY={scrollY} 
               onIntroComplete={() => setIntroDone(true)}
               onDroneClick={handleDroneClick}
+              viewMode={modelViewMode}
+              themeColor={themeColor}
+              rotationSpeed={rotationSpeed}
             />
           </group>
 
@@ -599,7 +656,8 @@ export default function HolographicUAV() {
           </div>
 
           {/* Mid-screen HUD */}
-          <div className="flex justify-between items-center w-full px-2 md:px-12 pointer-events-none">
+          <div className="flex justify-between items-start w-full px-2 md:px-12 pointer-events-none">
+            {/* Left Box */}
             <div className="bg-black/50 border border-[#D4A348]/20 p-4 rounded backdrop-blur-md flex flex-col gap-2 min-w-[120px] md:min-w-[160px] shadow-[0_0_15px_rgba(212,163,72,0.05)]">
               <div className="border-b border-[#D4A348]/10 pb-1 text-[#D4A348] font-bold text-[11px] md:text-sm">FLIGHT DATA</div>
               <div className="flex justify-between">
@@ -616,23 +674,100 @@ export default function HolographicUAV() {
               </div>
             </div>
 
-            <div className="bg-black/50 border border-[#D4A348]/20 p-4 rounded backdrop-blur-md flex flex-col gap-2 min-w-[120px] md:min-w-[160px] shadow-[0_0_15px_rgba(212,163,72,0.05)]">
-              <div className="border-b border-[#D4A348]/10 pb-1 text-[#D4A348] font-bold text-[11px] md:text-sm">GYROSCOPE</div>
-              <div className="flex justify-between">
-                <span className="text-white/40">PITCH:</span>
-                <span className={hudStats.pitch >= 0 ? "text-green-400" : "text-red-400"}>
-                  {hudStats.pitch > 0 ? `+${hudStats.pitch}` : hudStats.pitch}°
-                </span>
+            {/* Right Container (Gyroscope + Sim Control Panel) */}
+            <div className="flex flex-col">
+              {/* Gyroscope Box */}
+              <div className="bg-black/50 border border-[#D4A348]/20 p-4 rounded backdrop-blur-md flex flex-col gap-2 min-w-[120px] md:min-w-[160px] shadow-[0_0_15px_rgba(212,163,72,0.05)]">
+                <div className="border-b border-[#D4A348]/10 pb-1 text-[#D4A348] font-bold text-[11px] md:text-sm">GYROSCOPE</div>
+                <div className="flex justify-between">
+                  <span className="text-white/40">PITCH:</span>
+                  <span className={hudStats.pitch >= 0 ? "text-green-400" : "text-red-400"}>
+                    {hudStats.pitch > 0 ? `+${hudStats.pitch}` : hudStats.pitch}°
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-white/40">ROLL:</span>
+                  <span className={hudStats.roll >= 0 ? "text-green-400" : "text-red-400"}>
+                    {hudStats.roll > 0 ? `+${hudStats.roll}` : hudStats.roll}°
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-white/40">YAW (HDG):</span>
+                  <span className="text-white font-bold">{hudStats.yaw}°</span>
+                </div>
               </div>
-              <div className="flex justify-between">
-                <span className="text-white/40">ROLL:</span>
-                <span className={hudStats.roll >= 0 ? "text-green-400" : "text-red-400"}>
-                  {hudStats.roll > 0 ? `+${hudStats.roll}` : hudStats.roll}°
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-white/40">YAW (HDG):</span>
-                <span className="text-white font-bold">{hudStats.yaw}°</span>
+
+              {/* Simulation Interactive Control Panel */}
+              <div className="bg-black/85 border border-[#D4A348]/25 p-3 rounded backdrop-blur-md flex flex-col gap-2.5 min-w-[120px] md:min-w-[160px] shadow-[0_0_20px_rgba(212,163,72,0.1)] pointer-events-auto mt-4 transition-all z-30">
+                <div className="border-b border-[#D4A348]/20 pb-0.5 text-[#D4A348] font-bold text-[9px] md:text-[10px] tracking-wider uppercase">SIM_CONTROL</div>
+                
+                {/* Mesh Mode */}
+                <div className="flex flex-col gap-1">
+                  <span className="text-white/40 text-[7px] md:text-[8px] uppercase">MESH MODE</span>
+                  <div className="grid grid-cols-3 gap-0.5 md:gap-1">
+                    {(["solid", "wireframe", "particles"] as const).map((mode) => (
+                      <button
+                        key={mode}
+                        onClick={() => setModelViewMode(mode)}
+                        className={`px-0.5 py-0.5 rounded text-[6.5px] md:text-[8px] border transition-all uppercase ${
+                          modelViewMode === mode
+                            ? "bg-[#D4A348]/20 border-[#D4A348] text-[#D4A348] font-bold"
+                            : "bg-black/40 border-white/5 text-white/50 hover:border-white/20"
+                        }`}
+                      >
+                        {mode === "wireframe" ? "wire" : mode === "particles" ? "part" : "solid"}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Beacon Color */}
+                <div className="flex flex-col gap-1">
+                  <span className="text-white/40 text-[7px] md:text-[8px] uppercase">LASER COLOR</span>
+                  <div className="grid grid-cols-2 gap-0.5 md:gap-1">
+                    {(["gold", "cyan"] as const).map((color) => (
+                      <button
+                        key={color}
+                        onClick={() => setThemeColor(color)}
+                        className={`px-1 py-0.5 rounded text-[6.5px] md:text-[8px] border transition-all uppercase ${
+                          themeColor === color
+                            ? color === "gold"
+                              ? "bg-[#D4A348]/20 border-[#D4A348] text-[#D4A348] font-bold"
+                              : "bg-[#00E5FF]/20 border-[#00E5FF] text-[#00E5FF] font-bold"
+                            : "bg-black/40 border-white/5 text-white/50 hover:border-white/20"
+                        }`}
+                      >
+                        {color}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Rotation toggle */}
+                <div className="flex flex-col gap-1">
+                  <span className="text-white/40 text-[7px] md:text-[8px] uppercase">ROTATION</span>
+                  <button
+                    onClick={() => setRotationSpeed(rotationSpeed === 0 ? 0.06 : 0)}
+                    className={`w-full py-0.5 rounded text-[6.5px] md:text-[8px] border transition-all uppercase ${
+                      rotationSpeed > 0
+                        ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-400 font-bold"
+                        : "bg-red-500/10 border-red-500/30 text-red-400 font-bold"
+                    }`}
+                  >
+                    {rotationSpeed > 0 ? "SPIN: ON" : "SPIN: OFF"}
+                  </button>
+                </div>
+
+                {/* Stunt trigger */}
+                <div className="flex flex-col gap-1">
+                  <span className="text-white/40 text-[7px] md:text-[8px] uppercase">MANEUVER</span>
+                  <button
+                    onClick={handleDroneClick}
+                    className="w-full py-0.5 md:py-1 rounded text-[6.5px] md:text-[8px] border border-[#D4A348]/40 hover:border-[#D4A348] bg-[#D4A348]/10 hover:bg-[#D4A348]/20 text-[#D4A348] font-bold uppercase transition-all"
+                  >
+                    ROLL STUNT
+                  </button>
+                </div>
               </div>
             </div>
           </div>

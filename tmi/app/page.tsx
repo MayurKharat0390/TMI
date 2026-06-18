@@ -8,6 +8,9 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ArrowUpRight, Plane, Users, Award, ShieldAlert, Calendar, Trophy, Send, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { TechText } from "@/components/tech-text";
+import { GlowCard } from "@/components/glow-card";
+import { HudLogsTerminal } from "@/components/hud-logs-terminal";
 
 const HolographicUAV = dynamic(() => import("@/components/holographic-uav"), { ssr: false });
 const UAVHotspots = dynamic(() => import("@/components/uav-hotspots"), { ssr: false });
@@ -77,7 +80,7 @@ export default function Home() {
               className="mb-4"
             >
               <span className="px-3 py-1 rounded-full border border-[#D4A348]/30 bg-[#D4A348]/5 text-xs font-semibold uppercase tracking-[0.2em] text-[#D4A348] shadow-[0_0_15px_rgba(212,163,72,0.1)]">
-                Official Flight Hangar
+                <TechText text="Official Flight Hangar" trigger="mount" />
               </span>
             </motion.div>
 
@@ -87,7 +90,7 @@ export default function Home() {
               transition={{ duration: 1.2, delay: 0.6, ease: "easeOut" }}
               className="text-4xl md:text-7xl font-extrabold uppercase tracking-tight text-foreground mb-6 font-montserrat"
             >
-              ENGINEERING THE FUTURE OF <span className="text-[#D4A348] text-gold-glow">FLIGHT</span>
+              ENGINEERING THE FUTURE OF <span className="text-[#D4A348] text-gold-glow"><TechText text="FLIGHT" trigger="mount" /></span>
             </motion.h1>
 
             <motion.p
@@ -209,13 +212,15 @@ export default function Home() {
           {stats.map((stat) => {
             const Icon = stat.icon;
             return (
-              <div key={stat.id} className="glass-panel glass-panel-hover p-6 rounded-xl border border-white/5 flex flex-col items-center text-center">
-                <div className="p-3 rounded-lg bg-[#D4A348]/10 mb-4 border border-[#D4A348]/10">
+              <GlowCard key={stat.id} className="flex flex-col items-center text-center">
+                <div className="p-3 rounded-lg bg-[#D4A348]/10 mb-4 border border-[#D4A348]/10 w-fit">
                   <Icon className="w-6 h-6 text-[#D4A348]" />
                 </div>
-                <span className="text-3xl md:text-4xl font-extrabold text-foreground mb-1 font-montserrat">{stat.count}</span>
-                <span className="text-xs text-muted-foreground font-medium tracking-wider uppercase">{stat.label}</span>
-              </div>
+                <span className="text-3xl md:text-4xl font-extrabold text-foreground mb-1 font-montserrat">
+                  <TechText text={stat.count} trigger="view" />
+                </span>
+                <span className="text-xs text-muted-foreground font-medium tracking-wider uppercase block mt-1">{stat.label}</span>
+              </GlowCard>
             );
           })}
         </div>
@@ -285,6 +290,9 @@ export default function Home() {
         </div>
         <InfiniteMarquee />
       </section>
+
+      {/* Floating Telemetry Logs Terminal */}
+      <HudLogsTerminal />
     </div>
   );
 }

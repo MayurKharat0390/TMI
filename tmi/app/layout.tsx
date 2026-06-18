@@ -8,6 +8,7 @@ import { Toaster } from '@/components/ui/sonner';
 import { ScrollToTop } from '@/components/scroll-to-top';
 import { InfoButton } from '@/components/info-button';
 import { seoConfig } from '@/lib/seo';
+import { CustomCursor } from '@/components/custom-cursor';
 
 const inter = Inter({ subsets: ['latin'], display: 'swap' });
 
@@ -39,6 +40,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <div className="relative min-h-screen">
+            <CustomCursor />
             <Navbar />
             <main>
               {children}
