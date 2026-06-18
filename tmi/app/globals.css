@@ -190,4 +190,13 @@ html {
       linear-gradient(to right, rgba(223, 186, 115, 0.02) 1px, transparent 1px),
       linear-gradient(to bottom, rgba(223, 186, 115, 0.02) 1px, transparent 1px);
   }
+
+  /* Interactive Developer Mode Override Style */
+  html {
+    transition: filter 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  
+  .dev-override-mode {
+    filter: hue-rotate(130deg) saturate(1.6) contrast(1.1);
+  }
 }

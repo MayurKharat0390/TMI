@@ -838,6 +838,30 @@ export default function HolographicUAV() {
 
   useEffect(() => {
     setMounted(true);
+
+    const handleStunt = () => {
+      handleDroneClick();
+    };
+
+    const handleOverload = (e: Event) => {
+      const customEvent = e as CustomEvent;
+      const active = customEvent.detail?.active;
+      if (active) {
+        setRotationSpeed(0.6); // 10x faster spin
+        setModelViewMode("wireframe"); // Shift view mode to wireframe
+      } else {
+        setRotationSpeed(0.06); // Restore normal spin speed
+        setModelViewMode("solid"); // Restore solid view mode
+      }
+    };
+
+    window.addEventListener("trigger-uav-stunt", handleStunt);
+    window.addEventListener("trigger-uav-overload", handleOverload);
+
+    return () => {
+      window.removeEventListener("trigger-uav-stunt", handleStunt);
+      window.removeEventListener("trigger-uav-overload", handleOverload);
+    };
   }, []);
 
   useEffect(() => {

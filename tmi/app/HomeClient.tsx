@@ -15,6 +15,7 @@ const HolographicUAV = dynamic(() => import("@/components/holographic-uav"), { s
 const UAVHotspots = dynamic(() => import("@/components/uav-hotspots"), { ssr: false });
 const InfiniteMarquee = dynamic(() => import("@/components/marquee"), { ssr: false });
 const StarryBackground = dynamic(() => import("@/components/StarryBackground"), { ssr: false });
+const HudLogsTerminal = dynamic(() => import("@/components/hud-logs-terminal").then(mod => mod.HudLogsTerminal), { ssr: false });
 
 const testimonials = [
   {
@@ -270,6 +271,8 @@ export default function Home() {
         </div>
         <InfiniteMarquee />
       </section>
+
+      <HudLogsTerminal />
     </div>
   );
 }
