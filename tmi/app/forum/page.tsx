@@ -22,13 +22,13 @@ export default function ForumPage() {
                 <div className="container mx-auto px-6 relative z-10">
                     {/* Header Section */}
                     <div className="text-center mb-20 animate-in fade-in duration-700 ease-out">
-                        <h1 className="text-4xl md:text-5xl font-bold uppercase tracking-[0.25em] text-white mb-6">
+                        <h1 className="text-4xl md:text-5xl font-bold uppercase tracking-[0.25em] text-foreground mb-6">
                             FORUM
                         </h1>
                         <p className="text-[#DFBA73] text-lg font-semibold tracking-widest uppercase mb-4">
                             Team Maverick India Engagement & Activities
                         </p>
-                        <p className="text-white/60 text-sm md:text-base tracking-wide max-w-2xl mx-auto leading-relaxed">
+                        <p className="text-muted-foreground text-sm md:text-base tracking-wide max-w-2xl mx-auto leading-relaxed">
                             This space will showcase our circular activities including workshops, technical sessions, collaborative events, and knowledge-sharing initiatives conducted throughout the year.
                         </p>
                     </div>

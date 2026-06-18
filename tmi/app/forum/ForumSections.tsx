@@ -26,8 +26,8 @@ export default function ForumSections() {
                 <div
                     key={index}
                     className={cn(
-                        "rounded-xl border border-white/10 bg-white/5 p-8 text-center transition-all duration-300 ease-in-out",
-                        "hover:scale-105 hover:border-[#DFBA73]/30 hover:shadow-lg hover:shadow-black/30",
+                        "rounded-xl border border-border/80 bg-card/60 p-8 text-center transition-all duration-300 ease-in-out",
+                        "hover:scale-105 hover:border-[#DFBA73]/30 hover:shadow-lg hover:shadow-[#DFBA73]/5",
                         "animate-in fade-in slide-in-from-bottom-4 duration-700",
                     )}
                     style={{ animationDelay: `${index * 100}ms`, animationFillMode: 'both' }}
@@ -36,8 +36,8 @@ export default function ForumSections() {
                         {section.title}
                     </h3>
                     <div className="space-y-4">
-                        <p className="text-white font-semibold text-lg">Coming Soon</p>
-                        <p className="text-white/40 text-sm leading-relaxed">
+                        <p className="text-foreground font-semibold text-lg">Coming Soon</p>
+                        <p className="text-muted-foreground text-sm leading-relaxed">
                             We will update this section with upcoming activities.
                         </p>
                     </div>

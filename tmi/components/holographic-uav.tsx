@@ -266,6 +266,13 @@ function UAVModel({
   rotationSpeed: number;
 }) {
   const { clock } = useThree();
+  const { resolvedTheme } = useTheme();
+  const isDark = resolvedTheme === "dark";
+
+  const primaryColor = isDark ? "#171719" : "#E2E0DB";  // charcoal obsidian vs warm platinum
+  const wingColor = isDark ? "#1A1A1D" : "#ECE9E4";     // dark carbon vs silver-gold aluminum
+  const flapColor = isDark ? "#0E0E0F" : "#C7C4BE";     // matte black vs light matte gray
+
   const groupRef = useRef<THREE.Group>(null);
   const propRef = useRef<THREE.Mesh>(null);
   const [hovered, setHovered] = useState(false);
@@ -466,9 +473,9 @@ function UAVModel({
         position={[0, 0.1, 0]}
         viewMode={viewMode} 
         themeColor={themeColor} 
-        customColor="#171719"
-        metalness={0.85}
-        roughness={0.25}
+        customColor={primaryColor}
+        metalness={isDark ? 0.85 : 0.25}
+        roughness={isDark ? 0.25 : 0.4}
       />
       
       {/* Rear Tapered Fuselage (Smooth carbon obsidian) */}
@@ -477,9 +484,9 @@ function UAVModel({
         position={[0, -1.2, 0]}
         viewMode={viewMode} 
         themeColor={themeColor} 
-        customColor="#171719"
-        metalness={0.85}
-        roughness={0.25}
+        customColor={primaryColor}
+        metalness={isDark ? 0.85 : 0.25}
+        roughness={isDark ? 0.25 : 0.4}
       />
 
       {/* Nose Cone (Champagne Gold Leading Accent) */}
@@ -489,8 +496,8 @@ function UAVModel({
         viewMode={viewMode} 
         themeColor={themeColor} 
         customColor="#C5A059"
-        metalness={0.95}
-        roughness={0.15}
+        metalness={isDark ? 0.95 : 0.65}
+        roughness={isDark ? 0.15 : 0.35}
       />
 
       {/* Pitot Tube (Polished metallic silver) */}
@@ -508,8 +515,8 @@ function UAVModel({
         viewMode={viewMode} 
         themeColor={themeColor} 
         customColor="#C5A059"
-        metalness={0.95}
-        roughness={0.15}
+        metalness={isDark ? 0.95 : 0.65}
+        roughness={isDark ? 0.15 : 0.35}
       />
       
       {/* Sensor Gimbal Lens details */}
@@ -528,8 +535,8 @@ function UAVModel({
         viewMode={viewMode} 
         themeColor={themeColor} 
         customColor="#C5A059"
-        metalness={0.95}
-        roughness={0.15}
+        metalness={isDark ? 0.95 : 0.65}
+        roughness={isDark ? 0.15 : 0.35}
       />
       <UAVPart 
         geometry={geometries.intakeRight} 
@@ -538,8 +545,8 @@ function UAVModel({
         viewMode={viewMode} 
         themeColor={themeColor} 
         customColor="#C5A059"
-        metalness={0.95}
-        roughness={0.15}
+        metalness={isDark ? 0.95 : 0.65}
+        roughness={isDark ? 0.15 : 0.35}
       />
 
       {/* Main Wing Center Section */}
@@ -548,9 +555,9 @@ function UAVModel({
         position={[0, 0.4, 0]} 
         viewMode={viewMode} 
         themeColor={themeColor} 
-        customColor="#171719"
-        metalness={0.85}
-        roughness={0.25}
+        customColor={primaryColor}
+        metalness={isDark ? 0.85 : 0.25}
+        roughness={isDark ? 0.25 : 0.4}
       />
 
       {/* Swept Wings (Left & Right) */}
@@ -560,9 +567,9 @@ function UAVModel({
         rotation={[0.02, 0.22, 0.03]}
         viewMode={viewMode} 
         themeColor={themeColor} 
-        customColor="#1A1A1D"
-        metalness={0.9}
-        roughness={0.2}
+        customColor={wingColor}
+        metalness={isDark ? 0.9 : 0.25}
+        roughness={isDark ? 0.2 : 0.4}
       />
       <UAVPart 
         geometry={geometries.wingSweptRight} 
@@ -570,9 +577,9 @@ function UAVModel({
         rotation={[-0.02, -0.22, -0.03]}
         viewMode={viewMode} 
         themeColor={themeColor} 
-        customColor="#1A1A1D"
-        metalness={0.9}
-        roughness={0.2}
+        customColor={wingColor}
+        metalness={isDark ? 0.9 : 0.25}
+        roughness={isDark ? 0.2 : 0.4}
       />
 
       {/* Wing Flaps (Trailing edges - Matte black carbon texture) */}
@@ -582,9 +589,9 @@ function UAVModel({
         rotation={[0.02, 0.22, 0.03]}
         viewMode={viewMode} 
         themeColor={themeColor} 
-        customColor="#0E0E0F"
-        metalness={0.95}
-        roughness={0.1}
+        customColor={flapColor}
+        metalness={isDark ? 0.95 : 0.15}
+        roughness={isDark ? 0.1 : 0.5}
       />
       <UAVPart 
         geometry={geometries.wingFlap} 
@@ -592,9 +599,9 @@ function UAVModel({
         rotation={[-0.02, -0.22, -0.03]}
         viewMode={viewMode} 
         themeColor={themeColor} 
-        customColor="#0E0E0F"
-        metalness={0.95}
-        roughness={0.1}
+        customColor={flapColor}
+        metalness={isDark ? 0.95 : 0.15}
+        roughness={isDark ? 0.1 : 0.5}
       />
 
       {/* Winglets on Wingtips (Champagne Gold highlight) */}
@@ -605,8 +612,8 @@ function UAVModel({
         viewMode={viewMode} 
         themeColor={themeColor} 
         customColor="#C5A059"
-        metalness={0.95}
-        roughness={0.12}
+        metalness={isDark ? 0.95 : 0.65}
+        roughness={isDark ? 0.12 : 0.35}
       />
       <UAVPart 
         geometry={geometries.winglet} 
@@ -615,8 +622,8 @@ function UAVModel({
         viewMode={viewMode} 
         themeColor={themeColor} 
         customColor="#C5A059"
-        metalness={0.95}
-        roughness={0.12}
+        metalness={isDark ? 0.95 : 0.65}
+        roughness={isDark ? 0.12 : 0.35}
       />
       
       {viewMode !== "particles" && (
@@ -632,14 +639,18 @@ function UAVModel({
         position={[-0.45, -0.7, 0]} 
         viewMode={viewMode} 
         themeColor={themeColor} 
-        customColor="#171719"
+        customColor={primaryColor}
+        metalness={isDark ? 0.85 : 0.25}
+        roughness={isDark ? 0.25 : 0.4}
       />
       <UAVPart 
         geometry={geometries.boom} 
         position={[0.45, -0.7, 0]} 
         viewMode={viewMode} 
         themeColor={themeColor} 
-        customColor="#171719"
+        customColor={primaryColor}
+        metalness={isDark ? 0.85 : 0.25}
+        roughness={isDark ? 0.25 : 0.4}
       />
 
       {/* Horizontal Stabilizer (Matte charcoal) */}
@@ -648,7 +659,9 @@ function UAVModel({
         position={[0, -1.5, 0]} 
         viewMode={viewMode} 
         themeColor={themeColor} 
-        customColor="#1A1A1D"
+        customColor={wingColor}
+        metalness={isDark ? 0.85 : 0.25}
+        roughness={isDark ? 0.25 : 0.4}
       />
 
       {/* Vertical Stabilizers */}
@@ -657,14 +670,18 @@ function UAVModel({
         position={[-0.45, -1.4, 0.1]} 
         viewMode={viewMode} 
         themeColor={themeColor} 
-        customColor="#171719"
+        customColor={primaryColor}
+        metalness={isDark ? 0.85 : 0.25}
+        roughness={isDark ? 0.25 : 0.4}
       />
       <UAVPart 
         geometry={geometries.tailVert} 
         position={[0.45, -1.4, 0.1]} 
         viewMode={viewMode} 
         themeColor={themeColor} 
-        customColor="#171719"
+        customColor={primaryColor}
+        metalness={isDark ? 0.85 : 0.25}
+        roughness={isDark ? 0.25 : 0.4}
       />
       {viewMode !== "particles" && (
         <>
@@ -726,9 +743,9 @@ function UAVModel({
         rotation={[Math.PI / 2, 0, 0]} 
         viewMode={viewMode} 
         themeColor={themeColor} 
-        customColor="#171719"
-        metalness={0.95}
-        roughness={0.15}
+        customColor={isDark ? "#171719" : "#A8A59E"}
+        metalness={isDark ? 0.95 : 0.8}
+        roughness={isDark ? 0.15 : 0.2}
       />
       {/* Glowing Engine Core */}
       {viewMode !== "particles" && (
@@ -902,19 +919,19 @@ export default function HolographicUAV() {
         style={{ pointerEvents: "none" }}
       >
         <React.Suspense fallback={null}>
-          <ambientLight intensity={0.4} />
-          <hemisphereLight intensity={0.5} color="#ffffff" groundColor="#111115" />
+          <ambientLight intensity={isDark ? 0.4 : 1.2} />
+          <hemisphereLight intensity={isDark ? 0.5 : 0.9} color="#ffffff" groundColor={isDark ? "#111115" : "#e2e8f0"} />
           <directionalLight 
             position={[8, 12, 8]} 
-            intensity={3.0} 
+            intensity={isDark ? 3.0 : 4.5} 
             color={themeColor === "gold" ? "#DFBA73" : "#00E5FF"} 
           />
           <pointLight 
             position={[-8, -6, -4]} 
-            intensity={4.0} 
+            intensity={isDark ? 4.0 : 2.5} 
             color={themeColor === "gold" ? "#00E5FF" : "#DFBA73"} 
           />
-          <spotLight position={[0, 8, 4]} angle={0.5} penumbra={1} intensity={3} color="#FFFFFF" />
+          <spotLight position={[0, 8, 4]} angle={0.5} penumbra={1} intensity={isDark ? 3 : 4.5} color="#FFFFFF" />
           
           <group rotation={[Math.PI / 3.2, 0, 0]}>
             <UAVModel 
@@ -951,28 +968,28 @@ export default function HolographicUAV() {
           style={{ opacity: hudOpacity }}
         >
           {/* Top Panel */}
-          <div className="flex justify-between items-start w-full border-b border-[#DFBA73]/20 pb-4 bg-gradient-to-b from-black/40 to-transparent px-4">
+          <div className="flex justify-between items-start w-full border-b border-[#DFBA73]/20 pb-4 bg-gradient-to-b from-foreground/[0.04] to-transparent px-4">
             <div className="flex flex-col gap-1">
               <div className="flex items-center gap-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-[#DFBA73] animate-ping" />
                 <span className="text-[#DFBA73] font-bold">LINK STATUS: ONLINE</span>
               </div>
-              <span className="text-white/40">SYS_CONSOLE: V3.89_MAVERIK</span>
+              <span className="text-muted-foreground">SYS_CONSOLE: V3.89_MAVERIK</span>
             </div>
             
             <div className="text-center hidden md:block">
-              <span className="text-white/60">AUTOPILOT: </span>
+              <span className="text-muted-foreground">AUTOPILOT: </span>
               <span className="text-[#DFBA73] font-semibold">{hudStats.status}</span>
             </div>
 
             <div className="text-right">
-              <span className="text-white/40">FREQ: 915.00 MHz</span>
+              <span className="text-muted-foreground">FREQ: 915.00 MHz</span>
               <div className="text-[#DFBA73] font-semibold">SIG: 98% (EXCELLENT)</div>
             </div>
           </div>
 
           {/* Center Crosshair Reticle */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 border border-white/5 rounded-full flex items-center justify-center">
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 border border-foreground/5 dark:border-white/5 rounded-full flex items-center justify-center">
             <div className="w-1 h-1 bg-[#DFBA73] rounded-full" />
             <div className="absolute top-0 w-[1px] h-3 bg-[#DFBA73]/40" />
             <div className="absolute bottom-0 w-[1px] h-3 bg-[#DFBA73]/40" />
@@ -994,33 +1011,33 @@ export default function HolographicUAV() {
             {!isMobile && (
               <div className="flex flex-col">
                 {/* Gyroscope Box */}
-                <div className="bg-black/50 border border-[#DFBA73]/20 p-4 rounded backdrop-blur-md flex flex-col gap-2 min-w-[120px] md:min-w-[160px] shadow-[0_0_15px_rgba(212,163,72,0.05)]">
+                <div className="bg-card/75 dark:bg-black/50 border border-[#DFBA73]/20 p-4 rounded backdrop-blur-md flex flex-col gap-2 min-w-[120px] md:min-w-[160px] shadow-[0_0_15px_rgba(212,163,72,0.05)]">
                   <div className="border-b border-[#DFBA73]/10 pb-1 text-[#DFBA73] font-bold text-[11px] md:text-sm">GYROSCOPE</div>
                   <div className="flex justify-between">
-                    <span className="text-white/40">PITCH:</span>
-                    <span className={hudStats.pitch >= 0 ? "text-green-400" : "text-red-400"}>
+                    <span className="text-muted-foreground">PITCH:</span>
+                    <span className={hudStats.pitch >= 0 ? "text-green-500" : "text-red-500"}>
                       {hudStats.pitch > 0 ? `+${hudStats.pitch}` : hudStats.pitch}°
                     </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-white/40">ROLL:</span>
-                    <span className={hudStats.roll >= 0 ? "text-green-400" : "text-red-400"}>
+                    <span className="text-muted-foreground">ROLL:</span>
+                    <span className={hudStats.roll >= 0 ? "text-green-500" : "text-red-500"}>
                       {hudStats.roll > 0 ? `+${hudStats.roll}` : hudStats.roll}°
                     </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-white/40">YAW (HDG):</span>
-                    <span className="text-white font-bold">{hudStats.yaw}°</span>
+                    <span className="text-muted-foreground">YAW (HDG):</span>
+                    <span className="text-foreground font-bold">{hudStats.yaw}°</span>
                   </div>
                 </div>
 
                 {/* Simulation Interactive Control Panel */}
-                <div className="bg-black/85 border border-[#DFBA73]/25 p-3 rounded backdrop-blur-md flex flex-col gap-2.5 min-w-[120px] md:min-w-[160px] shadow-[0_0_20px_rgba(212,163,72,0.1)] pointer-events-auto mt-4 transition-all z-30">
+                <div className="bg-card/90 dark:bg-black/85 border border-[#DFBA73]/25 p-3 rounded backdrop-blur-md flex flex-col gap-2.5 min-w-[120px] md:min-w-[160px] shadow-[0_0_20px_rgba(212,163,72,0.1)] pointer-events-auto mt-4 transition-all z-30">
                   <div className="border-b border-[#DFBA73]/20 pb-0.5 text-[#DFBA73] font-bold text-[9px] md:text-[10px] tracking-wider uppercase">SIM_CONTROL</div>
                   
                   {/* Mesh Mode */}
                   <div className="flex flex-col gap-1">
-                    <span className="text-white/40 text-[7px] md:text-[8px] uppercase">MESH MODE</span>
+                    <span className="text-muted-foreground text-[7px] md:text-[8px] uppercase">MESH MODE</span>
                     <div className="grid grid-cols-3 gap-0.5 md:gap-1">
                       {(["solid", "wireframe", "particles"] as const).map((mode) => (
                         <button
@@ -1029,7 +1046,7 @@ export default function HolographicUAV() {
                           className={`px-0.5 py-0.5 rounded text-[6.5px] md:text-[8px] border transition-all uppercase ${
                             modelViewMode === mode
                               ? "bg-[#DFBA73]/20 border-[#DFBA73] text-[#DFBA73] font-bold"
-                              : "bg-black/40 border-white/5 text-white/50 hover:border-white/20"
+                              : "bg-background/40 border-border dark:border-white/5 text-muted-foreground hover:border-foreground/20 dark:hover:border-white/20"
                           }`}
                         >
                           {mode === "wireframe" ? "wire" : mode === "particles" ? "part" : "solid"}
@@ -1040,7 +1057,7 @@ export default function HolographicUAV() {
 
                   {/* Beacon Color */}
                   <div className="flex flex-col gap-1">
-                    <span className="text-white/40 text-[7px] md:text-[8px] uppercase">LASER COLOR</span>
+                    <span className="text-muted-foreground text-[7px] md:text-[8px] uppercase">LASER COLOR</span>
                     <div className="grid grid-cols-2 gap-0.5 md:gap-1">
                       {(["gold", "cyan"] as const).map((color) => (
                         <button
@@ -1051,7 +1068,7 @@ export default function HolographicUAV() {
                               ? color === "gold"
                                 ? "bg-[#DFBA73]/20 border-[#DFBA73] text-[#DFBA73] font-bold"
                                 : "bg-[#00E5FF]/20 border-[#00E5FF] text-[#00E5FF] font-bold"
-                              : "bg-black/40 border-white/5 text-white/50 hover:border-white/20"
+                              : "bg-background/40 border-border dark:border-white/5 text-muted-foreground hover:border-foreground/20 dark:hover:border-white/20"
                           }`}
                         >
                           {color}
@@ -1062,13 +1079,13 @@ export default function HolographicUAV() {
 
                   {/* Rotation toggle */}
                   <div className="flex flex-col gap-1">
-                    <span className="text-white/40 text-[7px] md:text-[8px] uppercase">ROTATION</span>
+                    <span className="text-muted-foreground text-[7px] md:text-[8px] uppercase">ROTATION</span>
                     <button
                       onClick={() => setRotationSpeed(rotationSpeed === 0 ? 0.06 : 0)}
                       className={`w-full py-0.5 rounded text-[6.5px] md:text-[8px] border transition-all uppercase ${
                         rotationSpeed > 0
-                          ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-400 font-bold"
-                          : "bg-red-500/10 border-red-500/30 text-red-400 font-bold"
+                          ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-500 dark:text-emerald-400 font-bold"
+                          : "bg-red-500/10 border-red-500/30 text-red-500 dark:text-red-400 font-bold"
                       }`}
                     >
                       {rotationSpeed > 0 ? "SPIN: ON" : "SPIN: OFF"}
@@ -1077,7 +1094,7 @@ export default function HolographicUAV() {
 
                   {/* Stunt trigger */}
                   <div className="flex flex-col gap-1">
-                    <span className="text-white/40 text-[7px] md:text-[8px] uppercase">MANEUVER</span>
+                    <span className="text-muted-foreground text-[7px] md:text-[8px] uppercase">MANEUVER</span>
                     <button
                       onClick={handleDroneClick}
                       className="w-full py-0.5 md:py-1 rounded text-[6.5px] md:text-[8px] border border-[#DFBA73]/40 hover:border-[#DFBA73] bg-[#DFBA73]/10 hover:bg-[#DFBA73]/20 text-[#DFBA73] font-bold uppercase transition-all"
@@ -1091,17 +1108,17 @@ export default function HolographicUAV() {
           </div>
 
           {/* Bottom Panel */}
-          <div className="flex justify-between items-end w-full border-t border-[#DFBA73]/20 pt-4 bg-gradient-to-t from-black/40 to-transparent px-4">
+          <div className="flex justify-between items-end w-full border-t border-[#DFBA73]/20 pt-4 bg-gradient-to-t from-foreground/[0.03] to-transparent px-4">
             <div>
-              <span className="text-white/40">SYS_TEMP: </span>
-              <span className="text-green-400">32.4°C (STABLE)</span>
+              <span className="text-muted-foreground">SYS_TEMP: </span>
+              <span className="text-green-500 dark:text-green-400 font-bold">32.4°C (STABLE)</span>
             </div>
-            <div className="hidden sm:block text-center text-white/30 text-[9px]">
+            <div className="hidden sm:block text-center text-muted-foreground/80 text-[9px]">
               TMI UAV HANGAR SYSTEM INC. // PUNE, IN // 18°39'N 73°50'E
             </div>
             <div className="text-right">
-              <span className="text-white/40">POWER: </span>
-              <span className="text-white font-bold">22.8V [LI-PO]</span>
+              <span className="text-muted-foreground">POWER: </span>
+              <span className="text-foreground font-bold">22.8V [LI-PO]</span>
             </div>
           </div>
         </div>
