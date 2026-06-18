@@ -895,11 +895,11 @@ export default function HolographicUAV() {
   const hudOpacity = Math.max(0, 1 - scrollY / 600);
 
   return (
-    <div className="fixed inset-0 w-screen h-screen z-[5] pointer-events-none">
+    <div className="fixed inset-0 w-screen h-screen z-[20] pointer-events-none">
       <Canvas
         camera={{ position: [0, 2, 5.5], fov: 50 }}
         gl={{ antialias: true }}
-        style={{ pointerEvents: isMobile ? "none" : "auto" }}
+        style={{ pointerEvents: "none" }}
       >
         <React.Suspense fallback={null}>
           <ambientLight intensity={0.4} />
@@ -987,22 +987,8 @@ export default function HolographicUAV() {
 
           {/* Mid-screen HUD */}
           <div className="flex justify-between items-start w-full px-2 md:px-12 pointer-events-none">
-            {/* Left Box */}
-            <div className="bg-black/50 border border-[#DFBA73]/20 p-4 rounded backdrop-blur-md flex flex-col gap-2 min-w-[120px] md:min-w-[160px] shadow-[0_0_15px_rgba(212,163,72,0.05)]">
-              <div className="border-b border-[#DFBA73]/10 pb-1 text-[#DFBA73] font-bold text-[11px] md:text-sm">FLIGHT DATA</div>
-              <div className="flex justify-between">
-                <span className="text-white/40">AIRSPEED:</span>
-                <span className="text-white font-bold">{hudStats.speed} m/s</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-white/40">ALTITUDE:</span>
-                <span className="text-white font-bold">{hudStats.altitude} m</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-white/40">THRUST:</span>
-                <span className="text-white font-bold">{hudStats.thrust}%</span>
-              </div>
-            </div>
+            {/* Left Box (Removed as requested) */}
+            <div />
 
             {/* Right Container (Gyroscope + Sim Control Panel) */}
             <div className="flex flex-col">
