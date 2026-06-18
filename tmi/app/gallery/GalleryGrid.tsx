@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
@@ -59,12 +59,14 @@ const cardVariants = {
   }
 };
 
+const sortedYears = Object.keys(galleries).sort((a, b) => Number(b) - Number(a));
+
 export default function GalleryGrid() {
-    const sortedYears = Object.keys(galleries).sort((a, b) => Number(b) - Number(a));
     const rowRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
     const [modalYear, setModalYear] = useState<string | null>(null);
     const [modalIndex, setModalIndex] = useState<number | null>(null);
+    const [hoveredRow, setHoveredRow] = useState<string | null>(null);
 
     const closeModal = () => { setModalYear(null); setModalIndex(null); };
     const goPrev = () => {
@@ -88,6 +90,34 @@ export default function GalleryGrid() {
         });
     };
 
+    // Autoplay slideshow effect for horizontal lanes
+    useEffect(() => {
+        const intervals = sortedYears.map((year) => {
+            return setInterval(() => {
+                // Do not auto-scroll if row is hovered, or if modal preview is active
+                if (hoveredRow === year || modalYear !== null) return;
+
+                const container = rowRefs.current[year];
+                if (!container) return;
+
+                const maxScroll = container.scrollWidth - container.clientWidth;
+                if (container.scrollLeft >= maxScroll - 8) {
+                    // Smooth wrap back to start
+                    container.scrollTo({ left: 0, behavior: "smooth" });
+                } else {
+                    // Scroll by one card width + gap
+                    const firstChild = container.firstElementChild as HTMLElement;
+                    const cardWidth = firstChild?.clientWidth || 240;
+                    container.scrollBy({ left: cardWidth + 16, behavior: "smooth" });
+                }
+            }, 4500); // Trigger scroll every 4.5 seconds
+        });
+
+        return () => {
+            intervals.forEach((interval) => clearInterval(interval));
+        };
+    }, [hoveredRow, modalYear]);
+
     return (
         <>
             <div className="space-y-16">
@@ -96,7 +126,12 @@ export default function GalleryGrid() {
                     const hasImages = images.length > 0;
 
                     return (
-                        <div key={year} className="relative group/row border-b border-[#D4A348]/10 pb-12 last:border-0">
+                        <div 
+                            key={year} 
+                            onMouseEnter={() => setHoveredRow(year)}
+                            onMouseLeave={() => setHoveredRow(null)}
+                            className="relative group/row border-b border-[#D4A348]/10 pb-12 last:border-0"
+                        >
                             {/* Section header */}
                             <div className="flex items-center gap-5 mb-8 text-left select-none">
                                 <span
