@@ -313,7 +313,7 @@ function PlaneTimelineItem({
         <div className={`w-full md:w-1/2 ${index % 2 === 0 ? 'md:pr-14' : 'md:pl-14'}`}>
           
           <TiltCard className={cn(
-            "glass-panel text-foreground overflow-hidden relative flex flex-col h-full border border-white/5 shadow-2xl transition-all duration-300",
+            "glass-panel text-foreground overflow-hidden relative flex flex-col h-full border border-[#DFBA73]/15 dark:border-white/5 shadow-2xl transition-all duration-300",
             isAnyActive ? "z-20" : "z-10"
           )}>
             

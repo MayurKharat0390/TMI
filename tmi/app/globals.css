@@ -141,8 +141,13 @@ html {
   }
 
   .glass-panel {
-    background: rgba(10, 10, 10, 0.65);
+    background: rgba(255, 255, 255, 0.75);
     backdrop-filter: blur(12px);
+    border: 1px solid rgba(223, 186, 115, 0.15);
+  }
+
+  .dark .glass-panel {
+    background: rgba(10, 10, 10, 0.65);
     border: 1px solid rgba(223, 186, 115, 0.08);
   }
 
@@ -151,6 +156,12 @@ html {
   }
 
   .glass-panel-hover:hover {
+    background: rgba(245, 245, 245, 0.85);
+    border-color: rgba(223, 186, 115, 0.25);
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.05);
+  }
+
+  .dark .glass-panel-hover:hover {
     background: rgba(20, 20, 20, 0.8);
     border-color: rgba(223, 186, 115, 0.25);
     box-shadow: 0 0 30px rgba(223, 186, 115, 0.12);
