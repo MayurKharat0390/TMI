@@ -54,6 +54,10 @@ const config: Config = {
         input: 'hsl(var(--input))',
         ring: 'hsl(var(--ring))',
       },
+      fontFamily: {
+        sans: ['var(--font-jost)', 'sans-serif'],
+        montserrat: ['var(--font-montserrat)', 'sans-serif'],
+      },
       keyframes: {
         'accordion-down': {
           from: { height: '0' },

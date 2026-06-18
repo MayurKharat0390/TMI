@@ -6,11 +6,18 @@ import { TiltCard } from "@/components/tilt-card";
 import Image from "next/image";
 import { motion } from "framer-motion";
 
+import { cn } from "@/lib/utils";
+
 export default function MemberCard({ member, index = 0 }: { member: any; index?: number }) {
   const [isHovered, setIsHovered] = useState(false);
+  const [imgSrc, setImgSrc] = useState(member.image);
 
   // Stagger delays based on grid position (cap delay at 0.5s to keep it snappy)
   const staggerDelay = Math.min(index * 0.05, 0.5);
+
+  const handleImgError = () => {
+    setImgSrc("/images/logo.png");
+  };
 
   return (
     <motion.div
@@ -43,11 +50,15 @@ export default function MemberCard({ member, index = 0 }: { member: any; index?:
             className="w-full h-full relative"
           >
             <Image
-              src={member.image}
+              src={imgSrc}
               alt={member.name}
               fill
               sizes="280px"
-              className="object-cover object-top transition-transform duration-500 ease-out group-hover:scale-105"
+              className={cn(
+                "transition-transform duration-500 ease-out group-hover:scale-105",
+                imgSrc === "/images/logo.png" ? "object-contain p-12 bg-black/40" : "object-cover object-top"
+              )}
+              onError={handleImgError}
             />
           </motion.div>
           

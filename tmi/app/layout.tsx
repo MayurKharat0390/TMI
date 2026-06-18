@@ -1,6 +1,6 @@
 import './globals.css';
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
+import { Inter, Montserrat, Jost } from 'next/font/google';
 import { ThemeProvider } from '@/components/theme-provider';
 import { Navbar } from '@/components/navbar';
 import { Footer } from '@/components/footer';
@@ -10,7 +10,23 @@ import { InfoButton } from '@/components/info-button';
 import { seoConfig } from '@/lib/seo';
 import { CustomCursor } from '@/components/custom-cursor';
 
-const inter = Inter({ subsets: ['latin'], display: 'swap' });
+const inter = Inter({ 
+  subsets: ['latin'], 
+  display: 'swap',
+  variable: '--font-inter',
+});
+
+const montserrat = Montserrat({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-montserrat',
+});
+
+const jost = Jost({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-jost',
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://www.team-maverick-india.com'),
@@ -33,7 +49,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head />
-      <body className={inter.className}>
+      <body className={`${inter.className} ${montserrat.variable} ${jost.variable}`}>
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
