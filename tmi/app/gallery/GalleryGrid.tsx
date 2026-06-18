@@ -130,7 +130,7 @@ export default function GalleryGrid() {
                             key={year} 
                             onMouseEnter={() => setHoveredRow(year)}
                             onMouseLeave={() => setHoveredRow(null)}
-                            className="relative group/row border-b border-[#D4A348]/10 pb-12 last:border-0"
+                            className="relative group/row border-b border-[#DFBA73]/10 pb-12 last:border-0"
                         >
                             {/* Section header */}
                             <div className="flex items-center gap-5 mb-8 text-left select-none">
@@ -150,7 +150,7 @@ export default function GalleryGrid() {
                                     </>
                                 ) : (
                                     <>
-                                        <span className="text-xs font-mono font-bold tracking-widest uppercase text-[#D4A348]/60 border border-[#D4A348]/20 rounded-full px-3 py-1">
+                                        <span className="text-xs font-mono font-bold tracking-widest uppercase text-[#DFBA73]/60 border border-[#DFBA73]/20 rounded-full px-3 py-1">
                                             Coming Soon
                                         </span>
                                         <div className="flex-1 h-[1px] bg-border/40 dark:bg-white/5" />
@@ -164,7 +164,7 @@ export default function GalleryGrid() {
                                     {/* Left Arrow Button */}
                                     <button
                                         onClick={() => scrollRow(year, "left")}
-                                        className="absolute left-2 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center rounded-full bg-black/85 border border-[#D4A348]/30 text-foreground hover:text-[#D4A348] hover:bg-[#D4A348]/10 hover:border-[#D4A348] opacity-0 group-hover/row:opacity-100 transition-all duration-300 z-20 pointer-events-auto hidden md:flex shadow-[0_0_15px_rgba(0,0,0,0.5)]"
+                                        className="absolute left-2 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center rounded-full bg-black/85 border border-[#DFBA73]/30 text-foreground hover:text-[#DFBA73] hover:bg-[#DFBA73]/10 hover:border-[#DFBA73] opacity-0 group-hover/row:opacity-100 transition-all duration-300 z-20 pointer-events-auto hidden md:flex shadow-[0_0_15px_rgba(0,0,0,0.5)]"
                                         aria-label="Scroll Left"
                                     >
                                         <ChevronLeft className="h-5 w-5" />
@@ -173,7 +173,7 @@ export default function GalleryGrid() {
                                     {/* Right Arrow Button */}
                                     <button
                                         onClick={() => scrollRow(year, "right")}
-                                        className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center rounded-full bg-black/85 border border-[#D4A348]/30 text-foreground hover:text-[#D4A348] hover:bg-[#D4A348]/10 hover:border-[#D4A348] opacity-0 group-hover/row:opacity-100 transition-all duration-300 z-20 pointer-events-auto hidden md:flex shadow-[0_0_15px_rgba(0,0,0,0.5)]"
+                                        className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center rounded-full bg-black/85 border border-[#DFBA73]/30 text-foreground hover:text-[#DFBA73] hover:bg-[#DFBA73]/10 hover:border-[#DFBA73] opacity-0 group-hover/row:opacity-100 transition-all duration-300 z-20 pointer-events-auto hidden md:flex shadow-[0_0_15px_rgba(0,0,0,0.5)]"
                                         aria-label="Scroll Right"
                                     >
                                         <ChevronRight className="h-5 w-5" />
@@ -192,7 +192,7 @@ export default function GalleryGrid() {
                                             <motion.div
                                                 key={image.id}
                                                 variants={cardVariants}
-                                                className="group relative aspect-video h-[180px] sm:h-[220px] shrink-0 rounded-xl bg-card border border-border/50 dark:border-white/5 hover:border-[#D4A348]/40 shadow-lg cursor-pointer overflow-hidden snap-start transition-colors duration-300 pointer-events-auto"
+                                                className="group relative aspect-video h-[180px] sm:h-[220px] shrink-0 rounded-xl bg-card border border-border/50 dark:border-white/5 hover:border-[#DFBA73]/40 shadow-lg cursor-pointer overflow-hidden snap-start transition-colors duration-300 pointer-events-auto"
                                                 onClick={() => { setModalYear(year); setModalIndex(index); }}
                                             >
                                                 <Image
@@ -207,7 +207,7 @@ export default function GalleryGrid() {
                                                 />
                                                 
                                                 {/* Tech HUD Hover Overlay */}
-                                                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-all duration-300 flex flex-col justify-between p-3 select-none pointer-events-none font-mono text-[8px] text-[#D4A348]">
+                                                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-all duration-300 flex flex-col justify-between p-3 select-none pointer-events-none font-mono text-[8px] text-[#DFBA73]">
                                                     {/* Top Panel */}
                                                     <div className="flex justify-between items-start">
                                                         <span>[SYS_PING: OK]</span>
@@ -215,12 +215,12 @@ export default function GalleryGrid() {
                                                     </div>
                                                     
                                                     {/* Center Reticle */}
-                                                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 border border-[#D4A348]/20 rounded-full flex items-center justify-center opacity-60">
-                                                        <div className="w-0.5 h-0.5 bg-[#D4A348] rounded-full" />
-                                                        <div className="absolute top-0 w-[1px] h-1.5 bg-[#D4A348]/40" />
-                                                        <div className="absolute bottom-0 w-[1px] h-1.5 bg-[#D4A348]/40" />
-                                                        <div className="absolute left-0 w-1.5 h-[1px] bg-[#D4A348]/40" />
-                                                        <div className="absolute right-0 w-1.5 h-[1px] bg-[#D4A348]/40" />
+                                                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 border border-[#DFBA73]/20 rounded-full flex items-center justify-center opacity-60">
+                                                        <div className="w-0.5 h-0.5 bg-[#DFBA73] rounded-full" />
+                                                        <div className="absolute top-0 w-[1px] h-1.5 bg-[#DFBA73]/40" />
+                                                        <div className="absolute bottom-0 w-[1px] h-1.5 bg-[#DFBA73]/40" />
+                                                        <div className="absolute left-0 w-1.5 h-[1px] bg-[#DFBA73]/40" />
+                                                        <div className="absolute right-0 w-1.5 h-[1px] bg-[#DFBA73]/40" />
                                                     </div>
 
                                                     {/* Bottom Panel */}
@@ -266,13 +266,13 @@ export default function GalleryGrid() {
                                     decoding="async"
                                 />
                                 <button
-                                    className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 flex items-center justify-center rounded-full bg-background/70 hover:bg-[#D4A348]/20 border border-border text-foreground hover:text-[#D4A348] transition-all"
+                                    className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 flex items-center justify-center rounded-full bg-background/70 hover:bg-[#DFBA73]/20 border border-border text-foreground hover:text-[#DFBA73] transition-all"
                                     onClick={goPrev}
                                 >
                                     <ChevronLeft className="h-5 w-5" />
                                 </button>
                                 <button
-                                    className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 flex items-center justify-center rounded-full bg-background/70 hover:bg-[#D4A348]/20 border border-border text-foreground hover:text-[#D4A348] transition-all"
+                                    className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 flex items-center justify-center rounded-full bg-background/70 hover:bg-[#DFBA73]/20 border border-border text-foreground hover:text-[#DFBA73] transition-all"
                                     onClick={goNext}
                                 >
                                     <ChevronRight className="h-5 w-5" />
@@ -283,7 +283,7 @@ export default function GalleryGrid() {
                             <div className="flex items-center justify-between px-5 py-3 border-t border-border bg-card/60 font-mono text-xs">
                                 <span className="text-muted-foreground">Season {modalYear} Flight logs</span>
                                 <span className="text-muted-foreground">
-                                    <span className="text-[#D4A348] font-bold">FRAME {modalIndex + 1}</span>
+                                    <span className="text-[#DFBA73] font-bold">FRAME {modalIndex + 1}</span>
                                     {" / "}
                                     {galleries[modalYear].length}
                                 </span>

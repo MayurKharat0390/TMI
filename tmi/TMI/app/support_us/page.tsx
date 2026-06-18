@@ -45,7 +45,7 @@ export default function FundraiserPage() {
       <div className="pt-24 pb-16 bg">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
-            <h1 className="text-5xl text-[#D4A348] font-bold mb-4">
+            <h1 className="text-5xl text-[#DFBA73] font-bold mb-4">
               Support Us !
             </h1>
             <p className="text-xl text-gray max-w-2xl mx-auto">
@@ -54,7 +54,7 @@ export default function FundraiserPage() {
           </div>
 
           <Card className="p-8 mb-16 border-2 border-[#292929] rounded-lg shadow-lg hover:shadow-[0_0_15px_rgba(255,255,255,0.2)]">
-            <h2 className="text-3xl text-[#D4A348] font-bold mb-4 text-center">Our Story</h2>
+            <h2 className="text-3xl text-[#DFBA73] font-bold mb-4 text-center">Our Story</h2>
             <p className="text-gray text-center mb-4">
               We are Team Maverick India, a dedicated group of young engineers from Pimpri Chinchwad College of Engineering, Pune, established in 2021. United by a shared passion for innovation and a commitment to creating impactful solutions, we embarked on a mission to design and build autonomous aircraft.
               Our journey has spanned the nation and the world, showcasing our exceptional skills and innovative spirit in prestigious competitions.
@@ -73,7 +73,7 @@ export default function FundraiserPage() {
               />
               <h3 className="text-2xl font-semibold mb-2">Donate on Ketto</h3>
               <Button
-                className="w-full mt-4 bg-[#D4A348] hover:bg-[#A47C2C] text-white"
+                className="w-full mt-4 bg-[#DFBA73] hover:bg-[#A47C2C] text-white"
                 onClick={() => window.open("https://www.ketto.org/fundraiser/team-maverick-india-redefining-boundaries", "_blank")}
               >
                 Donate via Ketto
@@ -88,7 +88,7 @@ export default function FundraiserPage() {
               />
               <h3 className="text-2xl font-semibold mb-2">Donate on GoFundMe</h3>
               <Button
-                className="w-full mt-4 bg-[#D4A348] hover:bg-[#A47C2C] text-white"
+                className="w-full mt-4 bg-[#DFBA73] hover:bg-[#A47C2C] text-white"
                 onClick={() => window.open("https://www.gofundme.com/f/support-team-mavericks-global-challenge", "_blank")}
               >
                 Donate via GoFundMe

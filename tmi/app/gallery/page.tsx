@@ -16,15 +16,15 @@ export default function GalleryPage() {
 
           {/* Header */}
           <div className="text-center mb-20">
-            <p className="text-[#D4A348] text-xs font-semibold tracking-[0.25em] uppercase mb-4">Our Journey</p>
+            <p className="text-[#DFBA73] text-xs font-semibold tracking-[0.25em] uppercase mb-4">Our Journey</p>
             <h1 className="text-5xl sm:text-7xl font-bold tracking-tight mb-4">Gallery</h1>
             <p className="text-muted-foreground text-base sm:text-lg">
               Moments from our competition seasons
             </p>
             <div className="mt-8 flex items-center justify-center gap-4">
-              <div className="h-px w-24 bg-gradient-to-r from-transparent to-[#D4A348]/50" />
-              <div className="w-1.5 h-1.5 rounded-full bg-[#D4A348]" />
-              <div className="h-px w-24 bg-gradient-to-l from-transparent to-[#D4A348]/50" />
+              <div className="h-px w-24 bg-gradient-to-r from-transparent to-[#DFBA73]/50" />
+              <div className="w-1.5 h-1.5 rounded-full bg-[#DFBA73]" />
+              <div className="h-px w-24 bg-gradient-to-l from-transparent to-[#DFBA73]/50" />
             </div>
           </div>
 

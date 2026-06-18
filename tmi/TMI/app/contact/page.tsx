@@ -105,22 +105,22 @@ export default function ContactPage() {
               <h2 className="text-2xl font-bold mb-6">Get in Touch</h2>
               <div className="space-y-4">
                 <div className="flex items-center space-x-3">
-                  <MapPin className="h-5 w-5 text-[#D4A348]" />
+                  <MapPin className="h-5 w-5 text-[#DFBA73]" />
                   <p>Team Maverick India, PCCoE, Pradhikaran, Akurdi, Pune, India</p>
                 </div>
 
                 <div className="flex items-center space-x-3">
-                  <Phone className="h-5 w-5 text-[#D4A348]" />
+                  <Phone className="h-5 w-5 text-[#DFBA73]" />
                   <p>Mr. Dwaipayan Dhar: +91 8454061436</p>
                 </div>
 
                 <div className="flex items-center space-x-3">
-                  <Phone className="h-5 w-5 text-[#D4A348]" />
+                  <Phone className="h-5 w-5 text-[#DFBA73]" />
                   <p>Ms. Riddhi Sonkusare: +91 8855937479</p>
                 </div>
 
                 <div className="flex items-center space-x-3">
-                  <Mail className="h-5 w-5 text-[#D4A348]" />
+                  <Mail className="h-5 w-5 text-[#DFBA73]" />
                   <p>teammaverickindia@pccoepune.org</p>
                 </div>
               </div>

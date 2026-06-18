@@ -32,7 +32,7 @@ export function InfoButton() {
       <Tooltip open={isOpen} onOpenChange={setIsOpen}>
         <TooltipTrigger asChild>
           <Button
-            className="fixed left-4 bottom-4 z-50 rounded-full p-2 hover:scale-110 transition-transform duration-200 hover:ring-2 hover:ring-[#D4A348] hover:ring-opacity-50"
+            className="fixed left-4 bottom-4 z-50 rounded-full p-2 hover:scale-110 transition-transform duration-200 hover:ring-2 hover:ring-[#DFBA73] hover:ring-opacity-50"
             size="icon"
             variant="outline"
             onMouseEnter={handleMouseEnter}
@@ -43,7 +43,7 @@ export function InfoButton() {
         </TooltipTrigger>
         <TooltipContent
           side="right"
-          className="bg-white dark:bg-gray-800 p-3 rounded-lg shadow-lg border border-[#D4A348] transition-all duration-200"
+          className="bg-white dark:bg-gray-800 p-3 rounded-lg shadow-lg border border-[#DFBA73] transition-all duration-200"
         >
           <p>
             Developed by{' '}
@@ -51,7 +51,7 @@ export function InfoButton() {
               href="https://saimehar.vercel.app/"
               target="_blank"
               rel="noopener noreferrer"
-              className="font-medium text-[#D4A348] hover:underline transition-colors duration-200"
+              className="font-medium text-[#DFBA73] hover:underline transition-colors duration-200"
             >
               Sai Mehar 
             </a> and {' '}
@@ -59,7 +59,7 @@ export function InfoButton() {
               href="https://github.com/Dash074"
               target="_blank"
               rel="noopener noreferrer"
-              className="font-medium text-[#D4A348] hover:underline transition-colors duration-200"
+              className="font-medium text-[#DFBA73] hover:underline transition-colors duration-200"
             >
               Darshan Nair
             </a>.

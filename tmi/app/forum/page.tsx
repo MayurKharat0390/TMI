@@ -28,7 +28,7 @@ export default function ForumPage() {
                         <h1 className="text-4xl md:text-5xl font-bold uppercase tracking-[0.25em] text-white mb-6">
                             FORUM
                         </h1>
-                        <p className="text-[#D4A348] text-lg font-semibold tracking-widest uppercase mb-4">
+                        <p className="text-[#DFBA73] text-lg font-semibold tracking-widest uppercase mb-4">
                             Team Maverick India Engagement & Activities
                         </p>
                         <p className="text-white/60 text-sm md:text-base tracking-wide max-w-2xl mx-auto leading-relaxed">

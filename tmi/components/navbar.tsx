@@ -50,8 +50,8 @@ export function Navbar() {
 
   return (
     <nav className={cn(
-      "fixed top-4 left-1/2 -translate-x-1/2 w-[95%] max-w-7xl z-50 bg-background/60 dark:bg-black/55 backdrop-blur-md border border-border dark:border-[#D4A348]/20 rounded-full shadow-[0_12px_40px_rgba(0,0,0,0.3)] transition-all duration-300 h-16 flex items-center px-4 sm:px-6",
-      scrolled ? "top-2 bg-background/85 dark:bg-black/85 dark:border-[#D4A348]/40 shadow-[0_4px_30px_rgba(0,0,0,0.6)]" : ""
+      "fixed top-4 left-1/2 -translate-x-1/2 w-[95%] max-w-7xl z-50 bg-background/60 dark:bg-black/55 backdrop-blur-md border border-border dark:border-[#DFBA73]/20 rounded-full shadow-[0_12px_40px_rgba(0,0,0,0.3)] transition-all duration-300 h-16 flex items-center px-4 sm:px-6",
+      scrolled ? "top-2 bg-background/85 dark:bg-black/85 dark:border-[#DFBA73]/40 shadow-[0_4px_30px_rgba(0,0,0,0.6)]" : ""
     )}>
       <div className="w-full flex items-center justify-between">
         <Link href="/" className="flex items-center space-x-2">
@@ -67,14 +67,14 @@ export function Navbar() {
               href={href}
               className={cn(
                 "relative px-4 py-1.5 text-xs font-mono font-semibold uppercase tracking-widest transition-colors duration-300",
-                isActive(href) ? "text-[#D4A348]" : "text-foreground/80 hover:text-[#D4A348]"
+                isActive(href) ? "text-[#DFBA73]" : "text-foreground/80 hover:text-[#DFBA73]"
               )}
             >
               {label}
               {isActive(href) && (
                 <motion.span
                   layoutId="activeNav"
-                  className="absolute inset-0 bg-[#D4A348]/10 border border-[#D4A348]/30 rounded-full -z-10 shadow-[0_0_10px_rgba(212,163,72,0.15)]"
+                  className="absolute inset-0 bg-[#DFBA73]/10 border border-[#DFBA73]/30 rounded-full -z-10 shadow-[0_0_10px_rgba(212,163,72,0.15)]"
                   transition={{ type: "spring", stiffness: 380, damping: 30 }}
                 />
               )}
@@ -85,7 +85,7 @@ export function Navbar() {
         <div className="flex items-center space-x-4">
           <div className="hidden lg:flex items-center space-x-2">
             {socialLinks.map(({ href, icon: Icon }) => (
-              <Button key={href} variant="ghost" size="icon" className="hover:text-[#D4A348] rounded-full h-8 w-8" asChild>
+              <Button key={href} variant="ghost" size="icon" className="hover:text-[#DFBA73] rounded-full h-8 w-8" asChild>
                 <Link href={href} target="_blank" rel="noopener noreferrer">
                   <Icon className="h-4 w-4" />
                 </Link>
@@ -96,7 +96,7 @@ export function Navbar() {
                 variant="ghost"
                 size="icon"
                 onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
-                className="hover:text-[#D4A348] text-foreground rounded-full h-8 w-8"
+                className="hover:text-[#DFBA73] text-foreground rounded-full h-8 w-8"
                 aria-label="Toggle Theme"
               >
                 {resolvedTheme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
@@ -116,7 +116,7 @@ export function Navbar() {
                   <Link
                     key={href}
                     href={href}
-                    className={cn("text-lg font-mono tracking-wider uppercase", isActive(href) ? "text-[#D4A348]" : "text-foreground")}
+                    className={cn("text-lg font-mono tracking-wider uppercase", isActive(href) ? "text-[#DFBA73]" : "text-foreground")}
                     onClick={() => setIsOpen(false)}
                   >
                     {label}
@@ -124,7 +124,7 @@ export function Navbar() {
                 ))}
                 <div className="flex space-x-4 mt-4">
                   {socialLinks.map(({ href, icon: Icon }) => (
-                    <Button key={href} variant="ghost" size="icon" className="hover:text-[#D4A348] rounded-full" asChild>
+                    <Button key={href} variant="ghost" size="icon" className="hover:text-[#DFBA73] rounded-full" asChild>
                       <Link href={href} target="_blank" rel="noopener noreferrer">
                         <Icon className="h-5 w-5" />
                       </Link>
@@ -138,7 +138,7 @@ export function Navbar() {
                         setTheme(resolvedTheme === "dark" ? "light" : "dark");
                         setIsOpen(false);
                       }}
-                      className="hover:text-[#D4A348] text-foreground rounded-full"
+                      className="hover:text-[#DFBA73] text-foreground rounded-full"
                       aria-label="Toggle Theme"
                     >
                       {resolvedTheme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}

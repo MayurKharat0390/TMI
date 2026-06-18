@@ -5,48 +5,48 @@
 
 @layer base {
   :root {
-    --background: 60 9% 98%;
-    --foreground: 20 14.3% 4.1%;
-    --card: 0 0% 100%;
-    --card-foreground: 20 14.3% 4.1%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 20 14.3% 4.1%;
-    --primary: 47.9 95.8% 53.1%;
-    --primary-foreground: 26 83.3% 14.1%;
-    --secondary: 80 10% 95.9%;
-    --secondary-foreground: 24 9.8% 10%;
-    --muted: 60 4.8% 95.9%;
-    --muted-foreground: 25 5.3% 44.7%;
-    --accent: 60 4.8% 95.9%;
-    --accent-foreground: 24 9.8% 10%;
+    --background: 35 20% 98%;
+    --foreground: 30 15% 10%;
+    --card: 35 20% 100%;
+    --card-foreground: 30 15% 10%;
+    --popover: 35 20% 100%;
+    --popover-foreground: 30 15% 10%;
+    --primary: 38 52% 56%;
+    --primary-foreground: 35 20% 98%;
+    --secondary: 35 10% 93%;
+    --secondary-foreground: 30 15% 10%;
+    --muted: 35 10% 93%;
+    --muted-foreground: 30 10% 45%;
+    --accent: 35 10% 93%;
+    --accent-foreground: 38 52% 56%;
     --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 60 9.1% 97.8%;
-    --border: 20 5.9% 90%;
-    --input: 20 5.9% 90%;
-    --ring: 20 14.3% 4.1%;
+    --destructive-foreground: 35 20% 98%;
+    --border: 35 10% 88%;
+    --input: 35 10% 88%;
+    --ring: 38 52% 56%;
     --radius: 0.75rem;
   }
 
   .dark {
-    --background: 20 14.3% 4.1%;
-    --foreground: 60 9.1% 97.8%;
-    --card: 20 14.3% 4.1%;
-    --card-foreground: 60 9.1% 97.8%;
-    --popover: 20 14.3% 4.1%;
-    --popover-foreground: 60 9.1% 97.8%;
-    --primary: 47.9 95.8% 53.1%;
-    --primary-foreground: 26 83.3% 14.1%;
-    --secondary: 12 6.5% 15.1%;
-    --secondary-foreground: 60 9.1% 97.8%;
-    --muted: 12 6.5% 15.1%;
-    --muted-foreground: 24 5.4% 63.9%;
-    --accent: 12 6.5% 15.1%;
-    --accent-foreground: 60 9.1% 97.8%;
+    --background: 30 10% 4%;
+    --foreground: 35 15% 90%;
+    --card: 30 8% 6%;
+    --card-foreground: 35 15% 90%;
+    --popover: 30 8% 6%;
+    --popover-foreground: 35 15% 90%;
+    --primary: 39 62% 66%;
+    --primary-foreground: 30 15% 5%;
+    --secondary: 30 6% 12%;
+    --secondary-foreground: 35 15% 90%;
+    --muted: 30 6% 12%;
+    --muted-foreground: 35 10% 60%;
+    --accent: 30 6% 12%;
+    --accent-foreground: 39 62% 66%;
     --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 60 9.1% 97.8%;
-    --border: 12 6.5% 15.1%;
-    --input: 12 6.5% 15.1%;
-    --ring: 35.5 91.7% 32.9%;
+    --destructive-foreground: 35 15% 90%;
+    --border: 35 12% 11%;
+    --input: 35 12% 11%;
+    --ring: 39 62% 66%;
   }
 }
 
@@ -129,21 +129,21 @@ html {
 
 @layer utilities {
   .text-gold-glow {
-    text-shadow: 0 0 10px rgba(212, 163, 72, 0.6), 0 0 20px rgba(212, 163, 72, 0.3);
+    text-shadow: 0 0 10px rgba(223, 186, 115, 0.5), 0 0 20px rgba(223, 186, 115, 0.25);
   }
   
   .border-gold-glow {
-    box-shadow: 0 0 15px rgba(212, 163, 72, 0.25), inset 0 0 15px rgba(212, 163, 72, 0.1);
+    box-shadow: 0 0 15px rgba(223, 186, 115, 0.2), inset 0 0 15px rgba(223, 186, 115, 0.08);
   }
 
   .bg-radial-glow {
-    background: radial-gradient(circle at center, rgba(212, 163, 72, 0.08) 0%, transparent 70%);
+    background: radial-gradient(circle at center, rgba(223, 186, 115, 0.06) 0%, transparent 70%);
   }
 
   .glass-panel {
     background: rgba(10, 10, 10, 0.65);
     backdrop-filter: blur(12px);
-    border: 1px solid rgba(212, 163, 72, 0.1);
+    border: 1px solid rgba(223, 186, 115, 0.08);
   }
 
   .glass-panel-hover {
@@ -152,8 +152,8 @@ html {
 
   .glass-panel-hover:hover {
     background: rgba(20, 20, 20, 0.8);
-    border-color: rgba(212, 163, 72, 0.35);
-    box-shadow: 0 0 30px rgba(212, 163, 72, 0.15);
+    border-color: rgba(223, 186, 115, 0.25);
+    box-shadow: 0 0 30px rgba(223, 186, 115, 0.12);
   }
 
   /* Scanline overlay effect */
@@ -176,7 +176,7 @@ html {
   .grid-pattern {
     background-size: 40px 40px;
     background-image: 
-      linear-gradient(to right, rgba(212, 163, 72, 0.03) 1px, transparent 1px),
-      linear-gradient(to bottom, rgba(212, 163, 72, 0.03) 1px, transparent 1px);
+      linear-gradient(to right, rgba(223, 186, 115, 0.02) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(223, 186, 115, 0.02) 1px, transparent 1px);
   }
 }

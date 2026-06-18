@@ -30,14 +30,14 @@ export function Footer() {
             <h3 className="text-lg font-semibold mb-4">Connect Us</h3>
             <ul className="space-y-3">
               <li className="text-muted-foreground flex items-center gap-2">
-                <Mail className="h-5 w-5 text-[#D4A348]" />
+                <Mail className="h-5 w-5 text-[#DFBA73]" />
                 Email:
-                <a href="mailto:teammaverickindia@pccoepune.org" className="hover:text-[#D4A348]">
+                <a href="mailto:teammaverickindia@pccoepune.org" className="hover:text-[#DFBA73]">
                   teammaverickindia@pccoepune.org
                 </a>
               </li>
               <li className="text-muted-foreground flex items-center gap-2">
-                <MapPin className="h-5 w-5 text-[#D4A348]" />
+                <MapPin className="h-5 w-5 text-[#DFBA73]" />
                 Location: PCCoE, Pune, India 411044
               </li>
             </ul>
@@ -55,7 +55,7 @@ export function Footer() {
                 href={href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-muted-foreground hover:text-[#D4A348]"
+                className="text-muted-foreground hover:text-[#DFBA73]"
               >
                 <Icon className="h-5 w-5" />
               </Link>

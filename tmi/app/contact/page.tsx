@@ -67,11 +67,11 @@ export default function ContactPage() {
           
           {/* Header */}
           <div className="text-center mb-16">
-            <span className="text-[#D4A348] text-xs font-bold uppercase tracking-[0.25em]">Sponsorship & Support</span>
+            <span className="text-[#DFBA73] text-xs font-bold uppercase tracking-[0.25em]">Sponsorship & Support</span>
             <h1 className="text-4xl md:text-6xl font-extrabold uppercase tracking-wide text-foreground mt-2 mb-4 font-montserrat">
-              CONTACT <span className="text-[#D4A348] text-gold-glow">US</span>
+              CONTACT <span className="text-[#DFBA73] text-gold-glow">US</span>
             </h1>
-            <div className="w-24 h-1 bg-[#D4A348] mx-auto rounded-full mb-6" />
+            <div className="w-24 h-1 bg-[#DFBA73] mx-auto rounded-full mb-6" />
             <p className="text-muted-foreground text-sm tracking-wide max-w-xl mx-auto leading-relaxed">
               "Send telemetry, report anomalies, or initiate collaboration with the Wolves."
             </p>
@@ -88,14 +88,14 @@ export default function ContactPage() {
             >
               <div className="glass-panel p-8 rounded-2xl border border-border/80 bg-card/60 backdrop-blur-md shadow-xl text-foreground">
                 <div className="flex items-center gap-3 mb-6">
-                  <Terminal className="w-5 h-5 text-[#D4A348]" />
+                  <Terminal className="w-5 h-5 text-[#DFBA73]" />
                   <h2 className="text-xl font-bold uppercase tracking-wider font-montserrat">COMMUNICATIONS HUB</h2>
                 </div>
                 
                 <div className="space-y-6">
                   <div className="flex items-start space-x-4">
-                    <div className="p-2.5 rounded-lg bg-[#D4A348]/10 border border-[#D4A348]/20 flex-shrink-0">
-                      <MapPin className="h-5 w-5 text-[#D4A348]" />
+                    <div className="p-2.5 rounded-lg bg-[#DFBA73]/10 border border-[#DFBA73]/20 flex-shrink-0">
+                      <MapPin className="h-5 w-5 text-[#DFBA73]" />
                     </div>
                     <div>
                       <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-0.5">Headquarters</h4>
@@ -104,8 +104,8 @@ export default function ContactPage() {
                   </div>
  
                   <div className="flex items-start space-x-4">
-                    <div className="p-2.5 rounded-lg bg-[#D4A348]/10 border border-[#D4A348]/20 flex-shrink-0">
-                      <Phone className="h-5 w-5 text-[#D4A348]" />
+                    <div className="p-2.5 rounded-lg bg-[#DFBA73]/10 border border-[#DFBA73]/20 flex-shrink-0">
+                      <Phone className="h-5 w-5 text-[#DFBA73]" />
                     </div>
                     <div>
                       <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-0.5">Primary Contacts</h4>
@@ -115,12 +115,12 @@ export default function ContactPage() {
                   </div>
  
                   <div className="flex items-start space-x-4">
-                    <div className="p-2.5 rounded-lg bg-[#D4A348]/10 border border-[#D4A348]/20 flex-shrink-0">
-                      <Mail className="h-5 w-5 text-[#D4A348]" />
+                    <div className="p-2.5 rounded-lg bg-[#DFBA73]/10 border border-[#DFBA73]/20 flex-shrink-0">
+                      <Mail className="h-5 w-5 text-[#DFBA73]" />
                     </div>
                     <div>
                       <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-0.5">NOC Mailbox</h4>
-                      <p className="text-sm text-[#D4A348] hover:underline">
+                      <p className="text-sm text-[#DFBA73] hover:underline">
                         <a href="mailto:teammaverickindia@pccoepune.org">teammaverickindia@pccoepune.org</a>
                       </p>
                     </div>
@@ -151,7 +151,7 @@ export default function ContactPage() {
             >
               <div className="glass-panel p-8 rounded-2xl border border-border/80 bg-card/60 backdrop-blur-md text-foreground shadow-xl">
                 <div className="flex items-center gap-3 mb-4">
-                  <Terminal className="w-5 h-5 text-[#D4A348]" />
+                  <Terminal className="w-5 h-5 text-[#DFBA73]" />
                   <h2 className="text-xl font-bold uppercase tracking-wider font-montserrat">SECURE CONSOLE</h2>
                 </div>
                 <p className="text-muted-foreground text-xs tracking-wide mb-6 leading-relaxed uppercase">
@@ -168,7 +168,7 @@ export default function ContactPage() {
                       value={formData.name}
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                       required
-                      className="bg-background/60 border-border focus-visible:ring-[#D4A348] text-foreground hover:border-[#D4A348]/40 transition-colors py-6"
+                      className="bg-background/60 border-border focus-visible:ring-[#DFBA73] text-foreground hover:border-[#DFBA73]/40 transition-colors py-6"
                       placeholder="e.g. John Doe"
                     />
                   </div>
@@ -183,7 +183,7 @@ export default function ContactPage() {
                       value={formData.email}
                       onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                       required
-                      className="bg-background/60 border-border focus-visible:ring-[#D4A348] text-foreground hover:border-[#D4A348]/40 transition-colors py-6"
+                      className="bg-background/60 border-border focus-visible:ring-[#DFBA73] text-foreground hover:border-[#DFBA73]/40 transition-colors py-6"
                       placeholder="e.g. john@example.com"
                     />
                   </div>
@@ -198,12 +198,12 @@ export default function ContactPage() {
                       onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                       required
                       rows={6}
-                      className="bg-background/60 border-border focus-visible:ring-[#D4A348] text-foreground hover:border-[#D4A348]/40 transition-colors"
+                      className="bg-background/60 border-border focus-visible:ring-[#DFBA73] text-foreground hover:border-[#DFBA73]/40 transition-colors"
                       placeholder="Describe your request, project context or sponsorship details..."
                     />
                   </div>
 
-                  <Button type="submit" className="w-full bg-[#D4A348] hover:bg-yellow-400 text-black font-bold uppercase tracking-wider py-6 transition-all duration-300 hover:scale-[1.02] shadow-[0_0_20px_rgba(212,163,72,0.2)] active:scale-[0.98] flex items-center justify-center gap-2">
+                  <Button type="submit" className="w-full bg-[#DFBA73] hover:bg-yellow-400 text-black font-bold uppercase tracking-wider py-6 transition-all duration-300 hover:scale-[1.02] shadow-[0_0_20px_rgba(212,163,72,0.2)] active:scale-[0.98] flex items-center justify-center gap-2">
                     <Send className="w-4 h-4" />
                     Transmit Signal
                   </Button>

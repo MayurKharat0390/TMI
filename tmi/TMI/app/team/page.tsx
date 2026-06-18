@@ -642,7 +642,7 @@ function MemberCard({ member }: { member: (typeof teamMembers)[0] }) {
           {member.email && (
             <a
               href={`mailto:${member.email}`}
-              className="text-muted-foreground hover:text-[#D4A348] transition-colors"
+              className="text-muted-foreground hover:text-[#DFBA73] transition-colors"
             >
               <Mail className="w-5 h-5" />
             </a>
@@ -652,7 +652,7 @@ function MemberCard({ member }: { member: (typeof teamMembers)[0] }) {
               href={member.linkedin}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-muted-foreground hover:text-[#D4A348] transition-colors"
+              className="text-muted-foreground hover:text-[#DFBA73] transition-colors"
             >
               <Linkedin className="w-5 h-5" />
             </a>

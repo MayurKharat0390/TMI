@@ -10,7 +10,7 @@ export default function MemberCard({ member }: { member: any }) {
 
     return (
         <div className="w-[280px] h-[430px] flex-shrink-0">
-            <TiltCard className={`bg-card/75 dark:bg-black/60 border border-[#D4A348]/10 backdrop-blur-md relative flex flex-col h-full group ${assembled ? "overflow-hidden" : "overflow-visible"}`}>
+            <TiltCard className={`bg-card/75 dark:bg-black/60 border border-[#DFBA73]/10 backdrop-blur-md relative flex flex-col h-full group ${assembled ? "overflow-hidden" : "overflow-visible"}`}>
                 <div className={`relative h-[280px] w-full ${assembled ? "overflow-hidden" : "overflow-visible"}`}>
                     <ParticleImage
                         src={member.image}
@@ -25,7 +25,7 @@ export default function MemberCard({ member }: { member: any }) {
                 
                 <div className="p-5 flex flex-col justify-between flex-grow relative z-10">
                     <div>
-                        <h3 className="font-bold text-lg text-foreground transition-colors duration-300 group-hover:text-[#D4A348] tracking-wide font-montserrat truncate">
+                        <h3 className="font-bold text-lg text-foreground transition-colors duration-300 group-hover:text-[#DFBA73] tracking-wide font-montserrat truncate">
                             {member.name}
                         </h3>
                         <p className="text-xs text-muted-foreground font-semibold uppercase tracking-wider mt-0.5 truncate">
@@ -39,7 +39,7 @@ export default function MemberCard({ member }: { member: any }) {
                                 {member.year} Batch
                             </span>
                         ) : (
-                            <span className="text-xs text-[#D4A348]/70 font-semibold tracking-wider uppercase">
+                            <span className="text-xs text-[#DFBA73]/70 font-semibold tracking-wider uppercase">
                                 Advisory Board
                             </span>
                         )}
@@ -48,7 +48,7 @@ export default function MemberCard({ member }: { member: any }) {
                             {member.email && (
                                 <a
                                     href={`mailto:${member.email}`}
-                                    className="text-muted-foreground hover:text-[#D4A348] transition-colors p-1 rounded-md hover:bg-accent"
+                                    className="text-muted-foreground hover:text-[#DFBA73] transition-colors p-1 rounded-md hover:bg-accent"
                                 >
                                     <Mail className="w-4 h-4" />
                                 </a>
@@ -58,7 +58,7 @@ export default function MemberCard({ member }: { member: any }) {
                                     href={member.linkedin}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="text-muted-foreground hover:text-[#D4A348] transition-colors p-1 rounded-md hover:bg-accent"
+                                    className="text-muted-foreground hover:text-[#DFBA73] transition-colors p-1 rounded-md hover:bg-accent"
                                 >
                                     <Linkedin className="w-4 h-4" />
                                 </a>
@@ -68,7 +68,7 @@ export default function MemberCard({ member }: { member: any }) {
                 </div>
                 
                 {/* Glowing bottom edge */}
-                <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#D4A348] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#DFBA73] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
             </TiltCard>
         </div>
     );

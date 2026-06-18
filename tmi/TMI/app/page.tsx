@@ -157,7 +157,7 @@ export default function Home() {
               {testimonials.map((_, index) => (
                 <button
                   key={index}
-                  className={`w-3 h-3 rounded-full ${currentIndex === index ? 'bg-[#D4A348]' : 'bg-gray-400'}`}
+                  className={`w-3 h-3 rounded-full ${currentIndex === index ? 'bg-[#DFBA73]' : 'bg-gray-400'}`}
                   onClick={() => goToTestimonial(index)}
                 />
               ))}

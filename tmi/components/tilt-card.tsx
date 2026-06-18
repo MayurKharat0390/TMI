@@ -59,7 +59,7 @@ export function TiltCard({ children, className = "" }: TiltCardProps) {
           rotateY: rotateYSpring,
           transformStyle: "preserve-3d",
         }}
-        className={`w-full h-full transition-shadow duration-300 hover:shadow-[0_0_35px_rgba(212,163,72,0.2)] rounded-xl border border-white/5 hover:border-[#D4A348]/20 bg-card ${className}`}
+        className={`w-full h-full transition-shadow duration-300 hover:shadow-[0_0_35px_rgba(212,163,72,0.2)] rounded-xl border border-white/5 hover:border-[#DFBA73]/20 bg-card ${className}`}
       >
         {/* Helper layout to support nested 3D elements */}
         <div style={{ transform: "translateZ(30px)" }} className="w-full h-full">

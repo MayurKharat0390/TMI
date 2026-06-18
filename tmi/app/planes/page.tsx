@@ -23,25 +23,34 @@ function RealityOverlay({
   active: boolean;
 }) {
   const [showReality, setShowReality] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
-    if (active) {
-      // Reveal 3D model first, then fade in the real image representation
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
+  useEffect(() => {
+    if (active || isMobile) {
       const timer = setTimeout(() => {
         setShowReality(true);
-      }, 600);
+      }, isMobile ? 0 : 600);
       return () => clearTimeout(timer);
     } else {
       setShowReality(false);
     }
-  }, [active]);
+  }, [active, isMobile]);
 
   return (
     <div
       className={cn(
         "absolute inset-0 w-full h-full transition-all duration-700 cubic-bezier(0.16, 1, 0.3, 1) pointer-events-none z-10 origin-center",
-        "group-hover/canvas:opacity-0 group-hover/canvas:scale-105 group-hover/canvas:translate-x-0 group-hover/canvas:rotate-0 group-hover/canvas:duration-300",
-        showReality 
+        !isMobile && "group-hover/canvas:opacity-0 group-hover/canvas:scale-105 group-hover/canvas:translate-x-0 group-hover/canvas:rotate-0 group-hover/canvas:duration-300",
+        (showReality || isMobile)
           ? "opacity-100 scale-100 translate-x-0 rotate-0" 
           : "opacity-0 scale-90 -translate-x-8 -rotate-2"
       )}
@@ -56,13 +65,13 @@ function RealityOverlay({
       <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent pointer-events-none" />
       
       {!isMini && (
-        <div className="absolute bottom-3 left-3 bg-[#D4A348]/90 text-black text-[9px] uppercase font-bold tracking-wider px-2 py-0.5 rounded flex items-center gap-1 shadow-[0_0_8px_rgba(212,163,72,0.4)]">
+        <div className="absolute bottom-3 left-3 bg-[#DFBA73]/90 text-black text-[9px] uppercase font-bold tracking-wider px-2 py-0.5 rounded flex items-center gap-1 shadow-[0_0_8px_rgba(212,163,72,0.4)]">
           <span className="w-1.5 h-1.5 rounded-full bg-black animate-pulse" />
           Physical UAV
         </div>
       )}
       {isMini && (
-        <div className="absolute bottom-2 right-2 bg-[#D4A348]/90 text-black text-[8px] uppercase font-bold tracking-wider px-1.5 py-0.5 rounded flex items-center gap-1 shadow-[0_0_8px_rgba(212,163,72,0.4)]">
+        <div className="absolute bottom-2 right-2 bg-[#DFBA73]/90 text-black text-[8px] uppercase font-bold tracking-wider px-1.5 py-0.5 rounded flex items-center gap-1 shadow-[0_0_8px_rgba(212,163,72,0.4)]">
           Reality
         </div>
       )}
@@ -77,24 +86,24 @@ function SciFiHUD({ active }: { active: boolean }) {
       active ? "opacity-100 scale-100" : "opacity-0 scale-95"
     )}>
       {/* Corner Brackets */}
-      <div className="absolute top-2 left-2 w-3.5 h-3.5 border-t-2 border-l-2 border-[#D4A348]/80 transition-all duration-500 group-hover/canvas:translate-x-[-2px] group-hover/canvas:translate-y-[-2px]" />
-      <div className="absolute top-2 right-2 w-3.5 h-3.5 border-t-2 border-r-2 border-[#D4A348]/80 transition-all duration-500 group-hover/canvas:translate-x-[2px] group-hover/canvas:translate-y-[2px]" />
-      <div className="absolute bottom-2 left-2 w-3.5 h-3.5 border-b-2 border-l-2 border-[#D4A348]/80 transition-all duration-500 group-hover/canvas:translate-x-[-2px] group-hover/canvas:translate-y-[2px]" />
-      <div className="absolute bottom-2 right-2 w-3.5 h-3.5 border-b-2 border-r-2 border-[#D4A348]/80 transition-all duration-500 group-hover/canvas:translate-x-[2px] group-hover/canvas:translate-y-[2px]" />
+      <div className="absolute top-2 left-2 w-3.5 h-3.5 border-t-2 border-l-2 border-[#DFBA73]/80 transition-all duration-500 group-hover/canvas:translate-x-[-2px] group-hover/canvas:translate-y-[-2px]" />
+      <div className="absolute top-2 right-2 w-3.5 h-3.5 border-t-2 border-r-2 border-[#DFBA73]/80 transition-all duration-500 group-hover/canvas:translate-x-[2px] group-hover/canvas:translate-y-[2px]" />
+      <div className="absolute bottom-2 left-2 w-3.5 h-3.5 border-b-2 border-l-2 border-[#DFBA73]/80 transition-all duration-500 group-hover/canvas:translate-x-[-2px] group-hover/canvas:translate-y-[2px]" />
+      <div className="absolute bottom-2 right-2 w-3.5 h-3.5 border-b-2 border-r-2 border-[#DFBA73]/80 transition-all duration-500 group-hover/canvas:translate-x-[2px] group-hover/canvas:translate-y-[2px]" />
       
       {/* Scanning laser line - only visible on hover */}
-      <div className="absolute left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-[#D4A348]/80 to-transparent shadow-[0_0_10px_rgba(212,163,72,0.6)] opacity-0 group-hover/canvas:opacity-100 animate-tech-scan pointer-events-none" />
+      <div className="absolute left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-[#DFBA73]/80 to-transparent shadow-[0_0_10px_rgba(212,163,72,0.6)] opacity-0 group-hover/canvas:opacity-100 animate-tech-scan pointer-events-none" />
 
       {/* Floating telemetries (only visible on hover) */}
-      <div className="absolute top-3 left-1/2 -translate-x-1/2 bg-black/85 backdrop-blur-sm border border-[#D4A348]/40 px-2.5 py-0.5 rounded text-[8px] text-[#D4A348] font-mono tracking-widest uppercase opacity-0 group-hover/canvas:opacity-100 transition-opacity duration-300 flex items-center gap-1.5 z-30">
+      <div className="absolute top-3 left-1/2 -translate-x-1/2 bg-black/85 backdrop-blur-sm border border-[#DFBA73]/40 px-2.5 py-0.5 rounded text-[8px] text-[#DFBA73] font-mono tracking-widest uppercase opacity-0 group-hover/canvas:opacity-100 transition-opacity duration-300 flex items-center gap-1.5 z-30">
         <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
         SYS DIAGNOSTIC: INSPECTING
       </div>
       
-      <div className="absolute bottom-3 left-3 text-[7px] text-[#D4A348]/60 font-mono tracking-widest uppercase opacity-0 group-hover/canvas:opacity-100 transition-opacity duration-300">
+      <div className="absolute bottom-3 left-3 text-[7px] text-[#DFBA73]/60 font-mono tracking-widest uppercase opacity-0 group-hover/canvas:opacity-100 transition-opacity duration-300">
         TELEMETRY: ACTIVE
       </div>
-      <div className="absolute bottom-3 right-3 text-[7px] text-[#D4A348]/60 font-mono tracking-widest uppercase opacity-0 group-hover/canvas:opacity-100 transition-opacity duration-300 flex items-center gap-1">
+      <div className="absolute bottom-3 right-3 text-[7px] text-[#DFBA73]/60 font-mono tracking-widest uppercase opacity-0 group-hover/canvas:opacity-100 transition-opacity duration-300 flex items-center gap-1">
         <span className="w-1 h-1 rounded-full bg-emerald-500" />
         LINK: OK
       </div>
@@ -244,7 +253,7 @@ function ProjectSubCard({
   return (
     <div 
       className={cn(
-        "group relative overflow-hidden rounded-xl border border-border bg-background/80 dark:bg-black/60 transition-all duration-300 hover:border-[#D4A348]/30 p-2 h-48 sm:h-52 group/canvas",
+        "group relative overflow-hidden rounded-xl border border-border bg-background/80 dark:bg-black/60 transition-all duration-300 hover:border-[#DFBA73]/30 p-2 h-48 sm:h-52 group/canvas",
         isActive ? "z-20" : "z-10"
       )}
       onMouseEnter={() => onHover(true)}
@@ -262,14 +271,14 @@ function ProjectSubCard({
           <SciFiHUD active={isActive} />
           
           {/* Small overlay badge with name */}
-          <div className="absolute top-2 left-2 bg-black/60 backdrop-blur-sm border border-[#D4A348]/30 px-2 py-0.5 rounded text-[11px] text-[#D4A348] font-bold z-20 pointer-events-none">
+          <div className="absolute top-2 left-2 bg-black/60 backdrop-blur-sm border border-[#DFBA73]/30 px-2 py-0.5 rounded text-[11px] text-[#DFBA73] font-bold z-20 pointer-events-none">
             {project.name}
           </div>
         </div>
       ) : (
         <div className="relative aspect-video overflow-hidden rounded-lg">
-          <div className="absolute inset-0 bg-background/90 dark:bg-black/80 flex flex-col items-center justify-center text-center p-3 z-10 border border-[#D4A348]/10 rounded-lg">
-            <p className="text-[#D4A348] font-bold text-sm mb-1">{project.name}</p>
+          <div className="absolute inset-0 bg-background/90 dark:bg-black/80 flex flex-col items-center justify-center text-center p-3 z-10 border border-[#DFBA73]/10 rounded-lg">
+            <p className="text-[#DFBA73] font-bold text-sm mb-1">{project.name}</p>
             <p className="text-foreground/80 dark:text-white/80 text-[10px] font-medium tracking-wide">Autonomous VTOL System</p>
             <p className="text-muted-foreground/50 dark:text-white/40 text-[9px] uppercase tracking-widest mt-1">Pending Launch</p>
           </div>
@@ -297,7 +306,7 @@ function PlaneTimelineItem({
     <div className="relative">
       {/* Timeline dot */}
       <div className={`absolute ${index % 2 === 0 ? 'md:left-1/2 right-1/2' : 'md:left-1/2'} left-4
-        w-4 h-4 rounded-full bg-background border border-[#D4A348] transform -translate-x-1/2 -translate-y-1/2
+        w-4 h-4 rounded-full bg-background border border-[#DFBA73] transform -translate-x-1/2 -translate-y-1/2
         shadow-[0_0_12px_rgba(212,163,72,0.8)] z-10
       `} />
 
@@ -326,8 +335,8 @@ function PlaneTimelineItem({
                 <SciFiHUD active={isMainActive} />
                 
                 {/* Year badge on canvas — mobile only */}
-                <div className="md:hidden absolute top-3 right-3 bg-black/80 backdrop-blur-sm border border-[#D4A348]/40 rounded-full px-3 py-1 z-10 pointer-events-none">
-                  <span className="text-[#D4A348] text-xs font-bold tracking-widest">{plane.year}</span>
+                <div className="md:hidden absolute top-3 right-3 bg-black/80 backdrop-blur-sm border border-[#DFBA73]/40 rounded-full px-3 py-1 z-10 pointer-events-none">
+                  <span className="text-[#DFBA73] text-xs font-bold tracking-widest">{plane.year}</span>
                 </div>
               </div>
             ) : plane.image ? (
@@ -340,8 +349,8 @@ function PlaneTimelineItem({
                   className="object-cover transition-transform duration-500 ease-out group-hover:scale-105"
                 />
                 {/* Year badge on image — mobile only */}
-                <div className="md:hidden absolute top-3 right-3 bg-black/80 backdrop-blur-sm border border-[#D4A348]/40 rounded-full px-3 py-1">
-                  <span className="text-[#D4A348] text-xs font-bold tracking-widest">{plane.year}</span>
+                <div className="md:hidden absolute top-3 right-3 bg-black/80 backdrop-blur-sm border border-[#DFBA73]/40 rounded-full px-3 py-1">
+                  <span className="text-[#DFBA73] text-xs font-bold tracking-widest">{plane.year}</span>
                 </div>
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent pointer-events-none" />
               </div>
@@ -351,11 +360,11 @@ function PlaneTimelineItem({
             <div className="p-6 sm:p-8">
               <div className="flex items-center justify-between mb-2">
                 <h3 className="text-2xl sm:text-3xl font-extrabold tracking-wide text-foreground font-montserrat">{plane.name}</h3>
-                <span className="hidden md:inline-block bg-[#D4A348]/10 text-[#D4A348] text-xs font-bold tracking-widest px-3 py-1 rounded border border-[#D4A348]/20">
+                <span className="hidden md:inline-block bg-[#DFBA73]/10 text-[#DFBA73] text-xs font-bold tracking-widest px-3 py-1 rounded border border-[#DFBA73]/20">
                   {plane.year}
                 </span>
               </div>
-              <p className="text-[#D4A348]/75 text-xs font-bold tracking-[0.2em] uppercase mb-5">{plane.year} Season</p>
+              <p className="text-[#DFBA73]/75 text-xs font-bold tracking-[0.2em] uppercase mb-5">{plane.year} Season</p>
 
               <p className="text-muted-foreground text-sm sm:text-base leading-relaxed mb-6">{plane.description}</p>
 
@@ -535,23 +544,25 @@ export default function PlanesPage() {
           }
         `}} />
 
-        {/* Viewport-fixed background WebGL canvas tracking active cards */}
-        <div 
-          className="fixed inset-0 w-screen h-screen z-[15] transition-all duration-300 pointer-events-none"
-          style={{ pointerEvents: (!isMobile && canvasInteractive) ? "auto" : "none" }}
-        >
-          <Plane3DCanvas type={activeModelType} activeId={activeTargetId} isHovered={canvasInteractive} />
-        </div>
+        {/* Viewport-fixed background WebGL canvas tracking active cards - disabled on mobile to prevent scroll hijacking */}
+        {!isMobile && (
+          <div 
+            className="fixed inset-0 w-screen h-screen z-[15] transition-all duration-300 pointer-events-none"
+            style={{ pointerEvents: canvasInteractive ? "auto" : "none" }}
+          >
+            <Plane3DCanvas type={activeModelType} activeId={activeTargetId} isHovered={canvasInteractive} />
+          </div>
+        )}
 
         <div className="container mx-auto px-6 relative">
 
           {/* Page Header */}
           <div className="text-center mb-20">
-            <span className="text-[#D4A348] text-xs font-bold uppercase tracking-[0.25em]">Engineering Fleet</span>
+            <span className="text-[#DFBA73] text-xs font-bold uppercase tracking-[0.25em]">Engineering Fleet</span>
             <h1 className="text-4xl md:text-6xl font-extrabold uppercase tracking-wide text-foreground mt-2 mb-4 font-montserrat">
-              OUR <span className="text-[#D4A348] text-gold-glow">AIRCRAFT</span>
+              OUR <span className="text-[#DFBA73] text-gold-glow">AIRCRAFT</span>
             </h1>
-            <div className="w-24 h-1 bg-[#D4A348] mx-auto rounded-full mb-6" />
+            <div className="w-24 h-1 bg-[#DFBA73] mx-auto rounded-full mb-6" />
             <p className="text-muted-foreground text-sm tracking-wide max-w-xl mx-auto leading-relaxed">
               "Every UAV we have designed, fabricated, and piloted on the national and global stage."
             </p>
@@ -559,9 +570,9 @@ export default function PlanesPage() {
 
           <div className="relative max-w-5xl mx-auto">
             {/* Centre timeline line — desktop */}
-            <div className="hidden md:block absolute left-1/2 top-0 bottom-0 w-[2px] bg-gradient-to-b from-[#D4A348]/10 via-[#D4A348]/40 to-[#D4A348]/10 -translate-x-1/2" />
+            <div className="hidden md:block absolute left-1/2 top-0 bottom-0 w-[2px] bg-gradient-to-b from-[#DFBA73]/10 via-[#DFBA73]/40 to-[#DFBA73]/10 -translate-x-1/2" />
             {/* Mobile timeline line */}
-            <div className="md:hidden absolute left-4 top-0 bottom-0 w-[2px] bg-[#D4A348]/40 -translate-x-1/2" />
+            <div className="md:hidden absolute left-4 top-0 bottom-0 w-[2px] bg-[#DFBA73]/40 -translate-x-1/2" />
 
             <div className="space-y-20">
               {planes.map((plane, index) => (

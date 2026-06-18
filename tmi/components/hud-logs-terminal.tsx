@@ -69,20 +69,20 @@ export function HudLogsTerminal() {
 
   return (
     <div className="fixed bottom-4 left-4 z-40 max-w-[280px] w-full px-4 sm:px-0 pointer-events-auto">
-      <div className="bg-black/90 border border-[#D4A348]/20 rounded-lg shadow-[0_12px_40px_rgba(0,0,0,0.85)] backdrop-blur-md overflow-hidden text-[9px] font-mono text-emerald-400">
+      <div className="bg-black/90 border border-[#DFBA73]/20 rounded-lg shadow-[0_12px_40px_rgba(0,0,0,0.85)] backdrop-blur-md overflow-hidden text-[9px] font-mono text-emerald-400">
         
         {/* Header bar */}
         <div 
           onClick={() => setIsOpen(!isOpen)}
-          className="flex items-center justify-between bg-zinc-950 px-3 py-2 border-b border-[#D4A348]/10 cursor-pointer select-none"
+          className="flex items-center justify-between bg-zinc-950 px-3 py-2 border-b border-[#DFBA73]/10 cursor-pointer select-none"
         >
-          <div className="flex items-center gap-2 text-[#D4A348] font-bold tracking-wider uppercase text-[10px]">
+          <div className="flex items-center gap-2 text-[#DFBA73] font-bold tracking-wider uppercase text-[10px]">
             <Terminal className="w-3.5 h-3.5" />
             <span>Telemetry Terminal</span>
           </div>
           <div className="flex items-center gap-2">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping" />
-            <button className="text-[#D4A348] hover:text-white transition-colors" aria-label="Toggle Terminal">
+            <button className="text-[#DFBA73] hover:text-white transition-colors" aria-label="Toggle Terminal">
               {isOpen ? <ChevronDown className="w-3.5 h-3.5" /> : <ChevronUp className="w-3.5 h-3.5" />}
             </button>
           </div>
@@ -94,7 +94,7 @@ export function HudLogsTerminal() {
             <div className="h-[110px] overflow-y-auto scrollbar-thin scrollbar-thumb-zinc-800 pr-1 space-y-1.5">
               {logs.map((log, i) => (
                 <div key={i} className="leading-relaxed opacity-90 break-words">
-                  <span className="text-[#D4A348]/70 mr-1.5">[{timestamp}]</span>
+                  <span className="text-[#DFBA73]/70 mr-1.5">[{timestamp}]</span>
                   {log}
                 </div>
               ))}
@@ -102,7 +102,7 @@ export function HudLogsTerminal() {
             </div>
             
             {/* Command line footer */}
-            <div className="mt-2 pt-2 border-t border-[#D4A348]/10 flex items-center gap-1.5 text-[#D4A348]">
+            <div className="mt-2 pt-2 border-t border-[#DFBA73]/10 flex items-center gap-1.5 text-[#DFBA73]">
               <span>MAVERICK:~$</span>
               <span className="w-1.5 h-3 bg-emerald-400 animate-pulse inline-block" />
             </div>

@@ -203,7 +203,7 @@ function InteractiveUAV({
   const liftPropRefs = useRef<(THREE.Mesh | null)[]>([]);
   const { resolvedTheme } = useTheme();
   const isDark = resolvedTheme === "dark";
-  const wireframeColor = isDark ? "#D4A348" : "#1E3A8A";
+  const wireframeColor = isDark ? "#DFBA73" : "#1E3A8A";
   const accentWireframeColor = isDark ? "#00E5FF" : "#0066FF";
 
   // Spin propellers
@@ -234,23 +234,23 @@ function InteractiveUAV({
         >
           {/* Animated ping ring */}
           <span
-            className={`absolute inset-0 rounded-full bg-[#D4A348] opacity-25 scale-150 animate-ping group-hover:bg-yellow-400`}
+            className={`absolute inset-0 rounded-full bg-[#DFBA73] opacity-25 scale-150 animate-ping group-hover:bg-yellow-400`}
           />
           <span
             className={`relative flex items-center justify-center w-6 h-6 rounded-full border bg-black/90 transition-all duration-300 ${
               isActive
                 ? "border-yellow-400 scale-110 shadow-[0_0_15px_rgba(212,163,72,0.8)]"
-                : "border-[#D4A348] shadow-[0_0_10px_rgba(212,163,72,0.4)]"
+                : "border-[#DFBA73] shadow-[0_0_10px_rgba(212,163,72,0.4)]"
             }`}
           >
             <span
               className={`w-2 h-2 rounded-full transition-colors ${
-                isActive ? "bg-yellow-400" : "bg-[#D4A348] group-hover:bg-yellow-400"
+                isActive ? "bg-yellow-400" : "bg-[#DFBA73] group-hover:bg-yellow-400"
               }`}
             />
           </span>
           {/* Hotspot label */}
-          <span className="absolute left-8 px-2 py-0.5 rounded bg-black/85 border border-[#D4A348]/20 text-[9px] font-bold tracking-wider text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
+          <span className="absolute left-8 px-2 py-0.5 rounded bg-black/85 border border-[#DFBA73]/20 text-[9px] font-bold tracking-wider text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
             {spot.name}
           </span>
         </button>
@@ -435,10 +435,10 @@ export default function UAVHotspots() {
   return (
     <div className="flex flex-col lg:flex-row gap-8 items-stretch w-full max-w-6xl mx-auto px-4 md:px-0">
       {/* Left: Aircraft Selector Hangar Panel */}
-      <div className="w-full lg:w-[280px] bg-card/70 dark:bg-black/50 border border-[#D4A348]/20 p-6 rounded-2xl flex flex-col gap-6 backdrop-blur-md shadow-2xl relative z-20">
-        <div className="flex items-center gap-2 border-b border-[#D4A348]/20 pb-3">
-          <Activity className="w-4 h-4 text-[#D4A348]" />
-          <h3 className="font-mono text-xs font-bold tracking-widest text-[#D4A348] uppercase">
+      <div className="w-full lg:w-[280px] bg-card/70 dark:bg-black/50 border border-[#DFBA73]/20 p-6 rounded-2xl flex flex-col gap-6 backdrop-blur-md shadow-2xl relative z-20">
+        <div className="flex items-center gap-2 border-b border-[#DFBA73]/20 pb-3">
+          <Activity className="w-4 h-4 text-[#DFBA73]" />
+          <h3 className="font-mono text-xs font-bold tracking-widest text-[#DFBA73] uppercase">
             Hangar Selector
           </h3>
         </div>
@@ -452,7 +452,7 @@ export default function UAVHotspots() {
                 onClick={() => handleAircraftChange(key)}
                 className={`w-full flex items-center justify-between p-4 rounded-xl border text-left transition-all duration-300 font-mono ${
                   isActive
-                    ? "bg-[#D4A348]/10 border-[#D4A348] text-foreground dark:text-white shadow-[0_0_15px_rgba(212,163,72,0.1)]"
+                    ? "bg-[#DFBA73]/10 border-[#DFBA73] text-foreground dark:text-white shadow-[0_0_15px_rgba(212,163,72,0.1)]"
                     : "bg-background/40 dark:bg-black/60 border-border dark:border-white/5 text-muted-foreground dark:text-white/50 hover:border-foreground/25 dark:hover:border-white/20 hover:text-foreground dark:hover:text-white"
                 }`}
               >
@@ -464,14 +464,14 @@ export default function UAVHotspots() {
                     {key === "daredevil" ? "Hybrid VTOL" : "Fixed-Wing"}
                   </div>
                 </div>
-                {isActive && <Target className="w-4 h-4 text-[#D4A348] animate-pulse" />}
+                {isActive && <Target className="w-4 h-4 text-[#DFBA73] animate-pulse" />}
               </button>
             );
           })}
         </div>
 
         {/* Specifications panel */}
-        <div className="mt-auto border-t border-[#D4A348]/10 pt-4 flex flex-col gap-3">
+        <div className="mt-auto border-t border-[#DFBA73]/10 pt-4 flex flex-col gap-3">
           <div className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
             Hangar Specifications
           </div>
@@ -487,9 +487,9 @@ export default function UAVHotspots() {
       </div>
 
       {/* Middle: 3D Hangar Canvas (Full pointer interaction) */}
-      <div className="flex-1 h-[450px] lg:h-[600px] bg-gradient-to-b from-slate-100 to-slate-50 dark:from-black/60 dark:to-black/20 border border-[#D4A348]/15 rounded-2xl overflow-hidden backdrop-blur-md relative shadow-2xl">
+      <div className="flex-1 h-[450px] lg:h-[600px] bg-gradient-to-b from-slate-100 to-slate-50 dark:from-black/60 dark:to-black/20 border border-[#DFBA73]/15 rounded-2xl overflow-hidden backdrop-blur-md relative shadow-2xl">
         {/* Title HUD Overlay inside canvas frame */}
-        <div className="absolute top-4 left-4 z-20 font-mono text-[9px] text-[#D4A348]/70 flex items-center gap-2 pointer-events-none">
+        <div className="absolute top-4 left-4 z-20 font-mono text-[9px] text-[#DFBA73]/70 flex items-center gap-2 pointer-events-none">
           <Disc className="w-3.5 h-3.5 animate-spin" />
           <span>ROTATING 3D SCHEMATIC MODEL // ORBIT_CONTROL: ACTIVE</span>
         </div>
@@ -513,10 +513,10 @@ export default function UAVHotspots() {
 
         {/* Center pointer HUD Bracket decorations */}
         <div className="absolute inset-x-8 inset-y-8 border border-white/5 pointer-events-none rounded">
-          <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-[#D4A348]/30" />
-          <div className="absolute top-0 right-0 w-2 h-2 border-t border-r border-[#D4A348]/30" />
-          <div className="absolute bottom-0 left-0 w-2 h-2 border-b border-l border-[#D4A348]/30" />
-          <div className="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-[#D4A348]/30" />
+          <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-[#DFBA73]/30" />
+          <div className="absolute top-0 right-0 w-2 h-2 border-t border-r border-[#DFBA73]/30" />
+          <div className="absolute bottom-0 left-0 w-2 h-2 border-b border-l border-[#DFBA73]/30" />
+          <div className="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-[#DFBA73]/30" />
         </div>
       </div>
 
@@ -532,7 +532,7 @@ export default function UAVHotspots() {
               transition={{ duration: 0.25 }}
               className="bg-card/90 dark:bg-black/85 backdrop-blur-xl border border-yellow-500/30 p-6 rounded-2xl shadow-[0_0_25px_rgba(212,163,72,0.15)] text-foreground dark:text-white h-full flex flex-col"
             >
-              <div className="flex justify-between items-start border-b border-[#D4A348]/20 pb-3 mb-4">
+              <div className="flex justify-between items-start border-b border-[#DFBA73]/20 pb-3 mb-4">
                 <div className="flex items-center gap-2">
                   <Cpu className="w-4 h-4 text-yellow-500 dark:text-yellow-400" />
                   <span className="font-mono text-xs font-bold uppercase tracking-wider text-yellow-500 dark:text-yellow-400">
@@ -547,7 +547,7 @@ export default function UAVHotspots() {
                 </button>
               </div>
 
-              <h3 className="text-xl font-extrabold text-[#D4A348] mb-2 tracking-wide font-montserrat uppercase">
+              <h3 className="text-xl font-extrabold text-[#DFBA73] mb-2 tracking-wide font-montserrat uppercase">
                 {selectedHotspot.title}
               </h3>
               <p className="text-xs text-muted-foreground leading-relaxed mb-6 font-light">
@@ -564,7 +564,7 @@ export default function UAVHotspots() {
                       key={i}
                       className="text-xs font-mono flex items-start gap-2 text-foreground bg-accent/40 dark:bg-white/5 p-2 rounded border border-border dark:border-white/5"
                     >
-                      <Zap className="w-3.5 h-3.5 text-[#D4A348] mt-0.5 shrink-0" />
+                      <Zap className="w-3.5 h-3.5 text-[#DFBA73] mt-0.5 shrink-0" />
                       <span>{spec}</span>
                     </li>
                   ))}
@@ -575,10 +575,10 @@ export default function UAVHotspots() {
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="bg-card/60 dark:bg-black/55 backdrop-blur-md border border-[#D4A348]/15 p-6 rounded-2xl text-center flex flex-col justify-center items-center h-full gap-4 text-xs tracking-wider text-muted-foreground shadow-xl border-dashed"
+              className="bg-card/60 dark:bg-black/55 backdrop-blur-md border border-[#DFBA73]/15 p-6 rounded-2xl text-center flex flex-col justify-center items-center h-full gap-4 text-xs tracking-wider text-muted-foreground shadow-xl border-dashed"
             >
-              <div className="w-10 h-10 rounded-full border border-[#D4A348]/30 flex items-center justify-center bg-[#D4A348]/5">
-                <Info className="w-5 h-5 text-[#D4A348]" />
+              <div className="w-10 h-10 rounded-full border border-[#DFBA73]/30 flex items-center justify-center bg-[#DFBA73]/5">
+                <Info className="w-5 h-5 text-[#DFBA73]" />
               </div>
               <div>
                 <h4 className="font-bold text-foreground mb-1 uppercase tracking-widest font-mono">

@@ -38,7 +38,7 @@ function ModelPart({ geometry, position, rotation, scale }: {
   const { resolvedTheme } = useTheme();
   const isDark = resolvedTheme === "dark";
   const bodyColor = isDark ? "#151515" : "#e2e8f0";
-  const wireframeColor = isDark ? "#D4A348" : "#1E3A8A";
+  const wireframeColor = isDark ? "#DFBA73" : "#1E3A8A";
   const blendingMode = isDark ? THREE.AdditiveBlending : THREE.NormalBlending;
   const wireframeOpacity = isDark ? 0.35 : 0.55;
 
@@ -100,7 +100,7 @@ function TractorModel({ speedMultiplier }: { speedMultiplier: React.MutableRefOb
       {/* Propeller */}
       <mesh ref={propRef} position={[0, 0, 1.15]}>
         <boxGeometry args={[0.7, 0.015, 0.03]} />
-        <meshStandardMaterial color="#D4A348" metalness={0.9} roughness={0.1} />
+        <meshStandardMaterial color="#DFBA73" metalness={0.9} roughness={0.1} />
       </mesh>
     </group>
   );
@@ -144,7 +144,7 @@ function TwinBoomModel({ speedMultiplier }: { speedMultiplier: React.MutableRefO
       {/* Rear pusher propeller */}
       <mesh ref={propRef} position={[0, 0, -0.45]}>
         <boxGeometry args={[0.6, 0.015, 0.03]} />
-        <meshStandardMaterial color="#D4A348" metalness={0.9} roughness={0.1} />
+        <meshStandardMaterial color="#DFBA73" metalness={0.9} roughness={0.1} />
       </mesh>
     </group>
   );
@@ -197,25 +197,25 @@ function VTOLModel({ speedMultiplier }: { speedMultiplier: React.MutableRefObjec
       <ModelPart geometry={geometries.motor} position={[-0.45, 0.08, 0.45]} />
       <mesh ref={vtolProps[0]} position={[-0.45, 0.11, 0.45]}>
         <boxGeometry args={[0.24, 0.005, 0.015]} />
-        <meshBasicMaterial color="#D4A348" />
+        <meshBasicMaterial color="#DFBA73" />
       </mesh>
       {/* Left Rear */}
       <ModelPart geometry={geometries.motor} position={[-0.45, 0.08, -0.25]} />
       <mesh ref={vtolProps[1]} position={[-0.45, 0.11, -0.25]}>
         <boxGeometry args={[0.24, 0.005, 0.015]} />
-        <meshBasicMaterial color="#D4A348" />
+        <meshBasicMaterial color="#DFBA73" />
       </mesh>
       {/* Right Front */}
       <ModelPart geometry={geometries.motor} position={[0.45, 0.08, 0.45]} />
       <mesh ref={vtolProps[2]} position={[0.45, 0.11, 0.45]}>
         <boxGeometry args={[0.24, 0.005, 0.015]} />
-        <meshBasicMaterial color="#D4A348" />
+        <meshBasicMaterial color="#DFBA73" />
       </mesh>
       {/* Right Rear */}
       <ModelPart geometry={geometries.motor} position={[0.45, 0.08, -0.25]} />
       <mesh ref={vtolProps[3]} position={[0.45, 0.11, -0.25]}>
         <boxGeometry args={[0.24, 0.005, 0.015]} />
-        <meshBasicMaterial color="#D4A348" />
+        <meshBasicMaterial color="#DFBA73" />
       </mesh>
 
       {/* Tail stabilizers */}
@@ -225,7 +225,7 @@ function VTOLModel({ speedMultiplier }: { speedMultiplier: React.MutableRefObjec
       {/* Pusher propeller */}
       <mesh ref={pusherPropRef} position={[0, 0, -0.92]}>
         <boxGeometry args={[0.5, 0.015, 0.03]} />
-        <meshStandardMaterial color="#D4A348" metalness={0.9} roughness={0.1} />
+        <meshStandardMaterial color="#DFBA73" metalness={0.9} roughness={0.1} />
       </mesh>
     </group>
   );
@@ -289,7 +289,7 @@ function HexacopterModel({ speedMultiplier }: { speedMultiplier: React.MutableRe
             position={[arm.x * 2.0, 0.07, arm.z * 2.0]}
           >
             <boxGeometry args={[0.32, 0.005, 0.015]} />
-            <meshBasicMaterial color="#D4A348" />
+            <meshBasicMaterial color="#DFBA73" />
           </mesh>
         </group>
       ))}
@@ -615,7 +615,7 @@ export default function Plane3DCanvas({
         onPointerLeave={handlePointerUp}
       >
         <ambientLight intensity={0.4} />
-        <directionalLight position={[4, 8, 4]} intensity={2.0} color="#D4A348" />
+        <directionalLight position={[4, 8, 4]} intensity={2.0} color="#DFBA73" />
         <pointLight position={[-4, -4, -3]} intensity={1.5} color="#00E5FF" />
         
         <CameraSetup />

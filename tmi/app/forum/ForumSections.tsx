@@ -27,12 +27,12 @@ export default function ForumSections() {
                     key={index}
                     className={cn(
                         "rounded-xl border border-white/10 bg-white/5 p-8 text-center transition-all duration-300 ease-in-out",
-                        "hover:scale-105 hover:border-[#D4A348]/30 hover:shadow-lg hover:shadow-black/30",
+                        "hover:scale-105 hover:border-[#DFBA73]/30 hover:shadow-lg hover:shadow-black/30",
                         "animate-in fade-in slide-in-from-bottom-4 duration-700",
                     )}
                     style={{ animationDelay: `${index * 100}ms`, animationFillMode: 'both' }}
                 >
-                    <h3 className="text-xl font-bold uppercase tracking-widest text-[#D4A348] mb-4">
+                    <h3 className="text-xl font-bold uppercase tracking-widest text-[#DFBA73] mb-4">
                         {section.title}
                     </h3>
                     <div className="space-y-4">

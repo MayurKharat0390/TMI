@@ -139,10 +139,10 @@ function SponsorCard({ sponsor }: { sponsor: Sponsor }) {
       "before:absolute before:inset-0 before:rounded-xl before:bg-gradient-to-b before:from-foreground/5 before:to-transparent before:pointer-events-none before:z-10",
 
       isDiamond
-        ? "h-56 p-10 border border-border bg-card/60 shadow-xl dark:shadow-black/40 backdrop-blur-sm hover:scale-105 hover:translate-y-[-4px] hover:border-[#D4A348]/40 hover:shadow-2xl hover:shadow-black/50"
+        ? "h-56 p-10 border border-border bg-card/60 shadow-xl dark:shadow-black/40 backdrop-blur-sm hover:scale-105 hover:translate-y-[-4px] hover:border-[#DFBA73]/40 hover:shadow-2xl hover:shadow-black/50"
         : isPlatinum
-          ? "h-48 p-8 border border-border/80 bg-card/40 shadow-lg dark:shadow-black/30 hover:scale-105 hover:translate-y-[-3px] hover:border-[#D4A348]/30 hover:shadow-xl hover:shadow-black/40"
-          : "h-40 p-6 border border-border/60 bg-card/30 shadow-md dark:shadow-black/20 hover:scale-105 hover:border-[#D4A348]/20 hover:shadow-lg hover:shadow-black/30"
+          ? "h-48 p-8 border border-border/80 bg-card/40 shadow-lg dark:shadow-black/30 hover:scale-105 hover:translate-y-[-3px] hover:border-[#DFBA73]/30 hover:shadow-xl hover:shadow-black/40"
+          : "h-40 p-6 border border-border/60 bg-card/30 shadow-md dark:shadow-black/20 hover:scale-105 hover:border-[#DFBA73]/20 hover:shadow-lg hover:shadow-black/30"
     )}>
       <Image
         src={sponsor.logo}

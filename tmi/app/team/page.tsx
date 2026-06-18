@@ -84,40 +84,40 @@ export default function TeamsPage() {
           
           {/* Header */}
           <div className="text-center mb-16">
-            <span className="text-[#D4A348] text-xs font-bold uppercase tracking-[0.25em]">Meet the Crew</span>
+            <span className="text-[#DFBA73] text-xs font-bold uppercase tracking-[0.25em]">Meet the Crew</span>
             <h1 className="text-4xl md:text-6xl font-extrabold uppercase tracking-wide text-foreground mt-2 mb-4 font-montserrat">
-              OUR <span className="text-[#D4A348] text-gold-glow">TEAM</span>
+              OUR <span className="text-[#DFBA73] text-gold-glow">TEAM</span>
             </h1>
-            <div className="w-24 h-1 bg-[#D4A348] mx-auto rounded-full mb-6" />
+            <div className="w-24 h-1 bg-[#DFBA73] mx-auto rounded-full mb-6" />
             <p className="text-muted-foreground text-sm tracking-wide max-w-xl mx-auto leading-relaxed">
               "Meet the passionate engineers, designers, and organizers crafting the future of flight."
             </p>
           </div>
 
           {/* Filters console */}
-          <div className="glass-panel p-6 rounded-2xl border border-[#D4A348]/10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mb-16 max-w-5xl mx-auto shadow-xl">
+          <div className="glass-panel p-6 rounded-2xl border border-[#DFBA73]/10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mb-16 max-w-5xl mx-auto shadow-xl">
             <Input 
               placeholder="Search by name or role..." 
               value={search} 
               onChange={(e) => setSearch(e.target.value)}
-              className="bg-background border-[#D4A348]/20 focus:border-[#D4A348] text-foreground tracking-wide placeholder:text-muted-foreground/50"
+              className="bg-background border-[#DFBA73]/20 focus:border-[#DFBA73] text-foreground tracking-wide placeholder:text-muted-foreground/50"
             />
             
             <Select value={selectedRole} onValueChange={setSelectedRole}>
-              <SelectTrigger className="bg-background border-[#D4A348]/20 text-foreground">
+              <SelectTrigger className="bg-background border-[#DFBA73]/20 text-foreground">
                 <SelectValue placeholder="Filter by role" />
               </SelectTrigger>
-              <SelectContent className="bg-popover border-[#D4A348]/30 text-popover-foreground">
+              <SelectContent className="bg-popover border-[#DFBA73]/30 text-popover-foreground">
                 <SelectItem value="all">All Roles</SelectItem>
                 {roles.map(role => <SelectItem key={role} value={role}>{role}</SelectItem>)}
               </SelectContent>
             </Select>
             
             <Select value={selectedYear} onValueChange={setSelectedYear}>
-              <SelectTrigger className="bg-background border-[#D4A348]/20 text-foreground">
+              <SelectTrigger className="bg-background border-[#DFBA73]/20 text-foreground">
                 <SelectValue placeholder="Filter by year" />
               </SelectTrigger>
-              <SelectContent className="bg-popover border-[#D4A348]/30 text-popover-foreground">
+              <SelectContent className="bg-popover border-[#DFBA73]/30 text-popover-foreground">
                 {years.map(year => <SelectItem key={year} value={year}>{year} Batch</SelectItem>)}
               </SelectContent>
             </Select>
@@ -182,12 +182,12 @@ function Section({ title, badge, members }: { title: string; badge?: string; mem
     <div className="mb-20">
       <div className="text-center mb-12">
         {badge && (
-          <p className="text-[#D4A348] text-xs font-bold tracking-[0.25em] uppercase mb-2">
+          <p className="text-[#DFBA73] text-xs font-bold tracking-[0.25em] uppercase mb-2">
             {badge}
           </p>
         )}
         <h2 className="text-3xl md:text-4xl font-extrabold uppercase text-foreground font-montserrat">{title}</h2>
-        <div className="w-16 h-0.5 bg-[#D4A348]/40 mx-auto mt-3 rounded-full" />
+        <div className="w-16 h-0.5 bg-[#DFBA73]/40 mx-auto mt-3 rounded-full" />
       </div>
       
       <div className="flex flex-wrap justify-center gap-8 max-w-6xl mx-auto">

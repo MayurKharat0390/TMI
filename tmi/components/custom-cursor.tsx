@@ -72,7 +72,7 @@ export function CustomCursor() {
     <>
       {/* Tiny inner dot */}
       <motion.div
-        className="fixed top-0 left-0 w-1.5 h-1.5 bg-[#D4A348] rounded-full pointer-events-none z-[9999] shadow-[0_0_6px_#D4A348]"
+        className="fixed top-0 left-0 w-1.5 h-1.5 bg-[#DFBA73] rounded-full pointer-events-none z-[9999] shadow-[0_0_6px_#DFBA73]"
         style={{
           x: cursorX,
           y: cursorY,
@@ -83,7 +83,7 @@ export function CustomCursor() {
 
       {/* Lagging outer crosshair ring */}
       <motion.div
-        className="fixed top-0 left-0 rounded-full pointer-events-none z-[9998] flex items-center justify-center border border-[#D4A348]/40"
+        className="fixed top-0 left-0 rounded-full pointer-events-none z-[9998] flex items-center justify-center border border-[#DFBA73]/40"
         animate={{
           width: isSnapped && hoveredRect ? hoveredRect.width + 12 : 36,
           height: isSnapped && hoveredRect ? hoveredRect.height + 12 : 36,
@@ -103,10 +103,10 @@ export function CustomCursor() {
         {/* HUD Crosshairs (ticks) - only when not snapped */}
         {!isSnapped && (
           <>
-            <div className="absolute top-0 w-[1px] h-1.5 bg-[#D4A348]/60" />
-            <div className="absolute bottom-0 w-[1px] h-1.5 bg-[#D4A348]/60" />
-            <div className="absolute left-0 w-1.5 h-[1px] bg-[#D4A348]/60" />
-            <div className="absolute right-0 w-1.5 h-[1px] bg-[#D4A348]/60" />
+            <div className="absolute top-0 w-[1px] h-1.5 bg-[#DFBA73]/60" />
+            <div className="absolute bottom-0 w-[1px] h-1.5 bg-[#DFBA73]/60" />
+            <div className="absolute left-0 w-1.5 h-[1px] bg-[#DFBA73]/60" />
+            <div className="absolute right-0 w-1.5 h-[1px] bg-[#DFBA73]/60" />
           </>
         )}
       </motion.div>
@@ -114,7 +114,7 @@ export function CustomCursor() {
       {/* Coordinate HUD Labels */}
       {!isSnapped && (
         <motion.div
-          className="fixed top-0 left-0 pointer-events-none z-[9997] font-mono text-[7px] text-[#D4A348]/50 tracking-widest leading-none select-none pl-6 pt-3"
+          className="fixed top-0 left-0 pointer-events-none z-[9997] font-mono text-[7px] text-[#DFBA73]/50 tracking-widest leading-none select-none pl-6 pt-3"
           style={{
             x: cursorX,
             y: cursorY,
@@ -126,7 +126,7 @@ export function CustomCursor() {
 
       {isSnapped && (
         <motion.div
-          className="fixed top-0 left-0 pointer-events-none z-[9997] font-mono text-[8px] text-[#D4A348] tracking-widest font-bold select-none pl-8"
+          className="fixed top-0 left-0 pointer-events-none z-[9997] font-mono text-[8px] text-[#DFBA73] tracking-widest font-bold select-none pl-8"
           style={{
             x: cursorX,
             y: cursorY,

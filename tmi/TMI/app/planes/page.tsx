@@ -150,9 +150,9 @@ export default function PlanesPage() {
         <h1 className="text-4xl font-bold text-center mb-12">Our Aircraft</h1>
 
         <div className="relative">
-          <div className="hidden md:block absolute left-1/2 top-0 bottom-0 w-2 bg-[#D4A348] -translate-x-1/2" />
+          <div className="hidden md:block absolute left-1/2 top-0 bottom-0 w-2 bg-[#DFBA73] -translate-x-1/2" />
 
-          <div className="md:hidden absolute left-4 top-0 bottom-0 w-2 bg-[#D4A348] -translate-x-1/2" />
+          <div className="md:hidden absolute left-4 top-0 bottom-0 w-2 bg-[#DFBA73] -translate-x-1/2" />
 
           <div className="space-y-12">
             {planes.map((plane, index) => (
@@ -162,7 +162,7 @@ export default function PlanesPage() {
                   border-5 border-background
                 `} />
 
-                <div className={`absolute ${index % 2 === 0 ? 'right-[-30px]' : 'left-[-30px]'} top-1/2 transform -translate-y-1/2 rotate-[90deg] text-4xl font-bold text-[#D4A348] shadow-text-glow md:block hidden`}>
+                <div className={`absolute ${index % 2 === 0 ? 'right-[-30px]' : 'left-[-30px]'} top-1/2 transform -translate-y-1/2 rotate-[90deg] text-4xl font-bold text-[#DFBA73] shadow-text-glow md:block hidden`}>
                   {plane.year}
                 </div>
 

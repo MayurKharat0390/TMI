@@ -25,7 +25,7 @@ const marqueeSponsors: Sponsor[] = [
 
 export default function InfiniteMarquee() {
   return (
-    <div className="relative w-full overflow-hidden bg-black/40 border-y border-[#D4A348]/10 py-10 backdrop-blur-sm">
+    <div className="relative w-full overflow-hidden bg-black/40 border-y border-[#DFBA73]/10 py-10 backdrop-blur-sm">
       <div className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-background to-transparent z-10 pointer-events-none" />
       <div className="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-background to-transparent z-10 pointer-events-none" />
       
