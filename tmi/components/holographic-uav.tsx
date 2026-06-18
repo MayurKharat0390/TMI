@@ -895,7 +895,7 @@ export default function HolographicUAV() {
   const hudOpacity = Math.max(0, 1 - scrollY / 600);
 
   return (
-    <div className="fixed inset-0 w-screen h-screen z-[20] pointer-events-none">
+    <div className={`fixed inset-0 w-screen h-screen transition-all duration-500 pointer-events-none ${scrollY > 600 ? "z-0 opacity-30" : "z-[20] opacity-100"}`}>
       <Canvas
         camera={{ position: [0, 2, 5.5], fov: 50 }}
         gl={{ antialias: true }}
