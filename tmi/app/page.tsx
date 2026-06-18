@@ -101,26 +101,7 @@ export default function Home() {
               Team Maverick India: Wolves of the Sky. Developing cutting-edge autonomous fixed-wing UAVs pushing the boundaries of aerodynamic design.
             </motion.p>
 
-            <motion.div
-              initial={{ opacity: 0, x: -80, skewX: -5 }}
-              animate={{ opacity: 1, x: 0, skewX: 0 }}
-              transition={{ duration: 1.0, delay: 1.0, ease: "easeOut" }}
-              className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start items-center w-full max-w-md"
-            >
-              <Button
-                onClick={() => scrollToSection(showcaseRef)}
-                className="w-full sm:w-auto bg-[#DFBA73] text-black hover:bg-yellow-400 font-semibold tracking-wider uppercase px-8 py-6 rounded-lg transition-all duration-300 hover:scale-105 shadow-[0_0_20px_rgba(212,163,72,0.3)] active:scale-95"
-              >
-                Explore Vehicle Systems
-              </Button>
-              <Button
-                asChild
-                variant="outline"
-                className="w-full sm:w-auto border-[#DFBA73]/30 text-foreground hover:bg-[#DFBA73]/10 font-semibold tracking-wider uppercase px-8 py-6 rounded-lg transition-all duration-300 active:scale-95"
-              >
-                <Link href="/team">Meet The Wolves</Link>
-              </Button>
-            </motion.div>
+
           </div>
 
           {/* Space slot for the WebGL canvas drone positioning on the right */}
