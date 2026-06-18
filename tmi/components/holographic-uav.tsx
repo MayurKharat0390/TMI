@@ -381,19 +381,19 @@ function UAVModel({
 
       if (scrollPercent < 0.25) {
         targetX = isMobile ? 0 : 1.7;
-        targetY = isMobile ? 0.45 : 0.85;
+        targetY = isMobile ? 0.8 : 1.2;
         targetZ = isMobile ? 0 : 1.35;
       } else if (scrollPercent >= 0.25 && scrollPercent < 0.55) {
         targetX = isMobile ? 1.2 : 1.9;
-        targetY = -0.3;
+        targetY = -0.05;
         targetZ = -0.6;
       } else if (scrollPercent >= 0.55 && scrollPercent < 0.8) {
         targetX = isMobile ? -1.2 : -1.9;
-        targetY = 0.1;
+        targetY = 0.35;
         targetZ = -0.4;
       } else {
         targetX = 0;
-        targetY = 0.4;
+        targetY = 0.65;
         targetZ = 1.1;
       }
 
