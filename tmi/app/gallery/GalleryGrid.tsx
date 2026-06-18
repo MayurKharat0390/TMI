@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import Image from "next/image";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
+import { motion } from "framer-motion";
 
 // Years with no images yet will show "Coming Soon"
 const galleries: Record<string, { id: number; src: string; alt: string }[]> = {
@@ -34,17 +35,33 @@ const galleries: Record<string, { id: number; src: string; alt: string }[]> = {
     })),
 };
 
+const rowVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.08,
+    }
+  }
+};
+
+const cardVariants = {
+  hidden: { opacity: 0, x: 80, scale: 0.95 },
+  visible: {
+    opacity: 1,
+    x: 0,
+    scale: 1,
+    transition: {
+      type: "spring",
+      stiffness: 80,
+      damping: 15
+    }
+  }
+};
+
 export default function GalleryGrid() {
     const sortedYears = Object.keys(galleries).sort((a, b) => Number(b) - Number(a));
-
-    // Only open the first year that has images
-    const firstActiveYear = sortedYears.find((y) => galleries[y].length > 0) ?? sortedYears[0];
-    const [openSections, setOpenSections] = useState<Record<string, boolean>>(
-        sortedYears.reduce((acc, year) => {
-            acc[year] = year === firstActiveYear;
-            return acc;
-        }, {} as Record<string, boolean>)
-    );
+    const rowRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
     const [modalYear, setModalYear] = useState<string | null>(null);
     const [modalIndex, setModalIndex] = useState<number | null>(null);
@@ -61,28 +78,30 @@ export default function GalleryGrid() {
         setModalIndex((i) => (i === len - 1 ? 0 : i! + 1));
     };
 
+    const scrollRow = (year: string, direction: "left" | "right") => {
+        const container = rowRefs.current[year];
+        if (!container) return;
+        const scrollAmount = container.clientWidth * 0.75;
+        container.scrollBy({
+            left: direction === "left" ? -scrollAmount : scrollAmount,
+            behavior: "smooth",
+        });
+    };
+
     return (
         <>
-            <div className="space-y-14">
+            <div className="space-y-16">
                 {sortedYears.map((year) => {
                     const images = galleries[year];
                     const hasImages = images.length > 0;
-                    const isOpen = openSections[year];
 
                     return (
-                        <div key={year}>
+                        <div key={year} className="relative group/row border-b border-[#D4A348]/10 pb-12 last:border-0">
                             {/* Section header */}
-                            <button
-                                className="w-full flex items-center gap-5 mb-8 text-left group focus:outline-none"
-                                onClick={() =>
-                                    hasImages &&
-                                    setOpenSections((prev) => ({ ...prev, [year]: !prev[year] }))
-                                }
-                                disabled={!hasImages}
-                            >
+                            <div className="flex items-center gap-5 mb-8 text-left select-none">
                                 <span
-                                    className={`text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight transition-colors duration-200 ${hasImages
-                                        ? "text-foreground group-hover:text-[#D4A348]"
+                                    className={`text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight ${hasImages
+                                        ? "text-foreground"
                                         : "text-muted-foreground/30"
                                         }`}
                                 >
@@ -91,43 +110,93 @@ export default function GalleryGrid() {
 
                                 {hasImages ? (
                                     <>
-                                        <span className="text-muted-foreground/60 text-sm sm:text-base font-medium">{images.length} photos</span>
-                                        <div className="flex-1 h-[1.5px] bg-border group-hover:bg-[#D4A348]/25 transition-colors duration-200" />
-                                        <span className="text-muted-foreground/50 text-sm">{isOpen ? "▲" : "▼"}</span>
+                                        <span className="text-muted-foreground/60 text-xs sm:text-sm font-mono uppercase tracking-wider">{images.length} frames loaded</span>
+                                        <div className="flex-1 h-[1px] bg-border dark:bg-white/5" />
                                     </>
                                 ) : (
                                     <>
-                                        <span className="text-xs font-semibold tracking-widest uppercase text-[#D4A348]/60 border border-[#D4A348]/20 rounded-full px-3 py-1">
+                                        <span className="text-xs font-mono font-bold tracking-widest uppercase text-[#D4A348]/60 border border-[#D4A348]/20 rounded-full px-3 py-1">
                                             Coming Soon
                                         </span>
-                                        <div className="flex-1 h-[1.5px] bg-border/40" />
+                                        <div className="flex-1 h-[1px] bg-border/40 dark:bg-white/5" />
                                     </>
                                 )}
-                            </button>
+                            </div>
 
-                            {/* Image grid */}
-                            {hasImages && isOpen && (
-                                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-3 sm:gap-4 lg:gap-5">
-                                    {images.map((image, index) => (
-                                        <div
-                                            key={image.id}
-                                            className="group relative aspect-video overflow-hidden rounded-xl bg-card border border-border/50 hover:border-[#D4A348]/40 shadow-sm cursor-pointer transition-colors duration-300 [transform:translateZ(0)] [backface-visibility:hidden]"
-                                            onClick={() => { setModalYear(year); setModalIndex(index); }}
-                                        >
-                                            <Image
-                                                src={image.src}
-                                                alt={image.alt}
-                                                fill
-                                                quality={85}
-                                                loading="lazy"
-                                                decoding="async"
-                                                className="object-cover transition-transform duration-500 group-hover:scale-105 [backface-visibility:hidden]"
-                                                sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1280px) 33vw, 25vw"
-                                                style={{ imageRendering: "auto", WebkitFontSmoothing: "antialiased" }}
-                                            />
-                                            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors duration-300" />
-                                        </div>
-                                    ))}
+                            {/* Image Row Wrapper */}
+                            {hasImages && (
+                                <div className="relative w-full">
+                                    {/* Left Arrow Button */}
+                                    <button
+                                        onClick={() => scrollRow(year, "left")}
+                                        className="absolute left-2 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center rounded-full bg-black/85 border border-[#D4A348]/30 text-foreground hover:text-[#D4A348] hover:bg-[#D4A348]/10 hover:border-[#D4A348] opacity-0 group-hover/row:opacity-100 transition-all duration-300 z-20 pointer-events-auto hidden md:flex shadow-[0_0_15px_rgba(0,0,0,0.5)]"
+                                        aria-label="Scroll Left"
+                                    >
+                                        <ChevronLeft className="h-5 w-5" />
+                                    </button>
+
+                                    {/* Right Arrow Button */}
+                                    <button
+                                        onClick={() => scrollRow(year, "right")}
+                                        className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center rounded-full bg-black/85 border border-[#D4A348]/30 text-foreground hover:text-[#D4A348] hover:bg-[#D4A348]/10 hover:border-[#D4A348] opacity-0 group-hover/row:opacity-100 transition-all duration-300 z-20 pointer-events-auto hidden md:flex shadow-[0_0_15px_rgba(0,0,0,0.5)]"
+                                        aria-label="Scroll Right"
+                                    >
+                                        <ChevronRight className="h-5 w-5" />
+                                    </button>
+
+                                    {/* Scrollable Container */}
+                                    <motion.div
+                                        ref={(el) => { rowRefs.current[year] = el; }}
+                                        variants={rowVariants}
+                                        initial="hidden"
+                                        whileInView="visible"
+                                        viewport={{ once: true, margin: "-100px" }}
+                                        className="flex overflow-x-auto gap-4 sm:gap-5 pb-4 scroll-smooth snap-x snap-mandatory scrollbar-none pointer-events-auto"
+                                    >
+                                        {images.map((image, index) => (
+                                            <motion.div
+                                                key={image.id}
+                                                variants={cardVariants}
+                                                className="group relative aspect-video h-[180px] sm:h-[220px] shrink-0 rounded-xl bg-card border border-border/50 dark:border-white/5 hover:border-[#D4A348]/40 shadow-lg cursor-pointer overflow-hidden snap-start transition-colors duration-300 pointer-events-auto"
+                                                onClick={() => { setModalYear(year); setModalIndex(index); }}
+                                            >
+                                                <Image
+                                                    src={image.src}
+                                                    alt={image.alt}
+                                                    fill
+                                                    quality={80}
+                                                    loading="lazy"
+                                                    decoding="async"
+                                                    className="object-cover transition-transform duration-500 group-hover:scale-105"
+                                                    sizes="(max-width: 640px) 100vw, 300px"
+                                                />
+                                                
+                                                {/* Tech HUD Hover Overlay */}
+                                                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-all duration-300 flex flex-col justify-between p-3 select-none pointer-events-none font-mono text-[8px] text-[#D4A348]">
+                                                    {/* Top Panel */}
+                                                    <div className="flex justify-between items-start">
+                                                        <span>[SYS_PING: OK]</span>
+                                                        <span>SEAS_{year}</span>
+                                                    </div>
+                                                    
+                                                    {/* Center Reticle */}
+                                                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 border border-[#D4A348]/20 rounded-full flex items-center justify-center opacity-60">
+                                                        <div className="w-0.5 h-0.5 bg-[#D4A348] rounded-full" />
+                                                        <div className="absolute top-0 w-[1px] h-1.5 bg-[#D4A348]/40" />
+                                                        <div className="absolute bottom-0 w-[1px] h-1.5 bg-[#D4A348]/40" />
+                                                        <div className="absolute left-0 w-1.5 h-[1px] bg-[#D4A348]/40" />
+                                                        <div className="absolute right-0 w-1.5 h-[1px] bg-[#D4A348]/40" />
+                                                    </div>
+
+                                                    {/* Bottom Panel */}
+                                                    <div className="flex justify-between items-end">
+                                                        <span>FRAME_0{image.id}</span>
+                                                        <span>ALTITUDE: {35 + image.id * 2}M</span>
+                                                    </div>
+                                                </div>
+                                            </motion.div>
+                                        ))}
+                                    </motion.div>
                                 </div>
                             )}
                         </div>
@@ -137,7 +206,7 @@ export default function GalleryGrid() {
 
             {/* Lightbox */}
             <Dialog open={modalYear !== null && modalIndex !== null} onOpenChange={closeModal}>
-                <DialogContent className="max-w-5xl w-[95vw] md:w-[85vw] lg:w-[75vw] p-0 bg-background border border-border rounded-xl overflow-hidden shadow-2xl">
+                <DialogContent className="max-w-5xl w-[95vw] md:w-[85vw] lg:w-[75vw] p-0 bg-background border border-border rounded-xl overflow-hidden shadow-2xl z-[99999]">
                     <DialogTitle className="sr-only">Image Preview</DialogTitle>
 
                     {/* Close */}
@@ -156,7 +225,7 @@ export default function GalleryGrid() {
                                     src={galleries[modalYear][modalIndex].src}
                                     alt={galleries[modalYear][modalIndex].alt}
                                     fill
-                                    quality={85}
+                                    quality={90}
                                     className="object-contain"
                                     loading="lazy"
                                     decoding="async"
@@ -176,10 +245,10 @@ export default function GalleryGrid() {
                             </div>
 
                             {/* Counter */}
-                            <div className="flex items-center justify-between px-5 py-3 border-t border-border bg-card/60">
-                                <span className="text-muted-foreground text-sm">{modalYear} Season</span>
-                                <span className="text-muted-foreground text-sm">
-                                    <span className="text-[#D4A348] font-bold">{modalIndex + 1}</span>
+                            <div className="flex items-center justify-between px-5 py-3 border-t border-border bg-card/60 font-mono text-xs">
+                                <span className="text-muted-foreground">Season {modalYear} Flight logs</span>
+                                <span className="text-muted-foreground">
+                                    <span className="text-[#D4A348] font-bold">FRAME {modalIndex + 1}</span>
                                     {" / "}
                                     {galleries[modalYear].length}
                                 </span>
