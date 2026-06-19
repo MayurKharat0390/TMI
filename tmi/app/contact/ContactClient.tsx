@@ -74,7 +74,7 @@ export default function ContactPage() {
         <div className="container mx-auto px-6 relative z-10">
           
           {/* Header */}
-          <div className="text-center mb-16">
+          <div id="contact-header" className="text-center mb-16">
             <span className="text-[#DFBA73] text-xs font-bold uppercase tracking-[0.25em]">Sponsorship & Support</span>
             <h1 className="text-4xl md:text-6xl font-extrabold uppercase tracking-wide text-foreground mt-2 mb-4 font-montserrat">
               CONTACT <span className="text-[#DFBA73] text-gold-glow">US</span>

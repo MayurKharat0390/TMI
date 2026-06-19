@@ -8,7 +8,6 @@ import { Toaster } from '@/components/ui/sonner';
 import { ScrollToTop } from '@/components/scroll-to-top';
 import { InfoButton } from '@/components/info-button';
 import { seoConfig } from '@/lib/seo';
-import { CustomCursor } from '@/components/custom-cursor';
 
 const inter = Inter({ 
   subsets: ['latin'], 
@@ -52,12 +51,11 @@ export default function RootLayout({
       <body className={`${inter.className} ${montserrat.variable} ${jost.variable}`}>
         <ThemeProvider
           attribute="class"
-          defaultTheme="system"
-          enableSystem
+          defaultTheme="light"
+          enableSystem={false}
           disableTransitionOnChange
         >
           <div className="relative min-h-screen">
-            <CustomCursor />
             <Navbar />
             <main>
               {children}

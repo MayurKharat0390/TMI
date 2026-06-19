@@ -543,7 +543,7 @@ export default function PlanesPage() {
         <div className="container mx-auto px-6 relative z-10">
 
           {/* Page Header */}
-          <div className="text-center mb-20">
+          <div id="planes-header" className="text-center mb-20">
             <span className="text-[#DFBA73] text-xs font-bold uppercase tracking-[0.25em]">Engineering Fleet</span>
             <h1 className="text-4xl md:text-6xl font-extrabold uppercase tracking-wide text-foreground mt-2 mb-4 font-montserrat">
               OUR <span className="text-[#DFBA73] text-gold-glow">AIRCRAFT</span>

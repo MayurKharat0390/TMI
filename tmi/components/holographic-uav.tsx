@@ -2,7 +2,7 @@
 
 import React, { useRef, useState, useEffect } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { Stars, useTexture } from "@react-three/drei";
+import { Environment, useTexture } from "@react-three/drei";
 import * as THREE from "three";
 import { useTheme } from "next-themes";
 
@@ -11,22 +11,21 @@ function ParticleField() {
   const pointsRef = useRef<THREE.Points>(null);
   const { resolvedTheme } = useTheme();
   const isDark = resolvedTheme === "dark";
-  const particleColor = isDark ? "#DFBA73" : "#1E3A8A";
+  const particleColor = isDark ? "#DFBA73" : "#C5A059";
   
   useFrame((state) => {
     if (pointsRef.current) {
-      pointsRef.current.rotation.y = state.clock.getElapsedTime() * 0.03;
-      pointsRef.current.rotation.x = Math.sin(state.clock.getElapsedTime() * 0.01) * 0.05;
+      pointsRef.current.rotation.y = state.clock.getElapsedTime() * 0.02;
     }
   });
 
-  const count = 150;
+  const count = 60;
   const positions = React.useMemo(() => {
     const arr = new Float32Array(count * 3);
     for (let i = 0; i < count; i++) {
-      arr[i * 3] = (Math.random() - 0.5) * 12;
-      arr[i * 3 + 1] = (Math.random() - 0.5) * 8;
-      arr[i * 3 + 2] = (Math.random() - 0.5) * 12;
+      arr[i * 3] = (Math.random() - 0.5) * 10;
+      arr[i * 3 + 1] = (Math.random() - 0.5) * 6;
+      arr[i * 3 + 2] = (Math.random() - 0.5) * 10;
     }
     return arr;
   }, []);
@@ -41,219 +40,23 @@ function ParticleField() {
       </bufferGeometry>
       <pointsMaterial
         color={particleColor}
-        size={isDark ? 0.06 : 0.045}
+        size={0.03}
         sizeAttenuation
         transparent
-        opacity={isDark ? 0.6 : 0.2}
-        blending={isDark ? THREE.AdditiveBlending : THREE.NormalBlending}
+        opacity={0.25}
       />
     </points>
   );
 }
 
-// Glowing cybernetic laser scanner sweeping the UAV
-function ScanningLaser({ active, themeColor }: { active: boolean; themeColor: "gold" | "cyan" }) {
-  const laserRef = useRef<THREE.Mesh>(null);
-  const { resolvedTheme } = useTheme();
-  const isDark = resolvedTheme === "dark";
-  const laserColor = themeColor === "gold"
-    ? (isDark ? "#DFBA73" : "#E28B00")
-    : (isDark ? "#00E5FF" : "#0066FF");
-  const blendingMode = isDark ? THREE.AdditiveBlending : THREE.NormalBlending;
-  
-  useFrame((state) => {
-    if (laserRef.current) {
-      if (active) {
-        laserRef.current.position.y = 0;
-        const scale = 1.0 + Math.sin(state.clock.getElapsedTime() * 20) * 0.45;
-        laserRef.current.scale.set(scale, scale, scale);
-      } else {
-        laserRef.current.position.y = Math.sin(state.clock.getElapsedTime() * 1.8) * 1.5;
-        laserRef.current.scale.set(1, 1, 1);
-      }
-    }
-  });
+// CrewMember diorama component deleted for futuristic drone profile
 
-  return (
-    <mesh ref={laserRef} rotation={[Math.PI / 2, 0, 0]}>
-      <ringGeometry args={[0.23, 0.26, 32]} />
-      <meshBasicMaterial 
-        color={laserColor} 
-        transparent 
-        opacity={active ? 0.95 : 0.8} 
-        side={THREE.DoubleSide}
-        blending={blendingMode}
-      />
-    </mesh>
-  );
-}
-
-// 3D Waving Team Maverick India Flag
-function WavingFlag({ themeColor }: { themeColor: "gold" | "cyan" }) {
-  const geomRef = useRef<THREE.PlaneGeometry>(null);
-  const { resolvedTheme } = useTheme();
-  const isDark = resolvedTheme === "dark";
-  const wireframeColor = themeColor === "gold"
-    ? (isDark ? "#DFBA73" : "#1E3A8A")
-    : (isDark ? "#00E5FF" : "#0066FF");
-  const blendingMode = isDark ? THREE.AdditiveBlending : THREE.NormalBlending;
-  const wireframeOpacity = isDark ? 0.6 : 0.8;
-  const flagColor = isDark ? "#151515" : "#f1f5f9";
-
-  useFrame((state) => {
-    if (geomRef.current) {
-      const pos = geomRef.current.attributes.position;
-      const time = state.clock.getElapsedTime() * 6.5;
-      
-      for (let i = 0; i < pos.count; i++) {
-        const x = pos.getX(i);
-        // Amplitude is 0 at the flagpole attachment (x = -0.7) and increases to the right
-        const factor = (x + 0.7) / 1.4;
-        const wave = Math.sin(time - x * 4.2) * 0.12 * factor;
-        pos.setZ(i, wave);
-      }
-      pos.needsUpdate = true;
-      geomRef.current.computeVertexNormals();
-    }
-  });
-
-  return (
-    <group position={[-1.6, 0.2, 0.1]}>
-      {/* Flagpole */}
-      <mesh position={[-0.7, -0.4, 0]}>
-        <cylinderGeometry args={[0.012, 0.012, 1.8, 8]} />
-        <meshStandardMaterial color="#222" metalness={0.9} roughness={0.1} />
-      </mesh>
-      
-      {/* Waving Flag Surface (Futuristic Gold Wireframe + Solid backing) */}
-      <mesh>
-        <planeGeometry ref={geomRef} args={[1.4, 0.8, 12, 12]} />
-        <meshStandardMaterial 
-          color={flagColor} 
-          metalness={0.8} 
-          roughness={0.3} 
-          side={THREE.DoubleSide} 
-        />
-      </mesh>
-      <mesh scale={[1.01, 1.01, 1.01]}>
-        <planeGeometry ref={geomRef} args={[1.4, 0.8, 12, 12]} />
-        <meshStandardMaterial 
-          color={wireframeColor} 
-          wireframe 
-          transparent 
-          opacity={wireframeOpacity} 
-          side={THREE.DoubleSide}
-          blending={blendingMode}
-        />
-      </mesh>
-    </group>
-  );
-}
-
-// Sub-component for individual parts, combining metallic body and glowing wireframe overlay
-function UAVPart({ 
-  geometry, 
-  position, 
-  rotation, 
-  scale, 
-  viewMode, 
-  themeColor,
-  customColor,
-  metalness = 0.9,
-  roughness = 0.25,
-  smooth = true
-}: { 
-  geometry: THREE.BufferGeometry; 
-  position?: [number, number, number]; 
-  rotation?: [number, number, number]; 
-  scale?: [number, number, number];
-  viewMode: "wireframe" | "solid" | "particles";
-  themeColor: "gold" | "cyan";
-  customColor?: string;
-  metalness?: number;
-  roughness?: number;
-  smooth?: boolean;
-}) {
-  const { resolvedTheme } = useTheme();
-  const isDark = resolvedTheme === "dark";
-  const wireframeColor = themeColor === "gold"
-    ? (isDark ? "#DFBA73" : "#1E3A8A")
-    : (isDark ? "#00E5FF" : "#0066FF");
-  const blendingMode = isDark ? THREE.AdditiveBlending : THREE.NormalBlending;
-  const wireframeOpacity = isDark ? 0.35 : 0.55;
-  const bodyColor = customColor || (isDark ? "#1A1A1C" : "#e2e8f0");
-
-  return (
-    <group position={position} rotation={rotation} scale={scale}>
-      {viewMode === "solid" && (
-        <mesh geometry={geometry}>
-          <meshStandardMaterial 
-            color={bodyColor} 
-            metalness={metalness} 
-            roughness={roughness}
-            flatShading={!smooth}
-          />
-        </mesh>
-      )}
-      
-      {(viewMode === "wireframe" || viewMode === "solid") && (
-        <mesh geometry={geometry} scale={[1.01, 1.01, 1.01]}>
-          <meshBasicMaterial 
-            color={wireframeColor} 
-            wireframe 
-            transparent 
-            opacity={viewMode === "wireframe" ? wireframeOpacity : 0.2} 
-            blending={blendingMode}
-          />
-        </mesh>
-      )}
-
-      {viewMode === "particles" && (
-        <points geometry={geometry}>
-          <pointsMaterial 
-            color={wireframeColor} 
-            size={0.045} 
-            sizeAttenuation 
-            transparent 
-            opacity={0.8} 
-            blending={blendingMode}
-          />
-        </points>
-      )}
-    </group>
-  );
-}
-
-// Helper component to render the gold Maverick logo as a flat texture decal on plane surfaces
-function UAVEmblem({ position, rotation, scale = [1, 1, 1] }: { 
-  position: [number, number, number]; 
-  rotation: [number, number, number];
-  scale?: [number, number, number];
-}) {
-  const logoTexture = useTexture("/images/logo.png");
-  
-  return (
-    <mesh position={position} rotation={rotation} scale={scale}>
-      <planeGeometry args={[0.35, 0.35]} />
-      <meshBasicMaterial 
-        map={logoTexture} 
-        transparent 
-        depthWrite={false}
-        polygonOffset
-        polygonOffsetFactor={-4}
-      />
-    </mesh>
-  );
-}
-
-function UAVModel({ 
+function DroneModel({ 
   mouseX, 
   mouseY, 
   scrollY, 
   onIntroComplete,
   onDroneClick,
-  viewMode,
-  themeColor,
   rotationSpeed
 }: { 
   mouseX: number; 
@@ -261,22 +64,32 @@ function UAVModel({
   scrollY: number;
   onIntroComplete?: () => void;
   onDroneClick?: () => void;
-  viewMode: "wireframe" | "solid" | "particles";
-  themeColor: "gold" | "cyan";
   rotationSpeed: number;
 }) {
-  const { clock } = useThree();
   const { resolvedTheme } = useTheme();
   const isDark = resolvedTheme === "dark";
+  const { clock } = useThree();
 
-  const primaryColor = isDark ? "#171719" : "#E2E0DB";  // charcoal obsidian vs warm platinum
-  const wingColor = isDark ? "#1A1A1D" : "#ECE9E4";     // dark carbon vs silver-gold aluminum
-  const flapColor = isDark ? "#0E0E0F" : "#C7C4BE";     // matte black vs light matte gray
+  // Load Maverick branding logo texture
+  const logoTexture = useTexture("/images/logo.png");
+
+  // Colors matching Team Maverick Official identity: Carbon Black + Aerospace Gold
+  const mainChassisColor = isDark ? "#121214" : "#222326";  // Matte Carbon Black
+  const canopyColor = isDark ? "#232429" : "#32343A";       // Stealth Titanium Canopy
+  const goldAccentColor = "#DFBA73";                        // Premium Gold trim lines
+  const whiteAccent = isDark ? "#FFFFFF" : "#F3F4F6";       // Clean White structural details
+  const armColor = "#0B0C0E";                               // Dark carbon rods
+  const metalColor = isDark ? "#48494E" : "#62646A";        // Anodized gunmetal motor housings
+  const windingColor = "#E6A83C";                           // Copper coils inside motors
+  const rotorColor = "rgba(40, 44, 52, 0.7)";               // Smoked prop blades
+  const strapColor = "#1D1E22";                             // Carbon composite battery straps
 
   const groupRef = useRef<THREE.Group>(null);
-  const propRef = useRef<THREE.Mesh>(null);
+  
+  // Propeller refs to animate rotation
+  const propRefs = useRef<(THREE.Group | null)[]>([]);
+
   const [hovered, setHovered] = useState(false);
-  const spinOffsetRef = useRef(0);
   
   const barrelRollRef = useRef({
     active: false,
@@ -307,59 +120,65 @@ function UAVModel({
     }
   };
 
-  // Track intro takeoff progress (0 to 1)
   const introRef = useRef({
     progress: 0,
     completed: false
   });
 
+  // Reusable Geometries
   const geometries = React.useMemo(() => ({
-    fuselage: new THREE.CylinderGeometry(0.2, 0.16, 2.0, 16, 4), // Sleek cylinder center body
-    rearFuselage: new THREE.CylinderGeometry(0.16, 0.05, 1.2, 16, 4), // Tapered rear tail
-    nose: new THREE.ConeGeometry(0.2, 0.5, 16), // High fidelity nose cone
-    
-    // Side jet air intakes
-    intakeLeft: new THREE.BoxGeometry(0.12, 0.18, 0.5),
-    intakeRight: new THREE.BoxGeometry(0.12, 0.18, 0.5),
-
-    // Swept wings (3 segments for high detail)
-    wingCenter: new THREE.BoxGeometry(1.0, 0.05, 0.6),
-    wingSweptLeft: new THREE.BoxGeometry(1.8, 0.04, 0.5),
-    wingSweptRight: new THREE.BoxGeometry(1.8, 0.04, 0.5),
-    wingFlap: new THREE.BoxGeometry(1.6, 0.012, 0.12),
-    winglet: new THREE.BoxGeometry(0.02, 0.35, 0.32),
-
-    // Support booms and tail surfaces
-    boom: new THREE.CylinderGeometry(0.025, 0.02, 1.8, 8),
-    tailHoriz: new THREE.BoxGeometry(1.2, 0.02, 0.3),
-    tailVert: new THREE.BoxGeometry(0.015, 0.45, 0.22),
-    
-    // Engine Vectoring Nozzle
-    exhaust: new THREE.CylinderGeometry(0.075, 0.08, 0.2, 12),
-    exhaustInterior: new THREE.SphereGeometry(0.065, 8, 8),
-    
-    // Canopy Glass & Frame
-    canopy: new THREE.SphereGeometry(0.11, 32, 32),
-    canopyFrame: new THREE.TorusGeometry(0.115, 0.008, 8, 32),
-    pilotSeat: new THREE.BoxGeometry(0.07, 0.12, 0.1),
-    
-    // Gimbal camera pod
-    gimbal: new THREE.SphereGeometry(0.09, 16, 16),
-    gimbalLens: new THREE.CylinderGeometry(0.04, 0.04, 0.03, 12),
-    
-    // Pitot tube & antenna fins
-    pitot: new THREE.CylinderGeometry(0.008, 0.008, 0.35, 8),
-    antenna: new THREE.BoxGeometry(0.015, 0.16, 0.08),
-
-    // Propeller parts
-    propHub: new THREE.SphereGeometry(0.08, 12, 12),
-    propBlade: new THREE.BoxGeometry(1.0, 0.02, 0.05)
+    chassisCenter: new THREE.BoxGeometry(0.55, 0.08, 0.55),
+    battery: new THREE.BoxGeometry(0.12, 0.08, 0.35),
+    canopy: new THREE.SphereGeometry(0.16, 32, 16),
+    armRod: new THREE.CylinderGeometry(0.012, 0.012, 1.0, 8),
+    motor: new THREE.CylinderGeometry(0.045, 0.045, 0.1, 16),
+    propHub: new THREE.CylinderGeometry(0.012, 0.012, 0.03, 8),
+    propBlade: new THREE.BoxGeometry(0.48, 0.006, 0.035),
+    skid: new THREE.BoxGeometry(0.015, 0.015, 0.68),
+    strut: new THREE.CylinderGeometry(0.008, 0.008, 0.18, 8),
+    gimbalStrut: new THREE.CylinderGeometry(0.01, 0.01, 0.08, 8),
+    gimbalBody: new THREE.SphereGeometry(0.07, 16, 16),
+    gimbalLens: new THREE.CylinderGeometry(0.03, 0.03, 0.04, 12),
+    gpsMast: new THREE.CylinderGeometry(0.006, 0.006, 0.16, 8),
+    gpsPuck: new THREE.CylinderGeometry(0.05, 0.05, 0.018, 12),
+    sensorPod: new THREE.SphereGeometry(0.022, 12, 12),
   }), []);
+
+  // Hexacopter Arm Positions & Configurations
+  const hexArms = React.useMemo(() => {
+    // 6 angles for a hexacopter (in radians)
+    // Front-Right (30°), Right (90°), Rear-Right (150°), Rear-Left (-150°), Left (-90°), Front-Left (-30°)
+    const angles = [
+      Math.PI / 6,
+      Math.PI / 2,
+      5 * Math.PI / 6,
+      -5 * Math.PI / 6,
+      -Math.PI / 2,
+      -Math.PI / 6
+    ];
+
+    return angles.map((angle, index) => {
+      const cos = Math.cos(angle);
+      const sin = Math.sin(angle);
+      const motorR = 0.85;
+      const armLength = 0.85;
+      
+      return {
+        id: `arm-${index}`,
+        angle,
+        armLength,
+        motorPos: [sin * motorR, 0.05, cos * motorR] as [number, number, number],
+        armPos: [(sin * armLength) / 2, 0.025, (cos * armLength) / 2] as [number, number, number],
+        // Cohesive professional telemetry color scheme: front & side are Ice Blue, rear are white
+        ledColor: index === 0 || index === 5 || index === 1 || index === 4 ? "#00E5FF" : "#FFFFFF",
+      };
+    });
+  }, []);
 
   useFrame((state) => {
     // Increment intro progress
     if (!introRef.current.completed) {
-      introRef.current.progress += 0.007; // Takes about 140 frames (~2.3s)
+      introRef.current.progress += 0.008;
       if (introRef.current.progress >= 1) {
         introRef.current.progress = 1;
         introRef.current.completed = true;
@@ -370,7 +189,6 @@ function UAVModel({
     }
 
     const p = introRef.current.progress;
-    // Cubic ease out transition
     const easeOutCubic = (x: number) => 1 - Math.pow(1 - x, 3);
     const ease = easeOutCubic(p);
 
@@ -378,80 +196,83 @@ function UAVModel({
       const baseRotationY = state.clock.getElapsedTime() * rotationSpeed;
       const maxScroll = typeof window !== 'undefined' ? document.documentElement.scrollHeight - window.innerHeight : 1000;
       const scrollPercent = maxScroll > 0 ? scrollY / maxScroll : 0;
-
       const isMobile = typeof window !== 'undefined' ? window.innerWidth < 1024 : false;
 
-      // 1. Positioning based on scroll position
+      // Position logic on scroll - Alternating Swap Layout (Hero on Right, Hangar on Left)
       let targetX = 0;
       let targetY = 0.25;
       let targetZ = 0;
 
       if (scrollPercent < 0.25) {
-        targetX = isMobile ? 0 : 1.7;
-        targetY = isMobile ? 0.8 : 1.2;
-        targetZ = isMobile ? 0 : 1.35;
-      } else if (scrollPercent >= 0.25 && scrollPercent < 0.55) {
-        targetX = isMobile ? 1.2 : 1.9;
-        targetY = -0.05;
-        targetZ = -0.6;
-      } else if (scrollPercent >= 0.55 && scrollPercent < 0.8) {
-        targetX = isMobile ? -1.2 : -1.9;
-        targetY = 0.35;
-        targetZ = -0.4;
+        targetX = isMobile ? 0 : 1.6;     // Hero: Data on Left, Drone on Right
+        targetY = isMobile ? 0.4 : 0.25;  // Lowered to prevent crop
+        targetZ = isMobile ? 0 : 1.2;     // Scaled down slightly to fit nicely
+      } else if (scrollPercent >= 0.25 && scrollPercent < 0.60) {
+        targetX = isMobile ? -1.0 : -1.6; // Hangar: Data on Right, Drone on Left
+        targetY = isMobile ? 0.1 : 0.05;  // Position inside the workbench frame nicely
+        targetZ = isMobile ? 0 : 1.2;
       } else {
         targetX = 0;
-        targetY = 0.65;
-        targetZ = 1.1;
+        targetY = 0.6;
+        targetZ = 1.0;
       }
 
-      // Interpolate from start (left-to-right fly-in) positions
-      const currentTargetX = THREE.MathUtils.lerp(-10.0, targetX, ease); // Fly in from left (-10) to targetX
-      const currentTargetY = THREE.MathUtils.lerp(1.2, targetY, ease);   // Swoop from slightly higher altitude (1.2) to targetY
-      const currentTargetZ = THREE.MathUtils.lerp(-1.5, targetZ, ease);  // Fly from slightly further back
-      const currentScale = THREE.MathUtils.lerp(0.5, 1.0, ease);        // Scale from mid-size to full size
+      const currentTargetX = THREE.MathUtils.lerp(-8.0, targetX, ease);
+      const currentTargetY = THREE.MathUtils.lerp(1.5, targetY, ease);
+      const currentTargetZ = THREE.MathUtils.lerp(-1.5, targetZ, ease);
+      const currentScale = THREE.MathUtils.lerp(0.4, 1.15, ease);
 
       groupRef.current.position.x = THREE.MathUtils.lerp(groupRef.current.position.x, currentTargetX, 0.045);
       groupRef.current.position.y = THREE.MathUtils.lerp(groupRef.current.position.y, currentTargetY, 0.045);
       groupRef.current.position.z = THREE.MathUtils.lerp(groupRef.current.position.z, currentTargetZ, 0.045);
       groupRef.current.scale.setScalar(currentScale);
 
-      // 2. Responsive mouse-tracking rotations
-      // Fly-in rotation behavior: bank/roll as it speeds in from the left
-      const flyInRoll = (1 - ease) * -0.9;     // Strong banking to the left (wing dipped)
-      const flyInPitch = (1 - ease) * -0.15;   // Slight nose-down attitude during fast entry
-      const flyInYaw = (1 - ease) * 1.2;       // Yaw pointing to the right (direction of travel)
+      // Rotations
+      const basePitch = Math.PI / 12; // tilted nose-down
+      const baseYaw = -Math.PI / 3;   // beautiful 3/4 view angle
+      const baseRoll = -Math.PI / 32; // slight side tilt
 
-      let targetRoll = (-mouseX * 0.65 * ease) + flyInRoll;
-      if (groupRef.current.position.x < targetX) targetRoll += 0.35;
-      else if (groupRef.current.position.x > targetX) targetRoll -= 0.35;
+      const flyInRoll = (1 - ease) * -0.6;
+      const flyInPitch = (1 - ease) * -0.1;
+      const flyInYaw = (1 - ease) * 0.8;
 
-      const targetPitch = (mouseY * 0.45 * ease) + flyInPitch;
-      let targetYaw = baseRotationY - (scrollPercent * Math.PI * 0.7) + (mouseX * 0.3 * ease) + flyInYaw + spinOffsetRef.current;
+      let targetRoll = baseRoll + (-mouseX * 0.45 * ease) + flyInRoll;
+      if (groupRef.current.position.x < targetX) targetRoll += 0.15;
+      else if (groupRef.current.position.x > targetX) targetRoll -= 0.15;
 
-      // Showcase Yaw Spin Maneuver Animation (Y-axis 360 degree rotation)
+      const targetPitch = basePitch + (mouseY * 0.35 * ease) + flyInPitch;
+      const targetYaw = baseYaw + baseRotationY - (scrollPercent * Math.PI * 0.6) + (mouseX * 0.2 * ease) + flyInYaw;
+
+      // Stunt Roll Flip
+      let stuntRoll = 0;
       if (barrelRollRef.current.active) {
-        barrelRollRef.current.progress += 0.015; // Spins slightly slower for a premium look (~1.1s)
+        barrelRollRef.current.progress += 0.022; // Quick roll flip
         const rollP = barrelRollRef.current.progress;
         if (rollP >= 1) {
           barrelRollRef.current.active = false;
           barrelRollRef.current.progress = 0;
-          spinOffsetRef.current += Math.PI * 2;
         } else {
-          // Use smooth ease-in-out sine to execute a 360-degree horizontal spin (2 * Math.PI)
-          const easeSpin = Math.sin(rollP * Math.PI - Math.PI / 2) * 0.5 + 0.5;
-          targetYaw += easeSpin * Math.PI * 2;
+          const easeFlip = Math.sin(rollP * Math.PI - Math.PI / 2) * 0.5 + 0.5;
+          stuntRoll = easeFlip * Math.PI * 2;
         }
       }
 
       groupRef.current.rotation.x = THREE.MathUtils.lerp(groupRef.current.rotation.x, targetPitch, 0.05);
       groupRef.current.rotation.y = THREE.MathUtils.lerp(groupRef.current.rotation.y, targetYaw, 0.05);
-      groupRef.current.rotation.z = THREE.MathUtils.lerp(groupRef.current.rotation.z, targetRoll, 0.05);
+      groupRef.current.rotation.z = THREE.MathUtils.lerp(groupRef.current.rotation.z, targetRoll + stuntRoll, 0.05);
     }
 
-    if (propRef.current) {
-      const propSpeed = barrelRollRef.current.active ? 2.5 : 0.85;
-      propRef.current.rotation.x += propSpeed;
-    }
+    // Spin Propellers (Hexacopter Loop)
+    const spinFactor = barrelRollRef.current.active ? 2.8 : 1.2;
+    propRefs.current.forEach((ref, index) => {
+      if (ref) {
+        if (index % 2 === 0) {
+          ref.rotation.y += spinFactor;
+        } else {
+          ref.rotation.y -= spinFactor;
+        }
+      }
+    });
   });
 
   return (
@@ -461,336 +282,256 @@ function UAVModel({
       onPointerOver={() => setHovered(true)}
       onPointerOut={() => setHovered(false)}
     >
-      {/* Scanning Laser HUD Ring */}
-      <ScanningLaser active={barrelRollRef.current.active} themeColor={themeColor} />
+      {/* 1. CHASSIS CENTER */}
+      <mesh geometry={geometries.chassisCenter}>
+        <meshStandardMaterial color={mainChassisColor} metalness={0.7} roughness={0.35} />
+      </mesh>
 
-      {/* Flag component attached to the UAV Hangar Platform */}
-      <WavingFlag themeColor={themeColor} />
+      {/* 2. DUAL SIDE-MOUNTED BATTERY PACKS */}
+      {/* Left Battery */}
+      <mesh geometry={geometries.battery} position={[-0.14, 0.07, -0.05]}>
+        <meshStandardMaterial color="#16161A" metalness={0.9} roughness={0.2} />
+      </mesh>
+      {/* Right Battery */}
+      <mesh geometry={geometries.battery} position={[0.14, 0.07, -0.05]}>
+        <meshStandardMaterial color="#16161A" metalness={0.9} roughness={0.2} />
+      </mesh>
+      {/* Glowing Power Indicator lines */}
+      <mesh position={[-0.14, 0.115, -0.05]} scale={[0.06, 0.005, 0.28]}>
+        <boxGeometry args={[1, 1, 1]} />
+        <meshBasicMaterial color="#DFBA73" />
+      </mesh>
+      <mesh position={[0.14, 0.115, -0.05]} scale={[0.06, 0.005, 0.28]}>
+        <boxGeometry args={[1, 1, 1]} />
+        <meshBasicMaterial color="#DFBA73" />
+      </mesh>
+      {/* Carbon battery tie strap bands */}
+      <mesh position={[-0.14, 0.07, -0.05]} scale={[1.05, 1.05, 0.4]}>
+        <boxGeometry args={[0.12, 0.08, 0.35]} />
+        <meshStandardMaterial color={strapColor} roughness={0.65} metalness={0.1} />
+      </mesh>
+      <mesh position={[0.14, 0.07, -0.05]} scale={[1.05, 1.05, 0.4]}>
+        <boxGeometry args={[0.12, 0.08, 0.35]} />
+        <meshStandardMaterial color={strapColor} roughness={0.65} metalness={0.1} />
+      </mesh>
 
-      {/* Fuselage - Main Center body (Smooth carbon obsidian) */}
-      <UAVPart 
-        geometry={geometries.fuselage} 
-        position={[0, 0.1, 0]}
-        viewMode={viewMode} 
-        themeColor={themeColor} 
-        customColor={primaryColor}
-        metalness={isDark ? 0.85 : 0.25}
-        roughness={isDark ? 0.25 : 0.4}
-      />
-      
-      {/* Rear Tapered Fuselage (Smooth carbon obsidian) */}
-      <UAVPart 
-        geometry={geometries.rearFuselage} 
-        position={[0, -1.2, 0]}
-        viewMode={viewMode} 
-        themeColor={themeColor} 
-        customColor={primaryColor}
-        metalness={isDark ? 0.85 : 0.25}
-        roughness={isDark ? 0.25 : 0.4}
-      />
-
-      {/* Nose Cone (Champagne Gold Leading Accent) */}
-      <UAVPart 
-        geometry={geometries.nose} 
-        position={[0, 1.85, 0]} 
-        viewMode={viewMode} 
-        themeColor={themeColor} 
-        customColor="#C5A059"
-        metalness={isDark ? 0.95 : 0.65}
-        roughness={isDark ? 0.15 : 0.35}
-      />
-
-      {/* Pitot Tube (Polished metallic silver) */}
-      {viewMode === "solid" && (
-        <mesh position={[0, 2.2, 0]} rotation={[0, 0, 0]}>
-          <cylinderGeometry args={[0.005, 0.005, 0.35, 8]} />
-          <meshStandardMaterial color="#E8E7E5" metalness={0.95} roughness={0.05} />
+      {/* 3. FUTURISTIC STEALTH CANOPY SHELL */}
+      <group position={[0, 0.08, 0.04]}>
+        {/* Center angular ridge ridge */}
+        <mesh scale={[1, 0.6, 1.3]}>
+          <boxGeometry args={[0.22, 0.14, 0.45]} />
+          <meshStandardMaterial color={canopyColor} metalness={0.92} roughness={0.2} />
         </mesh>
-      )}
-
-      {/* Sensor Gimbal Camera under nose */}
-      <UAVPart 
-        geometry={geometries.gimbal} 
-        position={[0, 1.4, -0.16]} 
-        viewMode={viewMode} 
-        themeColor={themeColor} 
-        customColor="#C5A059"
-        metalness={isDark ? 0.95 : 0.65}
-        roughness={isDark ? 0.15 : 0.35}
-      />
-      
-      {/* Sensor Gimbal Lens details */}
-      {viewMode === "solid" && (
-        <mesh position={[0, 1.45, -0.23]} rotation={[Math.PI / 2.5, 0, 0]}>
-          <cylinderGeometry args={[0.045, 0.045, 0.03, 12]} />
-          <meshStandardMaterial color="#00072D" metalness={0.9} roughness={0.02} />
+        {/* Left faceted wing panel */}
+        <mesh position={[-0.14, -0.01, 0.02]} rotation={[0, 0, Math.PI / 6]} scale={[1, 0.5, 1.1]}>
+          <boxGeometry args={[0.08, 0.12, 0.38]} />
+          <meshStandardMaterial color={mainChassisColor} metalness={0.85} roughness={0.25} />
         </mesh>
-      )}
-
-      {/* Jet Air Intakes on the sides */}
-      <UAVPart 
-        geometry={geometries.intakeLeft} 
-        position={[-0.23, 0.6, 0.05]} 
-        rotation={[0, 0, -0.15]}
-        viewMode={viewMode} 
-        themeColor={themeColor} 
-        customColor="#C5A059"
-        metalness={isDark ? 0.95 : 0.65}
-        roughness={isDark ? 0.15 : 0.35}
-      />
-      <UAVPart 
-        geometry={geometries.intakeRight} 
-        position={[0.23, 0.6, 0.05]} 
-        rotation={[0, 0, 0.15]}
-        viewMode={viewMode} 
-        themeColor={themeColor} 
-        customColor="#C5A059"
-        metalness={isDark ? 0.95 : 0.65}
-        roughness={isDark ? 0.15 : 0.35}
-      />
-
-      {/* Main Wing Center Section */}
-      <UAVPart 
-        geometry={geometries.wingCenter} 
-        position={[0, 0.4, 0]} 
-        viewMode={viewMode} 
-        themeColor={themeColor} 
-        customColor={primaryColor}
-        metalness={isDark ? 0.85 : 0.25}
-        roughness={isDark ? 0.25 : 0.4}
-      />
-
-      {/* Swept Wings (Left & Right) */}
-      <UAVPart 
-        geometry={geometries.wingSweptLeft} 
-        position={[-1.3, 0.4, -0.16]} 
-        rotation={[0.02, 0.22, 0.03]}
-        viewMode={viewMode} 
-        themeColor={themeColor} 
-        customColor={wingColor}
-        metalness={isDark ? 0.9 : 0.25}
-        roughness={isDark ? 0.2 : 0.4}
-      />
-      <UAVPart 
-        geometry={geometries.wingSweptRight} 
-        position={[1.3, 0.4, -0.16]} 
-        rotation={[-0.02, -0.22, -0.03]}
-        viewMode={viewMode} 
-        themeColor={themeColor} 
-        customColor={wingColor}
-        metalness={isDark ? 0.9 : 0.25}
-        roughness={isDark ? 0.2 : 0.4}
-      />
-
-      {/* Wing Flaps (Trailing edges - Matte black carbon texture) */}
-      <UAVPart 
-        geometry={geometries.wingFlap} 
-        position={[-1.3, 0.39, -0.42]} 
-        rotation={[0.02, 0.22, 0.03]}
-        viewMode={viewMode} 
-        themeColor={themeColor} 
-        customColor={flapColor}
-        metalness={isDark ? 0.95 : 0.15}
-        roughness={isDark ? 0.1 : 0.5}
-      />
-      <UAVPart 
-        geometry={geometries.wingFlap} 
-        position={[1.3, 0.39, -0.42]} 
-        rotation={[-0.02, -0.22, -0.03]}
-        viewMode={viewMode} 
-        themeColor={themeColor} 
-        customColor={flapColor}
-        metalness={isDark ? 0.95 : 0.15}
-        roughness={isDark ? 0.1 : 0.5}
-      />
-
-      {/* Winglets on Wingtips (Champagne Gold highlight) */}
-      <UAVPart 
-        geometry={geometries.winglet} 
-        position={[-2.15, 0.42, 0.04]} 
-        rotation={[0, 0.22, 0.15]} 
-        viewMode={viewMode} 
-        themeColor={themeColor} 
-        customColor="#C5A059"
-        metalness={isDark ? 0.95 : 0.65}
-        roughness={isDark ? 0.12 : 0.35}
-      />
-      <UAVPart 
-        geometry={geometries.winglet} 
-        position={[2.15, 0.42, 0.04]} 
-        rotation={[0, -0.22, -0.15]} 
-        viewMode={viewMode} 
-        themeColor={themeColor} 
-        customColor="#C5A059"
-        metalness={isDark ? 0.95 : 0.65}
-        roughness={isDark ? 0.12 : 0.35}
-      />
-      
-      {viewMode !== "particles" && (
-        <>
-          <UAVEmblem position={[-1.0, 0.422, -0.1]} rotation={[-Math.PI / 2, 0, 0]} />
-          <UAVEmblem position={[1.0, 0.422, -0.1]} rotation={[-Math.PI / 2, 0, 0]} />
-        </>
-      )}
-
-      {/* Tail Booms */}
-      <UAVPart 
-        geometry={geometries.boom} 
-        position={[-0.45, -0.7, 0]} 
-        viewMode={viewMode} 
-        themeColor={themeColor} 
-        customColor={primaryColor}
-        metalness={isDark ? 0.85 : 0.25}
-        roughness={isDark ? 0.25 : 0.4}
-      />
-      <UAVPart 
-        geometry={geometries.boom} 
-        position={[0.45, -0.7, 0]} 
-        viewMode={viewMode} 
-        themeColor={themeColor} 
-        customColor={primaryColor}
-        metalness={isDark ? 0.85 : 0.25}
-        roughness={isDark ? 0.25 : 0.4}
-      />
-
-      {/* Horizontal Stabilizer (Matte charcoal) */}
-      <UAVPart 
-        geometry={geometries.tailHoriz} 
-        position={[0, -1.5, 0]} 
-        viewMode={viewMode} 
-        themeColor={themeColor} 
-        customColor={wingColor}
-        metalness={isDark ? 0.85 : 0.25}
-        roughness={isDark ? 0.25 : 0.4}
-      />
-
-      {/* Vertical Stabilizers */}
-      <UAVPart 
-        geometry={geometries.tailVert} 
-        position={[-0.45, -1.4, 0.1]} 
-        viewMode={viewMode} 
-        themeColor={themeColor} 
-        customColor={primaryColor}
-        metalness={isDark ? 0.85 : 0.25}
-        roughness={isDark ? 0.25 : 0.4}
-      />
-      <UAVPart 
-        geometry={geometries.tailVert} 
-        position={[0.45, -1.4, 0.1]} 
-        viewMode={viewMode} 
-        themeColor={themeColor} 
-        customColor={primaryColor}
-        metalness={isDark ? 0.85 : 0.25}
-        roughness={isDark ? 0.25 : 0.4}
-      />
-      {viewMode !== "particles" && (
-        <>
-          <UAVEmblem position={[-0.462, -1.4, 0.1]} rotation={[0, -Math.PI / 2, 0]} scale={[0.55, 0.55, 1]} />
-          <UAVEmblem position={[0.462, -1.4, 0.1]} rotation={[0, Math.PI / 2, 0]} scale={[0.55, 0.55, 1]} />
-        </>
-      )}
-
-      {/* Blade Antenna on top of fuselage */}
-      {viewMode === "solid" && (
-        <mesh position={[0, -0.6, 0.22]} rotation={[0.2, 0, 0]}>
-          <boxGeometry args={[0.015, 0.15, 0.08]} />
-          <meshStandardMaterial color="#C5A059" metalness={0.9} roughness={0.15} />
+        {/* Right faceted wing panel */}
+        <mesh position={[0.14, -0.01, 0.02]} rotation={[0, 0, -Math.PI / 6]} scale={[1, 0.5, 1.1]}>
+          <boxGeometry args={[0.08, 0.12, 0.38]} />
+          <meshStandardMaterial color={mainChassisColor} metalness={0.85} roughness={0.25} />
         </mesh>
-      )}
+        {/* Sloped front nose noseplate */}
+        <mesh position={[0, 0.035, 0.22]} rotation={[Math.PI / 6, 0, 0]} scale={[1, 0.4, 0.8]}>
+          <boxGeometry args={[0.2, 0.1, 0.2]} />
+          <meshStandardMaterial color={canopyColor} metalness={0.95} roughness={0.15} />
+        </mesh>
 
-      {/* Cockpit Glass Canopy (MeshPhysicalMaterial with refractive glass) */}
-      {viewMode !== "particles" && (
-        <>
-          {/* Inner Pilot Seat */}
-          <mesh position={[0, 0.55, 0.12]}>
-            <boxGeometry args={[0.07, 0.14, 0.1]} />
-            <meshStandardMaterial color="#222225" roughness={0.6} metalness={0.1} />
+        {/* Gold accent nose pinstripe */}
+        <mesh position={[0, 0.05, 0.25]} rotation={[Math.PI / 6, 0, 0]} scale={[0.8, 0.05, 0.9]}>
+          <boxGeometry args={[0.2, 0.01, 0.1]} />
+          <meshStandardMaterial color={goldAccentColor} metalness={0.95} roughness={0.1} />
+        </mesh>
+
+        {/* Gold trim lines on wings */}
+        <mesh position={[-0.142, 0.01, 0.02]} rotation={[0, 0, Math.PI / 6]} scale={[1, 0.05, 1.1]}>
+          <boxGeometry args={[0.082, 0.01, 0.382]} />
+          <meshStandardMaterial color={goldAccentColor} metalness={0.95} roughness={0.1} />
+        </mesh>
+        <mesh position={[0.142, 0.01, 0.02]} rotation={[0, 0, -Math.PI / 6]} scale={[1, 0.05, 1.1]}>
+          <boxGeometry args={[0.082, 0.01, 0.382]} />
+          <meshStandardMaterial color={goldAccentColor} metalness={0.95} roughness={0.1} />
+        </mesh>
+        
+        {/* Cyber glowing status strips */}
+        <mesh position={[-0.11, 0.04, 0.18]} scale={[0.015, 0.01, 0.12]}>
+          <boxGeometry args={[1, 1, 1]} />
+          <meshBasicMaterial color="#00e5ff" />
+        </mesh>
+        <mesh position={[0.11, 0.04, 0.18]} scale={[0.015, 0.01, 0.12]}>
+          <boxGeometry args={[1, 1, 1]} />
+          <meshBasicMaterial color="#00e5ff" />
+        </mesh>
+
+        {/* TEAM MAVERICK LOGO DECAL ON TOP CENTER */}
+        <mesh position={[0, 0.043, 0.02]} rotation={[-Math.PI / 2, 0, 0]} scale={[0.16, 0.22, 1.0]}>
+          <planeGeometry args={[1, 1]} />
+          <meshStandardMaterial 
+            map={logoTexture} 
+            transparent 
+            roughness={0.2}
+            metalness={0.1}
+            depthWrite={true}
+          />
+        </mesh>
+      </group>
+
+      {/* 4. DIAGONAL ARMS (DUAL ROD CARBON TRUSS) */}
+      {hexArms.map((arm) => (
+        <group key={`arm-rods-${arm.id}`} position={[0, 0.025, 0]} rotation={[0, arm.angle, 0]}>
+          {/* Top rod */}
+          <mesh 
+            geometry={geometries.armRod} 
+            position={[0, 0, arm.armLength / 2]} 
+            rotation={[Math.PI / 2, 0, 0]}
+            scale={[1, arm.armLength, 1]}
+          >
+            <meshStandardMaterial color={armColor} metalness={0.8} roughness={0.4} />
           </mesh>
-          {/* Inner Glowing Flight Control Screen */}
-          <mesh position={[0, 0.82, 0.15]} rotation={[-Math.PI / 6, 0, 0]}>
-            <boxGeometry args={[0.08, 0.02, 0.06]} />
-            <meshBasicMaterial color="#00ffff" />
+          {/* Bottom rod */}
+          <mesh 
+            geometry={geometries.armRod} 
+            position={[0, -0.05, arm.armLength / 2]} 
+            rotation={[Math.PI / 2, 0, 0]}
+            scale={[1, arm.armLength, 1]}
+          >
+            <meshStandardMaterial color={armColor} metalness={0.8} roughness={0.4} />
+          </mesh>
+        </group>
+      ))}
+
+      {/* 5. ADVANCED TELEMETRY WINGLETS */}
+      {/* Left rear fin */}
+      <mesh position={[-0.14, 0.12, -0.2]} rotation={[Math.PI / 6, -Math.PI / 12, 0]}>
+        <boxGeometry args={[0.008, 0.14, 0.08]} />
+        <meshStandardMaterial color={mainChassisColor} metalness={0.8} roughness={0.3} />
+      </mesh>
+      {/* Right rear fin */}
+      <mesh position={[0.14, 0.12, -0.2]} rotation={[Math.PI / 6, Math.PI / 12, 0]}>
+        <boxGeometry args={[0.008, 0.14, 0.08]} />
+        <meshStandardMaterial color={mainChassisColor} metalness={0.8} roughness={0.3} />
+      </mesh>
+
+      {/* 6. OBSTACLE AVOIDANCE SENSORS */}
+      {/* Front sensor lenses */}
+      <mesh geometry={geometries.sensorPod} position={[-0.08, 0.11, 0.22]}>
+        <meshStandardMaterial color="#111113" metalness={0.9} roughness={0.08} />
+      </mesh>
+      <mesh geometry={geometries.sensorPod} position={[0.08, 0.11, 0.22]}>
+        <meshStandardMaterial color="#111113" metalness={0.9} roughness={0.08} />
+      </mesh>
+      {/* Rear sensor pod */}
+      <mesh geometry={geometries.sensorPod} position={[0, 0.1, -0.19]}>
+        <meshStandardMaterial color="#111113" metalness={0.9} roughness={0.08} />
+      </mesh>
+
+      {/* 7. MOTORS, GUARDS & PROPELLERS LOOP */}
+      {hexArms.map((arm, index) => (
+        <group key={`motor-group-${arm.id}`} position={arm.motorPos}>
+          {/* Motor Body */}
+          <mesh geometry={geometries.motor}>
+            <meshStandardMaterial color={metalColor} metalness={0.95} roughness={0.15} />
           </mesh>
           
-          {/* Main Canopy glass dome */}
-          <mesh position={[0, 0.6, 0.18]} scale={[1, 2.4, 0.8]}>
-            <sphereGeometry args={[0.11, 32, 32]} />
-            <meshPhysicalMaterial 
-              color={themeColor === "gold" ? "#DFBA73" : "#00ffff"}
-              transparent
-              opacity={0.35}
-              roughness={0.02}
-              metalness={0.1}
-              transmission={0.92}
-              thickness={0.4}
-              clearcoat={1.0}
-              clearcoatRoughness={0.05}
-            />
+          {/* Rotor Guard Ring */}
+          <mesh position={[0, 0.06, 0]} rotation={[Math.PI / 2, 0, 0]}>
+            <torusGeometry args={[0.26, 0.008, 8, 32]} />
+            <meshStandardMaterial color={armColor} metalness={0.8} roughness={0.4} />
           </mesh>
 
-          {/* Cockpit Frame (Metallic gold/obsidian trim wrapping the canopy) */}
-          <mesh position={[0, 0.6, 0.18]} scale={[1.01, 2.41, 0.81]} rotation={[Math.PI / 2, 0, 0]}>
-            <torusGeometry args={[0.11, 0.005, 8, 32]} />
-            <meshStandardMaterial color="#C5A059" metalness={0.95} roughness={0.1} />
+          {/* Glowing Thruster Halo Ring */}
+          <mesh position={[0, 0.065, 0]} rotation={[Math.PI / 2, 0, 0]}>
+            <torusGeometry args={[0.22, 0.004, 6, 24]} />
+            <meshBasicMaterial color={isDark ? "#00e5ff" : "#d4a348"} transparent opacity={0.6} />
           </mesh>
-        </>
-      )}
 
-      {/* Jet Exhaust Nozzle */}
-      <UAVPart 
-        geometry={geometries.exhaust} 
-        position={[0, -1.8, 0]} 
-        rotation={[Math.PI / 2, 0, 0]} 
-        viewMode={viewMode} 
-        themeColor={themeColor} 
-        customColor={isDark ? "#171719" : "#A8A59E"}
-        metalness={isDark ? 0.95 : 0.8}
-        roughness={isDark ? 0.15 : 0.2}
-      />
-      {/* Glowing Engine Core */}
-      {viewMode !== "particles" && (
-        <mesh position={[0, -1.83, 0]}>
-          <sphereGeometry args={[0.065, 12, 12]} />
-          <meshBasicMaterial color={themeColor === "gold" ? "#FF5500" : "#00E5FF"} />
-        </mesh>
-      )}
+          {/* Copper winding accent ring inside motor */}
+          <mesh position={[0, 0.05, 0]} rotation={[Math.PI / 2, 0, 0]}>
+            <torusGeometry args={[0.045, 0.005, 8, 24]} />
+            <meshStandardMaterial color={windingColor} metalness={0.9} roughness={0.1} />
+          </mesh>
 
-      {/* Aviation LEDs (Red, Green, Strobe) */}
-      {viewMode !== "particles" && (
-        <>
-          {/* Left wing port light (Red) */}
-          <mesh position={[-2.15, 0.42, 0.05]}>
-            <sphereGeometry args={[0.03, 8, 8]} />
-            <meshBasicMaterial color="#FF0000" />
-          </mesh>
-          {/* Right wing starboard light (Green) */}
-          <mesh position={[2.15, 0.42, 0.05]}>
-            <sphereGeometry args={[0.03, 8, 8]} />
-            <meshBasicMaterial color="#00FF00" />
-          </mesh>
-          {/* Tail strobe beacon light (White blinking) */}
-          <mesh position={[0, -1.5, 0.16]}>
-            <sphereGeometry args={[0.025, 8, 8]} />
+          {/* Propeller */}
+          <group 
+            ref={(el) => {
+              propRefs.current[index] = el;
+            }} 
+            position={[0, 0.07, 0]}
+          >
+            <mesh geometry={geometries.propHub}>
+              <meshStandardMaterial color={metalColor} metalness={0.8} />
+            </mesh>
+            <mesh geometry={geometries.propBlade} position={[0, 0.015, 0]}>
+              <meshStandardMaterial color={rotorColor} transparent opacity={0.85} roughness={0.2} />
+            </mesh>
+          </group>
+
+          {/* Navigation LED at the bottom of the motor */}
+          <mesh position={[0, -0.03, 0]}>
+            <sphereGeometry args={[0.018, 8, 8]} />
             <meshBasicMaterial 
-              color="#FFFFFF" 
-              transparent 
-              opacity={Math.sin(clock.getElapsedTime() * 10) > 0 ? 1 : 0.2} 
+              color={arm.ledColor} 
+              transparent={arm.ledColor === "#FFFFFF"}
+              opacity={arm.ledColor === "#FFFFFF" ? (Math.sin(clock.getElapsedTime() * 8) > 0 ? 1 : 0.2) : 1}
             />
           </mesh>
-        </>
-      )}
+        </group>
+      ))}
 
-      {/* Propeller Hub */}
-      <mesh position={[0, 2.1, 0]}>
-        <sphereGeometry args={[0.08, 12, 12]} />
-        <meshBasicMaterial color={themeColor === "gold" ? "#DFBA73" : "#00E5FF"} wireframe />
+      {/* 9. LANDING SKIDS & STRUTS */}
+      {/* Struts FL & RL */}
+      <mesh geometry={geometries.strut} position={[-0.18, -0.11, 0.2]} rotation={[0, 0, Math.PI / 12]}>
+        <meshStandardMaterial color={armColor} metalness={0.7} />
+      </mesh>
+      <mesh geometry={geometries.strut} position={[-0.18, -0.11, -0.2]} rotation={[0, 0, Math.PI / 12]}>
+        <meshStandardMaterial color={armColor} metalness={0.7} />
+      </mesh>
+      {/* Struts FR & RR */}
+      <mesh geometry={geometries.strut} position={[0.18, -0.11, 0.2]} rotation={[0, 0, -Math.PI / 12]}>
+        <meshStandardMaterial color={armColor} metalness={0.7} />
+      </mesh>
+      <mesh geometry={geometries.strut} position={[0.18, -0.11, -0.2]} rotation={[0, 0, -Math.PI / 12]}>
+        <meshStandardMaterial color={armColor} metalness={0.7} />
+      </mesh>
+      {/* Skids */}
+      <mesh geometry={geometries.skid} position={[-0.2, -0.2, 0]}>
+        <meshStandardMaterial color="#2E3033" metalness={0.9} roughness={0.2} />
+      </mesh>
+      <mesh geometry={geometries.skid} position={[0.2, -0.2, 0]}>
+        <meshStandardMaterial color="#2E3033" metalness={0.9} roughness={0.2} />
       </mesh>
 
-      {/* Propeller Blades */}
-      <mesh ref={propRef} position={[0, 2.1, 0]}>
-        <boxGeometry args={[1.0, 0.02, 0.05]} />
-        <meshStandardMaterial color={themeColor === "gold" ? "#C5A059" : "#00E5FF"} metalness={0.95} roughness={0.12} />
-      </mesh>
+      {/* 10. ADVANCED TRIPLE-LENS SENSOR TURRET */}
+      <group position={[0, -0.06, 0.18]}>
+        <mesh geometry={geometries.gimbalStrut} position={[0, -0.04, 0]}>
+          <meshStandardMaterial color="#111113" metalness={0.9} />
+        </mesh>
+        {/* Futuristic Hexagonal Sensor Pod Body */}
+        <mesh position={[0, -0.1, 0]} rotation={[0, Math.PI / 4, 0]} scale={[1, 1.2, 1]}>
+          <cylinderGeometry args={[0.07, 0.07, 0.12, 6]} />
+          <meshStandardMaterial color="#1E1E22" metalness={0.9} roughness={0.2} />
+        </mesh>
+        {/* Glowing sensor band */}
+        <mesh position={[0, -0.1, 0]} scale={[1.05, 0.15, 1.05]} rotation={[0, Math.PI / 4, 0]}>
+          <cylinderGeometry args={[0.07, 0.07, 0.12, 6]} />
+          <meshBasicMaterial color="#00ffff" />
+        </mesh>
+        {/* Primary Optical Zoom Lens (Gold coated glass) */}
+        <mesh geometry={geometries.gimbalLens} position={[-0.03, -0.11, 0.055]} rotation={[Math.PI / 2, 0, 0]}>
+          <meshStandardMaterial color="#DFBA73" metalness={0.95} roughness={0.05} />
+        </mesh>
+        {/* Secondary FLIR Thermal Infrared Lens (Red coated glass) */}
+        <mesh geometry={geometries.gimbalLens} position={[0.03, -0.11, 0.055]} rotation={[Math.PI / 2, 0, 0]} scale={[0.8, 1.0, 0.8]}>
+          <meshStandardMaterial color="#ff3333" metalness={0.95} roughness={0.05} />
+        </mesh>
+        {/* LiDAR / Rangefinder Lens (Cyan glass) */}
+        <mesh geometry={geometries.gimbalLens} position={[0, -0.06, 0.05]} rotation={[Math.PI / 2, 0, 0]} scale={[0.6, 1.0, 0.6]}>
+          <meshStandardMaterial color="#00ffff" metalness={0.95} roughness={0.05} />
+        </mesh>
+      </group>
+
+      {/* 12. 3D CREW DIORAMA REMOVED */}
     </group>
   );
 }
@@ -800,44 +541,17 @@ export default function HolographicUAV() {
   const isDark = resolvedTheme === "dark";
   const [mouse, setMouse] = useState({ x: 0, y: 0 });
   const [scrollY, setScrollY] = useState(0);
-  const [introDone, setIntroDone] = useState(false);
   const [mounted, setMounted] = useState(false);
-  const [clickActive, setClickActive] = useState(false);
-
-  // Simulation Console States
-  const [modelViewMode, setModelViewMode] = useState<"wireframe" | "solid" | "particles">("solid");
-  const [themeColor, setThemeColor] = useState<"gold" | "cyan">("gold");
-  const [rotationSpeed, setRotationSpeed] = useState<number>(0.06);
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 768);
     };
     checkMobile();
     window.addEventListener("resize", checkMobile);
     return () => window.removeEventListener("resize", checkMobile);
-  }, []);
-
-  const [hudStats, setHudStats] = useState({
-    pitch: 0,
-    roll: 0,
-    yaw: 0,
-    speed: 0,
-    altitude: 0,
-    thrust: 0,
-    status: "LAUNCHING",
-  });
-
-  const handleDroneClick = () => {
-    setClickActive(true);
-    setTimeout(() => {
-      setClickActive(false);
-    }, 1500);
-  };
-
-  useEffect(() => {
-    setMounted(true);
   }, []);
 
   useEffect(() => {
@@ -861,268 +575,69 @@ export default function HolographicUAV() {
     };
   }, []);
 
-  useEffect(() => {
-    const pitchDeg = Math.round(mouse.y * 25);
-    const rollDeg = Math.round(-mouse.x * 35);
-    const maxScroll = typeof window !== "undefined" ? document.documentElement.scrollHeight - window.innerHeight : 1000;
-    const scrollPercent = maxScroll > 0 ? scrollY / maxScroll : 0;
-    const yawDeg = Math.round((scrollY * 0.15) % 360);
-    
-    let speedVal = !introDone 
-      ? parseFloat((Math.random() * 20).toFixed(1))
-      : scrollPercent < 0.1 
-        ? 0.0 
-        : parseFloat((14.2 + Math.sin(scrollY * 0.005) * 2.8 + Math.random() * 0.2).toFixed(1));
-    
-    const altVal = parseFloat((scrollY * 0.08).toFixed(1));
-    
-    let thrustVal = !introDone
-      ? 100
-      : scrollPercent < 0.1 
-        ? 0 
-        : Math.round(75 + Math.sin(scrollY * 0.005) * 12 + Math.random() * 2);
+  const maxScroll = typeof window !== 'undefined' ? document.documentElement.scrollHeight - window.innerHeight : 1000;
+  const scrollPercent = maxScroll > 0 ? scrollY / maxScroll : 0;
 
-    let flightStatus = "LAUNCHING";
-    if (introDone) {
-      flightStatus = "STANDBY";
-      if (scrollPercent > 0.05) {
-        flightStatus = mouse.x > 0.5 || mouse.x < -0.5 || mouse.y > 0.5 || mouse.y < -0.5
-          ? "ATTITUDE_CORRECT"
-          : "CRUISE_AUTO";
-      }
+  // Determine fixed canvas opacity and z-index based on active section scroll bounds
+  let opacityClass = "opacity-100 z-0";
+  if (isMobile) {
+    opacityClass = "opacity-40 z-0";
+  } else {
+    if (scrollPercent < 0.22) {
+      opacityClass = "opacity-100 z-0";
+    } else if (scrollPercent >= 0.22 && scrollPercent < 0.48) {
+      opacityClass = "opacity-0 z-0 pointer-events-none"; // Faded out during wireframe interactive showcase
+    } else if (scrollPercent >= 0.48 && scrollPercent < 0.60) {
+      opacityClass = "opacity-100 z-0"; // Faded back in on the left for Virtual Hangar workbench
+    } else {
+      opacityClass = "opacity-0 z-0 pointer-events-none"; // Faded out for testimonials/sponsors
     }
-
-    if (clickActive && introDone) {
-      flightStatus = "EVASIVE_ROLL";
-      speedVal = parseFloat((120.4 + Math.random() * 15.2).toFixed(1));
-      thrustVal = 150;
-    }
-
-    setHudStats({
-      pitch: clickActive ? Math.round(pitchDeg + Math.sin(Date.now() * 0.05) * 15) : pitchDeg,
-      roll: clickActive ? Math.round(rollDeg + Math.cos(Date.now() * 0.05) * 25) : rollDeg,
-      yaw: yawDeg,
-      speed: speedVal,
-      altitude: altVal,
-      thrust: thrustVal,
-      status: flightStatus,
-    });
-  }, [mouse, scrollY, introDone, clickActive]);
-
-  const hudOpacity = Math.max(0, 1 - scrollY / 600);
+  }
 
   return (
-    <div className={`fixed inset-0 w-screen h-screen transition-all duration-500 pointer-events-none ${isMobile ? "z-0 opacity-30" : scrollY > 600 ? "z-0 opacity-30" : "z-[20] opacity-100"}`}>
+    <div className={`fixed inset-0 w-screen h-screen transition-all duration-500 pointer-events-none ${opacityClass}`}>
       <Canvas
-        camera={{ position: [0, 2, 5.5], fov: 50 }}
+        camera={{ position: [0, 1.8, 5.0], fov: 48 }}
         gl={{ antialias: true }}
         style={{ pointerEvents: "none" }}
       >
         <React.Suspense fallback={null}>
-          <ambientLight intensity={isDark ? 0.4 : 1.2} />
-          <hemisphereLight intensity={isDark ? 0.5 : 0.9} color="#ffffff" groundColor={isDark ? "#111115" : "#e2e8f0"} />
+          <ambientLight intensity={isDark ? 0.6 : 1.3} />
+          <hemisphereLight intensity={isDark ? 0.7 : 1.1} color="#ffffff" groundColor={isDark ? "#111115" : "#e2e8f0"} />
           <directionalLight 
             position={[8, 12, 8]} 
-            intensity={isDark ? 3.0 : 4.5} 
-            color={themeColor === "gold" ? "#DFBA73" : "#00E5FF"} 
+            intensity={isDark ? 3.5 : 4.5} 
+            color="#ffffff" 
           />
           <pointLight 
             position={[-8, -6, -4]} 
-            intensity={isDark ? 4.0 : 2.5} 
-            color={themeColor === "gold" ? "#00E5FF" : "#DFBA73"} 
+            intensity={isDark ? 3.0 : 2.0} 
+            color={isDark ? "#DFBA73" : "#F3F4F6"} 
           />
-          <spotLight position={[0, 8, 4]} angle={0.5} penumbra={1} intensity={isDark ? 3 : 4.5} color="#FFFFFF" />
+          <spotLight position={[0, 8, 4]} angle={0.5} penumbra={1} intensity={isDark ? 3 : 4} color="#FFFFFF" />
           
-          <group rotation={[Math.PI / 3.2, 0, 0]}>
-            <UAVModel 
+          <group rotation={[0, 0, 0]}>
+            <DroneModel 
               mouseX={mouse.x} 
               mouseY={mouse.y} 
               scrollY={scrollY} 
-              onIntroComplete={() => setIntroDone(true)}
-              onDroneClick={handleDroneClick}
-              viewMode={modelViewMode}
-              themeColor={themeColor}
-              rotationSpeed={rotationSpeed}
+              rotationSpeed={0.04}
             />
           </group>
 
           <ParticleField />
+          <Environment preset="studio" />
         </React.Suspense>
-        
-        {isDark && <Stars radius={120} depth={50} count={800} factor={4} saturation={0} fade speed={1} />}
       </Canvas>
       <div className="absolute inset-0 bg-radial-glow" />
 
-      {/* --- CINEMATIC INITIAL BLACKOUT OVERLAY --- */}
+      {/* --- CINEMATIC INITIAL WHITEOUT OVERLAY --- */}
       <div 
-        className={`fixed inset-0 bg-black z-50 transition-opacity ease-out pointer-events-none ${
+        className={`fixed inset-0 bg-background z-50 transition-opacity ease-out pointer-events-none ${
           mounted ? "opacity-0" : "opacity-100"
         }`}
-        style={{ transitionDuration: "1500ms" }}
+        style={{ transitionDuration: "1200ms" }}
       />
-
-      {/* --- HUD OVERLAY --- */}
-      {hudOpacity > 0 && (
-        <div 
-          className="absolute inset-0 flex flex-col justify-between p-6 md:p-10 font-mono transition-opacity duration-300 pointer-events-none select-none text-[10px] md:text-xs tracking-wider z-20"
-          style={{ opacity: hudOpacity }}
-        >
-          {/* Top Panel */}
-          <div className="flex justify-between items-start w-full border-b border-[#DFBA73]/20 pb-4 bg-gradient-to-b from-foreground/[0.04] to-transparent px-4">
-            <div className="flex flex-col gap-1">
-              <div className="flex items-center gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#DFBA73] animate-ping" />
-                <span className="text-[#DFBA73] font-bold">LINK STATUS: ONLINE</span>
-              </div>
-              <span className="text-muted-foreground">SYS_CONSOLE: V3.89_MAVERIK</span>
-            </div>
-            
-            <div className="text-center hidden md:block">
-              <span className="text-muted-foreground">AUTOPILOT: </span>
-              <span className="text-[#DFBA73] font-semibold">{hudStats.status}</span>
-            </div>
-
-            <div className="text-right">
-              <span className="text-muted-foreground">FREQ: 915.00 MHz</span>
-              <div className="text-[#DFBA73] font-semibold">SIG: 98% (EXCELLENT)</div>
-            </div>
-          </div>
-
-          {/* Center Crosshair Reticle */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 border border-foreground/5 dark:border-white/5 rounded-full flex items-center justify-center">
-            <div className="w-1 h-1 bg-[#DFBA73] rounded-full" />
-            <div className="absolute top-0 w-[1px] h-3 bg-[#DFBA73]/40" />
-            <div className="absolute bottom-0 w-[1px] h-3 bg-[#DFBA73]/40" />
-            <div className="absolute left-0 w-3 h-[1px] bg-[#DFBA73]/40" />
-            <div className="absolute right-0 w-3 h-[1px] bg-[#DFBA73]/40" />
-            
-            <div className="absolute -top-2 -left-2 w-3 h-3 border-t border-l border-[#DFBA73]/30" />
-            <div className="absolute -top-2 -right-2 w-3 h-3 border-t border-r border-[#DFBA73]/30" />
-            <div className="absolute -bottom-2 -left-2 w-3 h-3 border-b border-l border-[#DFBA73]/30" />
-            <div className="absolute -bottom-2 -right-2 w-3 h-3 border-b border-r border-[#DFBA73]/30" />
-          </div>
-
-          {/* Mid-screen HUD */}
-          <div className="flex justify-between items-start w-full px-2 md:px-12 pointer-events-none">
-            {/* Left Box (Removed as requested) */}
-            <div />
-
-            {/* Right Container (Gyroscope + Sim Control Panel) - Hidden on Mobile */}
-            {!isMobile && (
-              <div className="flex flex-col">
-                {/* Gyroscope Box */}
-                <div className="bg-card/75 dark:bg-black/50 border border-[#DFBA73]/20 p-4 rounded backdrop-blur-md flex flex-col gap-2 min-w-[120px] md:min-w-[160px] shadow-[0_0_15px_rgba(212,163,72,0.05)]">
-                  <div className="border-b border-[#DFBA73]/10 pb-1 text-[#DFBA73] font-bold text-[11px] md:text-sm">GYROSCOPE</div>
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">PITCH:</span>
-                    <span className={hudStats.pitch >= 0 ? "text-green-500" : "text-red-500"}>
-                      {hudStats.pitch > 0 ? `+${hudStats.pitch}` : hudStats.pitch}°
-                    </span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">ROLL:</span>
-                    <span className={hudStats.roll >= 0 ? "text-green-500" : "text-red-500"}>
-                      {hudStats.roll > 0 ? `+${hudStats.roll}` : hudStats.roll}°
-                    </span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">YAW (HDG):</span>
-                    <span className="text-foreground font-bold">{hudStats.yaw}°</span>
-                  </div>
-                </div>
-
-                {/* Simulation Interactive Control Panel */}
-                <div className="bg-card/90 dark:bg-black/85 border border-[#DFBA73]/25 p-3 rounded backdrop-blur-md flex flex-col gap-2.5 min-w-[120px] md:min-w-[160px] shadow-[0_0_20px_rgba(212,163,72,0.1)] pointer-events-auto mt-4 transition-all z-30">
-                  <div className="border-b border-[#DFBA73]/20 pb-0.5 text-[#DFBA73] font-bold text-[9px] md:text-[10px] tracking-wider uppercase">SIM_CONTROL</div>
-                  
-                  {/* Mesh Mode */}
-                  <div className="flex flex-col gap-1">
-                    <span className="text-muted-foreground text-[7px] md:text-[8px] uppercase">MESH MODE</span>
-                    <div className="grid grid-cols-3 gap-0.5 md:gap-1">
-                      {(["solid", "wireframe", "particles"] as const).map((mode) => (
-                        <button
-                          key={mode}
-                          onClick={() => setModelViewMode(mode)}
-                          className={`px-0.5 py-0.5 rounded text-[6.5px] md:text-[8px] border transition-all uppercase ${
-                            modelViewMode === mode
-                              ? "bg-[#DFBA73]/20 border-[#DFBA73] text-[#DFBA73] font-bold"
-                              : "bg-background/40 border-border dark:border-white/5 text-muted-foreground hover:border-foreground/20 dark:hover:border-white/20"
-                          }`}
-                        >
-                          {mode === "wireframe" ? "wire" : mode === "particles" ? "part" : "solid"}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Beacon Color */}
-                  <div className="flex flex-col gap-1">
-                    <span className="text-muted-foreground text-[7px] md:text-[8px] uppercase">LASER COLOR</span>
-                    <div className="grid grid-cols-2 gap-0.5 md:gap-1">
-                      {(["gold", "cyan"] as const).map((color) => (
-                        <button
-                          key={color}
-                          onClick={() => setThemeColor(color)}
-                          className={`px-1 py-0.5 rounded text-[6.5px] md:text-[8px] border transition-all uppercase ${
-                            themeColor === color
-                              ? color === "gold"
-                                ? "bg-[#DFBA73]/20 border-[#DFBA73] text-[#DFBA73] font-bold"
-                                : "bg-[#00E5FF]/20 border-[#00E5FF] text-[#00E5FF] font-bold"
-                              : "bg-background/40 border-border dark:border-white/5 text-muted-foreground hover:border-foreground/20 dark:hover:border-white/20"
-                          }`}
-                        >
-                          {color}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Rotation toggle */}
-                  <div className="flex flex-col gap-1">
-                    <span className="text-muted-foreground text-[7px] md:text-[8px] uppercase">ROTATION</span>
-                    <button
-                      onClick={() => setRotationSpeed(rotationSpeed === 0 ? 0.06 : 0)}
-                      className={`w-full py-0.5 rounded text-[6.5px] md:text-[8px] border transition-all uppercase ${
-                        rotationSpeed > 0
-                          ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-500 dark:text-emerald-400 font-bold"
-                          : "bg-red-500/10 border-red-500/30 text-red-500 dark:text-red-400 font-bold"
-                      }`}
-                    >
-                      {rotationSpeed > 0 ? "SPIN: ON" : "SPIN: OFF"}
-                    </button>
-                  </div>
-
-                  {/* Stunt trigger */}
-                  <div className="flex flex-col gap-1">
-                    <span className="text-muted-foreground text-[7px] md:text-[8px] uppercase">MANEUVER</span>
-                    <button
-                      onClick={handleDroneClick}
-                      className="w-full py-0.5 md:py-1 rounded text-[6.5px] md:text-[8px] border border-[#DFBA73]/40 hover:border-[#DFBA73] bg-[#DFBA73]/10 hover:bg-[#DFBA73]/20 text-[#DFBA73] font-bold uppercase transition-all"
-                    >
-                      ROLL STUNT
-                    </button>
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* Bottom Panel */}
-          <div className="flex justify-between items-end w-full border-t border-[#DFBA73]/20 pt-4 bg-gradient-to-t from-foreground/[0.03] to-transparent px-4">
-            <div>
-              <span className="text-muted-foreground">SYS_TEMP: </span>
-              <span className="text-green-500 dark:text-green-400 font-bold">32.4°C (STABLE)</span>
-            </div>
-            <div className="hidden sm:block text-center text-muted-foreground/80 text-[9px]">
-              TMI UAV HANGAR SYSTEM INC. // PUNE, IN // 18°39'N 73°50'E
-            </div>
-            <div className="text-right">
-              <span className="text-muted-foreground">POWER: </span>
-              <span className="text-foreground font-bold">22.8V [LI-PO]</span>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
