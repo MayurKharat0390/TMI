@@ -5,7 +5,10 @@ import Link from "next/link";
 import Image from "next/image";
 import dynamic from "next/dynamic";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowUpRight, Plane, Users, Award, ShieldAlert, Calendar, Trophy, Send, ChevronRight } from "lucide-react";
+import { 
+  ArrowUpRight, Plane, Users, Award, ShieldAlert, Calendar, Trophy, Send, ChevronRight,
+  Clock, Globe, Lightbulb, Cpu, Activity, Compass, Rocket, Target, Play, Wrench 
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { TechText } from "@/components/tech-text";
@@ -30,17 +33,54 @@ const testimonials = [
 ];
 
 const stats = [
-  { id: "members", count: "40+", label: "Active Engineers", icon: Users },
-  { id: "competitions", count: "8+", label: "Competitions Entered", icon: Plane },
-  { id: "awards", count: "12+", label: "Awards & Podiums", icon: Trophy },
-  { id: "experience", count: "5+", label: "Years of Excellence", icon: Award }
+  { id: "members", count: "60+", label: "Team Members", icon: Users },
+  { id: "platforms", count: "04", label: "UAV Platforms Built", icon: Plane },
+  { id: "hours", count: "500+", label: "Flight Hours", icon: Clock },
+  { id: "competitions", count: "12+", label: "Competitions Participated", icon: Globe },
+  { id: "awards", count: "15+", label: "Awards Won", icon: Trophy }
+];
+
+const capabilities = [
+  { label: "Innovate", icon: Lightbulb },
+  { label: "Design", icon: Compass },
+  { label: "Build", icon: Wrench },
+  { label: "Test", icon: Activity },
+  { label: "Fly", icon: Plane },
+  { label: "Impact", icon: Rocket }
+];
+
+const featuredPlanes = [
+  {
+    name: "Maverick Alpha",
+    tag: "Fixed Wing",
+    sub: "Multi-Role UAV Platform",
+    image: "/images/planes/daredevil.webp",
+    endurance: "120 min",
+    payload: "2.5 kg",
+    range: "100 km"
+  },
+  {
+    name: "Maverick Falcon",
+    tag: "Surveillance",
+    sub: "Reconnaissance & Surveillance UAV",
+    image: "/images/planes/shourya.webp",
+    endurance: "150 min",
+    payload: "3.0 kg",
+    range: "120 km"
+  },
+  {
+    name: "Maverick X",
+    tag: "VTOL",
+    sub: "VTOL UAV Platform",
+    image: "/images/planes/hexacopter.webp",
+    endurance: "45 min",
+    payload: "1.5 kg",
+    range: "25 km"
+  }
 ];
 
 const heroDescriptions = [
-  "Team Maverick India designs, simulates, and manufactures advanced autonomous Unmanned Aerial Vehicles (UAVs), pushing the boundaries of aerodynamics and robotic flight control.",
-  "Representing India globally, we design and manufacture heavy-lift tactical fixed-wing aircraft and VTOLs, competing on podiums at international SAE Aero Design competitions in the USA.",
-  "From structural carbon-fiber fabrication to custom hardware-in-the-loop autopilot simulations, our student engineers master every stage of advanced aeronautical development.",
-  "Equipped with military-spec sensor turrets, triple-lens telemetry, and obstacle avoidance systems, our UAVs are engineered for automated reconnaissance and disaster management."
+  "We design, build and fly competition-grade UAVs that solve real-world problems through innovation, engineering and teamwork."
 ];
 
 export default function Home() {
@@ -90,244 +130,237 @@ export default function Home() {
           <div className="absolute inset-0 bg-gradient-to-t from-background via-black/40 to-black/60 z-10" />
         </div>
 
-        <div className="relative z-30 max-w-6xl mx-auto px-6 w-full pointer-events-none pt-12 flex items-center justify-center">
-          <div id="hero-data" className="flex flex-col items-center text-center max-w-3xl pointer-events-auto mx-auto">
+        <div className="relative z-30 max-w-6xl mx-auto px-6 w-full pointer-events-auto pt-16 flex items-center justify-center">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center w-full">
+            
+            {/* Left Column: Heading, description & actions (col-span-7) */}
             <motion.div
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
-              className="mb-6"
+              initial={{ opacity: 0, x: -30 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              className="lg:col-span-7 flex flex-col text-left space-y-6 max-w-xl"
             >
-              <span className="px-4 py-1.5 rounded-full border border-[#DFBA73]/30 bg-black/55 backdrop-blur-sm text-[10px] sm:text-xs font-sans font-medium uppercase tracking-[0.2em] text-[#DFBA73]">
-                P.C.C.O.E. Pune • Unmanned Aerial Systems Team
-              </span>
+              <div>
+                <span className="text-[11px] sm:text-xs font-sans font-bold uppercase tracking-[0.3em] text-[#DFBA73]">
+                  DESIGN &bull; BUILD &bull; FLY
+                </span>
+              </div>
+              
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold uppercase tracking-tight text-white font-sans leading-[1.05]">
+                TEAM MAVERICK <span className="italic font-light text-[#DFBA73] font-cormorant font-normal">INDIA</span>
+              </h1>
+
+              <h2 className="text-xs sm:text-sm font-semibold tracking-[0.22em] text-[#DFBA73] uppercase leading-relaxed max-w-lg">
+                ENGINEERING AUTONOMOUS AERIAL SYSTEMS FOR A SMARTER TOMORROW
+              </h2>
+
+              <p className="text-gray-200 text-sm sm:text-base font-light tracking-wide leading-relaxed">
+                We design, build and fly competition-grade UAVs that solve real-world problems through innovation, engineering and teamwork.
+              </p>
+
+              <div className="flex flex-wrap items-center gap-4 pt-2">
+                <Button asChild size="lg" className="rounded-full bg-[#DFBA73] hover:bg-[#DFBA73]/90 text-background font-sans font-semibold tracking-wider px-8 uppercase text-[11px]">
+                  <Link href="/planes">Explore Our Aircraft</Link>
+                </Button>
+                <Button asChild variant="outline" size="lg" className="rounded-full border-white/20 hover:border-white/50 hover:bg-white/5 text-white font-sans font-semibold tracking-wider px-8 uppercase text-[11px] backdrop-blur-sm">
+                  <a href="https://youtube.com/@teammaverickindia" target="_blank" rel="noopener noreferrer">
+                    Watch Video <Play className="w-3 h-3 ml-1.5 inline-block text-[#DFBA73] fill-[#DFBA73]" />
+                  </a>
+                </Button>
+              </div>
             </motion.div>
 
-            <motion.h1
-              initial={{ opacity: 0, y: 25 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1.0, delay: 0.4, ease: "easeOut" }}
-              className="text-4xl md:text-5xl lg:text-6xl xl:text-[72px] font-cormorant font-normal text-white mb-6 leading-[1.1]"
-            >
-              Engineering the Future of <span className="italic font-light text-[#DFBA73]">Aviation</span>
-            </motion.h1>
-            {/* ROTATING DESCRIPTION PARAGRAPH */}
-            <div className="w-full h-[96px] sm:h-[80px] md:h-[68px] relative mb-8 flex items-center justify-center pointer-events-none">
-              <AnimatePresence mode="wait">
-                <motion.p
-                  key={descIndex}
-                  initial={{ opacity: 0, y: 12 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -12 }}
-                  transition={{ duration: 0.45, ease: "easeInOut" }}
-                  className="text-gray-200 text-sm sm:text-base md:text-lg tracking-wide font-sans font-light leading-relaxed text-center absolute w-full max-w-xl mx-auto"
-                >
-                  {heroDescriptions[descIndex]}
-                </motion.p>
-              </AnimatePresence>
-            </div>
-
+            {/* Right Column: Radar (col-span-5) */}
             <motion.div
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.8, ease: "easeOut" }}
-              className="flex items-center justify-center gap-4 mb-10 pointer-events-auto w-full"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.8, delay: 0.5 }}
+              className="lg:col-span-5 flex items-center justify-center lg:justify-end"
             >
-              <Button asChild size="lg" className="rounded-full bg-[#DFBA73] hover:bg-[#DFBA73]/90 text-background font-sans font-semibold tracking-wider px-8 uppercase text-[11px]">
-                <Link href="/planes">Explore Fleet</Link>
-              </Button>
-              <Button asChild variant="outline" size="lg" className="rounded-full border-foreground/20 dark:border-white/20 hover:border-foreground/50 dark:hover:border-white/50 hover:bg-foreground/5 dark:hover:bg-white/5 text-foreground dark:text-white font-sans font-semibold tracking-wider px-8 uppercase text-[11px] backdrop-blur-sm">
-                <Link href="/contact">Contact Team</Link>
-              </Button>
-            </motion.div>
+              {/* SVG Radar Graphic */}
+              <div className="relative w-40 h-40 flex items-center justify-center">
+                {/* Spinning Radar Sweeper */}
+                <motion.div
+                  animate={{ rotate: 360 }}
+                  transition={{ repeat: Infinity, duration: 10, ease: "linear" }}
+                  className="absolute inset-0 w-full h-full rounded-full border border-[#DFBA73]/10"
+                  style={{
+                    background: "conic-gradient(from 0deg, transparent 50%, rgba(223, 186, 115, 0.15) 100%)",
+                  }}
+                />
 
-            {/* Inline Stats Deck */}
-            <motion.div 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 1.0, delay: 1.0 }}
-              className="flex flex-wrap gap-8 justify-center border-t border-foreground/10 dark:border-white/10 pt-6 w-full max-w-xl pointer-events-auto"
-            >
-              <div className="text-center px-4">
-                <span className="text-[10px] text-[#DFBA73] font-sans font-medium uppercase tracking-[0.18em] block mb-1">World Rank</span>
-                <span className="text-xl font-sans font-semibold text-foreground dark:text-white">06</span>
-              </div>
-              <div className="border-l border-foreground/10 dark:border-white/10 px-8 text-center">
-                <span className="text-[10px] text-[#DFBA73] font-sans font-medium uppercase tracking-[0.18em] block mb-1">National Rank</span>
-                <span className="text-xl font-sans font-semibold text-foreground dark:text-white">02</span>
-              </div>
-              <div className="border-l border-foreground/10 dark:border-white/10 px-8 text-center">
-                <span className="text-[10px] text-[#DFBA73] font-sans font-medium uppercase tracking-[0.18em] block mb-1">Podium Finishes</span>
-                <span className="text-xl font-sans font-semibold text-foreground dark:text-white">12+</span>
+                {/* Concentric Grid Circles */}
+                <div className="absolute inset-2 rounded-full border border-[#DFBA73]/15" />
+                <div className="absolute inset-8 rounded-full border border-[#DFBA73]/15" />
+                <div className="absolute inset-16 rounded-full border border-[#DFBA73]/15" />
+                <div className="absolute inset-[72px] rounded-full border border-[#DFBA73]/20 border-dashed" />
+
+                {/* Radar Grid Crosshairs */}
+                <div className="absolute top-0 bottom-0 left-1/2 w-[1px] bg-[#DFBA73]/15 -translate-x-1/2" />
+                <div className="absolute left-0 right-0 top-1/2 h-[1px] bg-[#DFBA73]/15 -translate-y-1/2" />
+
+                {/* Telemetry Dots/Blips */}
+                <motion.div
+                  animate={{ opacity: [0.2, 1, 0.2] }}
+                  transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
+                  className="absolute top-10 left-12 w-1.5 h-1.5 rounded-full bg-[#DFBA73] shadow-[0_0_8px_#DFBA73]"
+                />
+                <motion.div
+                  animate={{ opacity: [1, 0.1, 1] }}
+                  transition={{ repeat: Infinity, duration: 3, ease: "easeInOut", delay: 1 }}
+                  className="absolute bottom-12 right-10 w-1.5 h-1.5 rounded-full bg-[#DFBA73] shadow-[0_0_8px_#DFBA73]"
+                />
+
+                {/* Target box */}
+                <div className="absolute top-[35%] right-[30%] w-4 h-4 border border-[#DFBA73]/40 flex items-center justify-center animate-pulse">
+                  <div className="w-1 h-1 bg-[#DFBA73]" />
+                </div>
+
+                {/* HUD Text overlay */}
+                <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[8px] font-sans font-medium uppercase tracking-[0.2em] text-[#DFBA73] bg-black/60 dark:bg-black/85 backdrop-blur-sm px-2 py-0.5 rounded border border-[#DFBA73]/30 whitespace-nowrap text-center font-bold">
+                  MISSION READY // SYSTEMS CHECK: 100%
+                </div>
               </div>
             </motion.div>
           </div>
         </div>
-        
+
         {/* Animated scroll indicator */}
         <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 cursor-pointer opacity-70 hover:opacity-100 transition-opacity z-20" onClick={() => scrollToSection(showcaseRef)}>
-          <span className="text-[10px] font-sans font-medium uppercase tracking-[0.25em] text-muted-foreground dark:text-gray-300">Explore UAV Fleet</span>
+          <span className="text-[10px] font-sans font-medium uppercase tracking-[0.25em] text-muted-foreground dark:text-gray-300">Scroll to Explore</span>
           <div className="w-[1px] h-8 bg-gradient-to-b from-[#DFBA73] to-transparent" />
         </div>
       </section>
 
-      {/* --- PREMIUM VEHICLE SHOWCASE / FEATURES GRID --- */}
-      <section id="showcase-section" ref={showcaseRef} className="py-24 max-w-6xl mx-auto px-6 relative z-10">
-        <div className="text-center mb-16">
-          <span className="text-[#DFBA73] text-xs font-bold uppercase tracking-[0.25em] font-sans">Engineering Specs</span>
-          <h2 className="text-3xl md:text-5xl font-cormorant font-normal text-foreground mt-2 mb-4">
-            Aeronautical Excellence
-          </h2>
-          <div className="w-16 h-[1px] bg-[#DFBA73]/50 mx-auto mb-6" />
-          <p className="text-muted-foreground text-sm tracking-wide max-w-xl mx-auto leading-relaxed font-sans font-light">
-            Pushing the boundaries of student-led aerospace engineering with advanced autonomous systems.
-          </p>
-        </div>
+      {/* --- HORIZONTAL STATS CONSOLE --- */}
+      <section className="relative z-30 max-w-6xl mx-auto px-6 w-full mt-12 mb-12 pointer-events-auto">
+        <div className="bg-black/50 dark:bg-black/35 backdrop-blur-md border border-white/10 dark:border-[#DFBA73]/20 rounded-2xl p-6 shadow-2xl relative overflow-hidden">
+          
+          {/* Corner Brackets */}
+          <div className="absolute top-0 left-0 w-3 h-3 border-t-2 border-l-2 border-[#DFBA73]/60 dark:border-[#DFBA73]/50" />
+          <div className="absolute top-0 right-0 w-3 h-3 border-t-2 border-r-2 border-[#DFBA73]/60 dark:border-[#DFBA73]/50" />
+          <div className="absolute bottom-0 left-0 w-3 h-3 border-b-2 border-l-2 border-[#DFBA73]/60 dark:border-[#DFBA73]/50" />
+          <div className="absolute bottom-0 right-0 w-3 h-3 border-b-2 border-r-2 border-[#DFBA73]/60 dark:border-[#DFBA73]/50" />
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {/* Card 1: Aerodynamics */}
-          <div className="group rounded-2xl border border-border bg-card/10 backdrop-blur-sm overflow-hidden hover:border-[#DFBA73]/30 transition-all duration-300 flex flex-col justify-between shadow-lg">
-            <div className="p-8">
-              <span className="text-xs text-[#DFBA73] font-sans font-medium uppercase tracking-widest block mb-3">01 / Design</span>
-              <h3 className="text-2xl font-cormorant font-normal text-foreground mb-4">Aerodynamic Optimization</h3>
-              <p className="text-muted-foreground text-sm leading-relaxed font-sans font-light">
-                Utilizing ANSYS Fluent for high-fidelity computational fluid dynamics (CFD) simulation to maximize lift-to-drag ratios.
-              </p>
-            </div>
-            <div className="relative h-48 w-full overflow-hidden image-subtle-overlay">
-              <Image
-                src="/images/planes/daredevil.webp"
-                alt="Aerodynamics Design"
-                fill
-                sizes="(max-width: 768px) 100vw, 33vw"
-                className="object-cover grayscale hover:grayscale-0 transition-all duration-500"
-              />
-            </div>
-          </div>
-
-          {/* Card 2: Autopilot */}
-          <div className="group rounded-2xl border border-border bg-card/10 backdrop-blur-sm overflow-hidden hover:border-[#DFBA73]/30 transition-all duration-300 flex flex-col justify-between shadow-lg">
-            <div className="p-8">
-              <span className="text-xs text-[#DFBA73] font-sans font-medium uppercase tracking-widest block mb-3">02 / Systems</span>
-              <h3 className="text-2xl font-cormorant font-normal text-foreground mb-4">Autonomous Navigation</h3>
-              <p className="text-muted-foreground text-sm leading-relaxed font-sans font-light">
-                Equipped with Pixhawk autopilots and ArduPilot firmware for waypoint navigation, auto-takeoff, and automated landing sequences.
-              </p>
-            </div>
-            <div className="relative h-48 w-full overflow-hidden image-subtle-overlay">
-              <Image
-                src="/images/planes/shourya.webp"
-                alt="Autonomous Flight"
-                fill
-                sizes="(max-width: 768px) 100vw, 33vw"
-                className="object-cover grayscale hover:grayscale-0 transition-all duration-500"
-              />
-            </div>
-          </div>
-
-          {/* Card 3: Fabrication */}
-          <div className="group rounded-2xl border border-border bg-card/10 backdrop-blur-sm overflow-hidden hover:border-[#DFBA73]/30 transition-all duration-300 flex flex-col justify-between shadow-lg">
-            <div className="p-8">
-              <span className="text-xs text-[#DFBA73] font-sans font-medium uppercase tracking-widest block mb-3">03 / Structures</span>
-              <h3 className="text-2xl font-cormorant font-normal text-foreground mb-4">Composite Fabrication</h3>
-              <p className="text-muted-foreground text-sm leading-relaxed font-sans font-light">
-                Employing carbon fiber layup, vacuum bagging, and high-strength balsa ribs for optimal structural rigidity at minimum empty weight.
-              </p>
-            </div>
-            <div className="relative h-48 w-full overflow-hidden image-subtle-overlay">
-              <Image
-                src="/images/planes/mohav.webp"
-                alt="Carbon Fiber Structures"
-                fill
-                sizes="(max-width: 768px) 100vw, 33vw"
-                className="object-cover grayscale hover:grayscale-0 transition-all duration-500"
-              />
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* --- VIRTUAL WORKSHOP / HANGAR CONSOLE --- */}
-      <section id="hangar-section" className="py-24 bg-slate-100/30 dark:bg-card/10 border-y border-border relative z-10">
-        <div className="max-w-6xl mx-auto px-6">
-          <div className="grid md:grid-cols-2 gap-12 items-center">
-            {/* Left Column: Workshop Hangar Image with subtle hover and overlay */}
-            <div className="relative h-[350px] md:h-[450px] rounded-2xl border border-border bg-card/10 overflow-hidden order-2 md:order-1 shadow-xl group">
-              <Image
-                src="/images/home/newabout.png"
-                alt="Maverick Fabrication Hangar"
-                fill
-                sizes="(max-width: 768px) 100vw, 50vw"
-                className="object-cover grayscale group-hover:grayscale-0 transition-all duration-700 ease-out"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-background/40 via-transparent to-transparent pointer-events-none" />
-              <div className="absolute top-4 left-4 z-10 text-left pointer-events-none">
-                <span className="text-[10px] font-sans font-medium uppercase tracking-widest text-[#DFBA73] bg-black/75 backdrop-blur-sm px-2.5 py-1 rounded border border-[#DFBA73]/20">Maverick Hangar</span>
-              </div>
-            </div>
-
-            {/* Right Column: Workshop Data & Info */}
-            <div className="flex flex-col text-left order-1 md:order-2">
-              <span className="text-[#DFBA73] text-xs font-bold uppercase tracking-[0.2em] font-sans">Wolves Workshop</span>
-              <h2 className="text-3xl md:text-4xl font-cormorant font-normal text-foreground mt-2 mb-6">
-                Virtual Hangar Console
-              </h2>
-              <p className="text-muted-foreground mb-6 leading-relaxed text-left font-sans font-light text-sm sm:text-base">
-                Step inside our fabrication lab. From composite layup and mechanical milling to avionics programming and test flight data analysis, every wing surface is designed for peak efficiency.
-              </p>
-              
-              {/* Virtual console nav links */}
-              <div className="space-y-4">
-                <Link href="/planes" className="flex items-center justify-between p-4 rounded-xl bg-card/40 dark:bg-card/20 backdrop-blur-sm border border-border hover:border-[#DFBA73]/30 hover:bg-[#DFBA73]/5 transition-all duration-300 group">
-                  <div className="flex items-center gap-4">
-                    <div className="p-2.5 rounded-lg bg-[#DFBA73]/8 border border-[#DFBA73]/20">
-                      <Plane className="w-5 h-5 text-[#DFBA73]" />
-                    </div>
-                    <span className="font-sans font-medium text-foreground tracking-wide text-sm sm:text-base">Aircraft Fleet Directory</span>
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-6 text-center">
+            {stats.map((stat, idx) => {
+              const Icon = stat.icon;
+              return (
+                <div 
+                  key={stat.id} 
+                  className={cn(
+                    "flex flex-col items-center justify-center px-4 py-2",
+                    idx > 0 && "md:border-l border-white/10 dark:border-[#DFBA73]/15"
+                  )}
+                >
+                  <div className="flex items-center gap-2 mb-1.5">
+                    <Icon className="w-4 h-4 text-[#DFBA73] opacity-80" />
+                    <span className="text-2xl md:text-3xl font-sans font-bold text-white tracking-tight">
+                      <TechText text={stat.count} trigger="view" />
+                    </span>
                   </div>
-                  <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:text-[#DFBA73] group-hover:translate-x-1 transition-all" />
-                </Link>
-                <Link href="/gallery" className="flex items-center justify-between p-4 rounded-xl bg-card/40 dark:bg-card/20 backdrop-blur-sm border border-border hover:border-[#DFBA73]/30 hover:bg-[#DFBA73]/5 transition-all duration-300 group">
-                  <div className="flex items-center gap-4">
-                    <div className="p-2.5 rounded-lg bg-[#DFBA73]/8 border border-[#DFBA73]/20">
-                      <Users className="w-5 h-5 text-[#DFBA73]" />
-                    </div>
-                    <span className="font-sans font-medium text-foreground tracking-wide text-sm sm:text-base">Gallery & Test Flights</span>
-                  </div>
-                  <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:text-[#DFBA73] group-hover:translate-x-1 transition-all" />
-                </Link>
-                <Link href="/sponsors" className="flex items-center justify-between p-4 rounded-xl bg-card/40 dark:bg-card/20 backdrop-blur-sm border border-border hover:border-[#DFBA73]/30 hover:bg-[#DFBA73]/5 transition-all duration-300 group">
-                  <div className="flex items-center gap-4">
-                    <div className="p-2.5 rounded-lg bg-[#DFBA73]/8 border border-[#DFBA73]/20">
-                      <Award className="w-5 h-5 text-[#DFBA73]" />
-                    </div>
-                    <span className="font-sans font-medium text-foreground tracking-wide text-sm sm:text-base">Sponsors Showcase Wall</span>
-                  </div>
-                  <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:text-[#DFBA73] group-hover:translate-x-1 transition-all" />
-                </Link>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* --- STATISTICS SECTION --- */}
-      <section className="py-20 max-w-6xl mx-auto px-6 relative z-10">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-          {stats.map((stat) => {
-            const Icon = stat.icon;
-            return (
-              <GlowCard key={stat.id} className="flex flex-col items-center text-center">
-                <div className="p-3 rounded-lg bg-[#DFBA73]/10 mb-4 border border-[#DFBA73]/10 w-fit">
-                  <Icon className="w-6 h-6 text-[#DFBA73]" />
+                  <span className="text-[9px] text-[#DFBA73] font-sans font-medium uppercase tracking-[0.18em] text-center">
+                    {stat.label}
+                  </span>
                 </div>
-                <span className="text-4xl md:text-5xl font-sans font-semibold text-foreground mb-1 tracking-tight">
-                  <TechText text={stat.count} trigger="view" />
-                </span>
-                <span className="text-[10px] sm:text-xs text-[#DFBA73] font-sans font-medium tracking-widest uppercase block mt-2">{stat.label}</span>
-              </GlowCard>
-            );
-          })}
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* --- SPLIT GRID SECTION (ABOUT US & OUR AIRCRAFT) --- */}
+      <section id="showcase-section" ref={showcaseRef} className="py-24 max-w-6xl mx-auto px-6 relative z-10 border-t border-border">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+          
+          {/* Left Column: Who We Are & Capabilities (col-span-5) */}
+          <div className="lg:col-span-5 space-y-8 flex flex-col text-left">
+            <div>
+              <span className="text-[#DFBA73] text-xs font-bold uppercase tracking-[0.2em] font-sans block">About Maverick</span>
+              <h2 className="text-3xl md:text-5xl font-cormorant font-normal text-foreground mt-2 mb-4">
+                Who We Are
+              </h2>
+              <div className="w-16 h-[1px] bg-[#DFBA73]/50 mb-6" />
+              <p className="text-muted-foreground text-sm leading-relaxed font-sans font-light mb-6">
+                Team Maverick India is the official UAV team of P.C.C.O.E. Pune. We are a group of passionate engineers building innovative aerial systems to compete at national and international UAV competitions.
+              </p>
+            </div>
+
+            {/* Capabilities Icon Grid */}
+            <div className="grid grid-cols-3 gap-4">
+              {capabilities.map((cap) => {
+                const Icon = cap.icon;
+                return (
+                  <div key={cap.label} className="flex flex-col items-center justify-center p-4 rounded-xl border border-border bg-card/10 hover:border-[#DFBA73]/30 hover:bg-[#DFBA73]/5 transition-all duration-300 group">
+                    <Icon className="w-5 h-5 text-muted-foreground group-hover:text-[#DFBA73] transition-colors mb-2" />
+                    <span className="text-[9px] text-muted-foreground group-hover:text-foreground font-sans font-medium uppercase tracking-[0.15em] text-center">{cap.label}</span>
+                  </div>
+                );
+              })}
+            </div>
+
+            <Button asChild size="lg" className="rounded-full bg-[#DFBA73] hover:bg-[#DFBA73]/90 text-background font-sans font-semibold tracking-wider px-8 uppercase text-[11px] w-fit shadow-md">
+              <Link href="/team" className="flex items-center gap-1">
+                Know More About Us <ArrowUpRight className="w-3.5 h-3.5" />
+              </Link>
+            </Button>
+          </div>
+
+          {/* Right Column: Our Aircraft (col-span-7) */}
+          <div className="lg:col-span-7 space-y-6">
+            <div className="flex items-center justify-between">
+              <h3 className="text-2xl sm:text-3xl font-cormorant font-normal text-foreground">Our Aircraft Fleet</h3>
+              <Link href="/planes" className="text-[10px] text-[#DFBA73] hover:underline font-sans font-medium uppercase tracking-wider flex items-center gap-1">
+                View All Aircraft <ChevronRight className="w-3.5 h-3.5" />
+              </Link>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {featuredPlanes.map((plane) => (
+                <div key={plane.name} className="group rounded-xl border border-border bg-card/15 backdrop-blur-sm overflow-hidden hover:border-[#DFBA73]/30 transition-all duration-300 flex flex-col h-full shadow-lg">
+                  {/* Image */}
+                  <div className="relative h-40 w-full overflow-hidden image-subtle-overlay bg-muted/10">
+                    <Image
+                      src={plane.image}
+                      alt={plane.name}
+                      fill
+                      sizes="(max-width: 768px) 100vw, 30vw"
+                      className="object-cover grayscale group-hover:grayscale-0 transition-all duration-500 ease-out"
+                    />
+                    <div className="absolute top-2 left-2 bg-black/75 backdrop-blur-sm border border-[#DFBA73]/20 rounded px-1.5 py-0.5 text-[8px] text-[#DFBA73] font-sans font-medium uppercase tracking-widest z-10">
+                      {plane.tag}
+                    </div>
+                  </div>
+                  
+                  {/* Content */}
+                  <div className="p-4 flex-grow flex flex-col justify-between">
+                    <div>
+                      <h4 className="text-lg font-cormorant font-normal text-foreground mb-1 group-hover:text-[#DFBA73] transition-colors">{plane.name}</h4>
+                      <p className="text-[9px] text-muted-foreground font-sans font-medium uppercase tracking-widest mb-3">{plane.sub}</p>
+                    </div>
+
+                    {/* Mini Spec list */}
+                    <div className="border-t border-border/40 pt-2.5 mt-2">
+                      <div className="grid grid-cols-3 gap-1 text-center">
+                        <div>
+                          <span className="text-[7px] text-[#DFBA73] font-sans font-medium uppercase tracking-wider block">Endurance</span>
+                          <span className="text-[9px] font-sans font-semibold text-foreground">{plane.endurance}</span>
+                        </div>
+                        <div>
+                          <span className="text-[7px] text-[#DFBA73] font-sans font-medium uppercase tracking-wider block">Payload</span>
+                          <span className="text-[9px] font-sans font-semibold text-foreground">{plane.payload}</span>
+                        </div>
+                        <div>
+                          <span className="text-[7px] text-[#DFBA73] font-sans font-medium uppercase tracking-wider block">Range</span>
+                          <span className="text-[9px] font-sans font-semibold text-foreground">{plane.range}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </section>
 
