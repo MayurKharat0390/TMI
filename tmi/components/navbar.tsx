@@ -26,6 +26,7 @@ const navLinks = [
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
+  const isHome = pathname === "/";
   const { resolvedTheme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -50,8 +51,12 @@ export function Navbar() {
 
   return (
     <nav className={cn(
-      "fixed top-4 left-1/2 -translate-x-1/2 w-[95%] max-w-7xl z-50 bg-background/60 dark:bg-black/55 backdrop-blur-md border border-border dark:border-[#DFBA73]/20 rounded-full shadow-[0_12px_40px_rgba(0,0,0,0.3)] transition-all duration-300 h-16 flex items-center px-4 sm:px-6",
-      scrolled ? "top-2 bg-background/85 dark:bg-black/85 dark:border-[#DFBA73]/40 shadow-[0_4px_30px_rgba(0,0,0,0.6)]" : ""
+      "fixed left-1/2 -translate-x-1/2 w-[95%] max-w-7xl z-50 rounded-full transition-all duration-300 h-16 flex items-center px-4 sm:px-6 backdrop-blur-md",
+      scrolled 
+        ? "top-2 bg-background/90 dark:bg-black/85 border border-border dark:border-[#DFBA73]/30 shadow-[0_4px_24px_rgba(0,0,0,0.15)] dark:shadow-[0_4px_30px_rgba(0,0,0,0.6)]" 
+        : isHome
+          ? "top-4 bg-black/25 dark:bg-black/40 border border-white/10 dark:border-[#DFBA73]/15 shadow-[0_12px_40px_rgba(0,0,0,0.25)]"
+          : "top-4 bg-background/70 dark:bg-black/40 border border-border dark:border-[#DFBA73]/15 shadow-[0_12px_40px_rgba(0,0,0,0.08)] dark:shadow-[0_12px_40px_rgba(0,0,0,0.25)]"
     )}>
       <div className="w-full flex items-center justify-between">
         <Link href="/" className="flex items-center space-x-2">
@@ -67,7 +72,13 @@ export function Navbar() {
               href={href}
               className={cn(
                 "relative px-4 py-1.5 text-[11px] font-sans font-medium uppercase tracking-[0.18em] transition-colors duration-300",
-                isActive(href) ? "text-[#DFBA73]" : "text-foreground/80 hover:text-[#DFBA73]"
+                isActive(href) 
+                  ? "text-[#DFBA73]" 
+                  : scrolled 
+                    ? "text-foreground/80 hover:text-[#DFBA73]" 
+                    : isHome 
+                      ? "text-white/80 hover:text-[#DFBA73]" 
+                      : "text-foreground/80 dark:text-white/80 hover:text-[#DFBA73]"
               )}
             >
               {label}
@@ -85,7 +96,20 @@ export function Navbar() {
         <div className="flex items-center space-x-4">
           <div className="hidden lg:flex items-center space-x-2">
             {socialLinks.map(({ href, icon: Icon }) => (
-              <Button key={href} variant="ghost" size="icon" className="hover:text-[#DFBA73] rounded-full h-8 w-8" asChild>
+              <Button 
+                key={href} 
+                variant="ghost" 
+                size="icon" 
+                className={cn(
+                  "rounded-full h-8 w-8 transition-colors",
+                  scrolled 
+                    ? "text-foreground hover:text-[#DFBA73] hover:bg-foreground/5" 
+                    : isHome
+                      ? "text-white hover:text-[#DFBA73] hover:bg-white/10"
+                      : "text-foreground dark:text-white hover:text-[#DFBA73] hover:bg-foreground/5 dark:hover:bg-white/10"
+                )}
+                asChild
+              >
                 <Link href={href} target="_blank" rel="noopener noreferrer">
                   <Icon className="h-4 w-4" />
                 </Link>
@@ -96,7 +120,14 @@ export function Navbar() {
                 variant="ghost"
                 size="icon"
                 onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
-                className="hover:text-[#DFBA73] text-foreground rounded-full h-8 w-8"
+                className={cn(
+                  "rounded-full h-8 w-8 transition-colors",
+                  scrolled 
+                    ? "text-foreground hover:text-[#DFBA73] hover:bg-foreground/5" 
+                    : isHome
+                      ? "text-white hover:text-[#DFBA73] hover:bg-white/10"
+                      : "text-foreground dark:text-white hover:text-[#DFBA73] hover:bg-foreground/5 dark:hover:bg-white/10"
+                )}
                 aria-label="Toggle Theme"
               >
                 {resolvedTheme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
@@ -106,7 +137,18 @@ export function Navbar() {
 
           <Sheet open={isOpen} onOpenChange={setIsOpen}>
             <SheetTrigger asChild>
-              <Button variant="ghost" size="icon" className="lg:hidden rounded-full h-9 w-9">
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className={cn(
+                  "lg:hidden rounded-full h-9 w-9 transition-colors",
+                  scrolled 
+                    ? "text-foreground hover:bg-foreground/5" 
+                    : isHome
+                      ? "text-white hover:bg-white/10"
+                      : "text-foreground dark:text-white hover:bg-foreground/5 dark:hover:bg-white/10"
+                )}
+              >
                 <Menu className="h-5 w-5" />
               </Button>
             </SheetTrigger>

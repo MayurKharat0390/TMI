@@ -136,7 +136,7 @@ export default function Home() {
               <Button asChild size="lg" className="rounded-full bg-[#DFBA73] hover:bg-[#DFBA73]/90 text-background font-sans font-semibold tracking-wider px-8 uppercase text-[11px]">
                 <Link href="/planes">Explore Fleet</Link>
               </Button>
-              <Button asChild variant="outline" size="lg" className="rounded-full border-white/20 hover:border-white/50 hover:bg-white/5 text-white font-sans font-semibold tracking-wider px-8 uppercase text-[11px] backdrop-blur-sm">
+              <Button asChild variant="outline" size="lg" className="rounded-full border-foreground/20 dark:border-white/20 hover:border-foreground/50 dark:hover:border-white/50 hover:bg-foreground/5 dark:hover:bg-white/5 text-foreground dark:text-white font-sans font-semibold tracking-wider px-8 uppercase text-[11px] backdrop-blur-sm">
                 <Link href="/contact">Contact Team</Link>
               </Button>
             </motion.div>
@@ -146,19 +146,19 @@ export default function Home() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 1.0, delay: 1.0 }}
-              className="flex flex-wrap gap-8 justify-center border-t border-white/10 pt-6 w-full max-w-xl pointer-events-auto"
+              className="flex flex-wrap gap-8 justify-center border-t border-foreground/10 dark:border-white/10 pt-6 w-full max-w-xl pointer-events-auto"
             >
               <div className="text-center px-4">
                 <span className="text-[10px] text-[#DFBA73] font-sans font-medium uppercase tracking-[0.18em] block mb-1">World Rank</span>
-                <span className="text-xl font-sans font-semibold text-white">06</span>
+                <span className="text-xl font-sans font-semibold text-foreground dark:text-white">06</span>
               </div>
-              <div className="border-l border-white/10 px-8 text-center">
+              <div className="border-l border-foreground/10 dark:border-white/10 px-8 text-center">
                 <span className="text-[10px] text-[#DFBA73] font-sans font-medium uppercase tracking-[0.18em] block mb-1">National Rank</span>
-                <span className="text-xl font-sans font-semibold text-white">02</span>
+                <span className="text-xl font-sans font-semibold text-foreground dark:text-white">02</span>
               </div>
-              <div className="border-l border-white/10 px-8 text-center">
+              <div className="border-l border-foreground/10 dark:border-white/10 px-8 text-center">
                 <span className="text-[10px] text-[#DFBA73] font-sans font-medium uppercase tracking-[0.18em] block mb-1">Podium Finishes</span>
-                <span className="text-xl font-sans font-semibold text-white">12+</span>
+                <span className="text-xl font-sans font-semibold text-foreground dark:text-white">12+</span>
               </div>
             </motion.div>
           </div>
@@ -166,7 +166,7 @@ export default function Home() {
         
         {/* Animated scroll indicator */}
         <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 cursor-pointer opacity-70 hover:opacity-100 transition-opacity z-20" onClick={() => scrollToSection(showcaseRef)}>
-          <span className="text-[10px] font-sans font-medium uppercase tracking-[0.25em] text-gray-300">Explore UAV Fleet</span>
+          <span className="text-[10px] font-sans font-medium uppercase tracking-[0.25em] text-muted-foreground dark:text-gray-300">Explore UAV Fleet</span>
           <div className="w-[1px] h-8 bg-gradient-to-b from-[#DFBA73] to-transparent" />
         </div>
       </section>
