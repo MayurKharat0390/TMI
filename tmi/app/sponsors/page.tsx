@@ -66,10 +66,12 @@ export default function SponsorsPage() {
         <div className="max-w-6xl mx-auto px-6 py-20 relative z-10">
           {/* Main Title Section */}
           <div className="text-center mb-16">
-            <h1 className="text-4xl font-bold uppercase tracking-[0.25em] text-foreground mb-6">
-              OUR SPONSORS
+            <span className="text-[#DFBA73] text-xs font-bold uppercase tracking-[0.25em] font-sans">Our Partners</span>
+            <h1 className="text-4xl md:text-5xl font-cormorant font-normal text-foreground mt-2 mb-6">
+              Our <span className="italic font-light text-[#DFBA73]">Sponsors</span>
             </h1>
-            <p className="text-muted-foreground text-sm tracking-wide max-w-2xl mx-auto">
+            <div className="w-16 h-[1px] bg-[#DFBA73]/50 mx-auto mb-6" />
+            <p className="text-muted-foreground text-sm tracking-wide max-w-2xl mx-auto font-sans font-light">
               "Supporting innovation, engineering excellence, and the future of aerospace development."
             </p>
           </div>

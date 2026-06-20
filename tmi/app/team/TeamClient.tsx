@@ -70,12 +70,12 @@ export default function TeamsPage() {
           
           {/* Header */}
           <div id="team-header" className="text-center mb-16">
-            <span className="text-[#DFBA73] text-xs font-bold uppercase tracking-[0.25em]">Meet the Crew</span>
-            <h1 className="text-4xl md:text-6xl font-extrabold uppercase tracking-wide text-foreground mt-2 mb-4 font-montserrat">
-              OUR <span className="text-[#DFBA73] text-gold-glow">TEAM</span>
+            <span className="text-[#DFBA73] text-xs font-bold uppercase tracking-[0.25em] font-sans">Meet the Crew</span>
+            <h1 className="text-4xl md:text-6xl font-cormorant font-normal text-foreground mt-2 mb-4">
+              Our <span className="italic font-light text-[#DFBA73]">Team</span>
             </h1>
-            <div className="w-24 h-1 bg-[#DFBA73] mx-auto rounded-full mb-6" />
-            <p className="text-muted-foreground text-sm tracking-wide max-w-xl mx-auto leading-relaxed">
+            <div className="w-16 h-[1px] bg-[#DFBA73]/50 mx-auto mb-6" />
+            <p className="text-muted-foreground text-sm tracking-wide max-w-xl mx-auto leading-relaxed font-sans font-light">
               "Meet the passionate engineers, designers, and organizers crafting the future of flight."
             </p>
           </div>
@@ -168,12 +168,12 @@ function Section({ title, badge, members }: { title: string; badge?: string; mem
     <div className="mb-20">
       <div className="text-center mb-12">
         {badge && (
-          <p className="text-[#DFBA73] text-xs font-bold tracking-[0.25em] uppercase mb-2">
+          <p className="text-[#DFBA73] text-xs font-bold tracking-[0.25em] uppercase mb-2 font-sans">
             {badge}
           </p>
         )}
-        <h2 className="text-3xl md:text-4xl font-extrabold uppercase text-foreground font-montserrat">{title}</h2>
-        <div className="w-16 h-0.5 bg-[#DFBA73]/40 mx-auto mt-3 rounded-full" />
+        <h2 className="text-2xl md:text-3xl font-cormorant font-normal text-foreground">{title}</h2>
+        <div className="w-12 h-[1px] bg-[#DFBA73]/40 mx-auto mt-3" />
       </div>
       
       <div className="flex flex-wrap justify-center gap-8 max-w-6xl mx-auto">

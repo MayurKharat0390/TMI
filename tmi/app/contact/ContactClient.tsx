@@ -75,12 +75,12 @@ export default function ContactPage() {
           
           {/* Header */}
           <div id="contact-header" className="text-center mb-16">
-            <span className="text-[#DFBA73] text-xs font-bold uppercase tracking-[0.25em]">Sponsorship & Support</span>
-            <h1 className="text-4xl md:text-6xl font-extrabold uppercase tracking-wide text-foreground mt-2 mb-4 font-montserrat">
-              CONTACT <span className="text-[#DFBA73] text-gold-glow">US</span>
+            <span className="text-[#DFBA73] text-xs font-bold uppercase tracking-[0.25em] font-sans">Sponsorship & Support</span>
+            <h1 className="text-4xl md:text-6xl font-cormorant font-normal text-foreground mt-2 mb-4">
+              Contact <span className="italic font-light text-[#DFBA73]">Us</span>
             </h1>
-            <div className="w-24 h-1 bg-[#DFBA73] mx-auto rounded-full mb-6" />
-            <p className="text-muted-foreground text-sm tracking-wide max-w-xl mx-auto leading-relaxed">
+            <div className="w-16 h-[1px] bg-[#DFBA73]/50 mx-auto mb-6" />
+            <p className="text-muted-foreground text-sm tracking-wide max-w-xl mx-auto leading-relaxed font-sans font-light">
               "Send telemetry, report anomalies, or initiate collaboration with the Wolves."
             </p>
           </div>
@@ -94,10 +94,10 @@ export default function ContactPage() {
               transition={{ duration: 0.5, delay: 0.1 }}
               className="space-y-8"
             >
-              <div className="glass-panel p-8 rounded-2xl border border-border/80 bg-card/60 backdrop-blur-md shadow-xl text-foreground">
+              <div className="glass-panel p-8 rounded-2xl border border-border bg-card/40 dark:bg-card/20 backdrop-blur-md shadow-xl text-foreground">
                 <div className="flex items-center gap-3 mb-6">
                   <Terminal className="w-5 h-5 text-[#DFBA73]" />
-                  <h2 className="text-xl font-bold uppercase tracking-wider font-montserrat">COMMUNICATIONS HUB</h2>
+                  <h2 className="text-xl font-cormorant font-normal text-foreground">Communications Hub</h2>
                 </div>
                 
                 <div className="space-y-6">
@@ -157,13 +157,13 @@ export default function ContactPage() {
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.2 }}
             >
-              <div className="glass-panel p-8 rounded-2xl border border-border/80 bg-card/60 backdrop-blur-md text-foreground shadow-xl">
+              <div className="glass-panel p-8 rounded-2xl border border-border bg-card/40 dark:bg-card/20 backdrop-blur-md text-foreground shadow-xl">
                 <div className="flex items-center gap-3 mb-4">
                   <Terminal className="w-5 h-5 text-[#DFBA73]" />
-                  <h2 className="text-xl font-bold uppercase tracking-wider font-montserrat">SECURE CONSOLE</h2>
+                  <h2 className="text-xl font-cormorant font-normal text-foreground">Secure Console</h2>
                 </div>
-                <p className="text-muted-foreground text-xs tracking-wide mb-6 leading-relaxed uppercase">
-                  ENTER YOUR PAYLOAD INFORMATION BELOW TO DISPATCH MESSAGE
+                <p className="text-muted-foreground text-xs tracking-wider mb-6 leading-relaxed uppercase font-sans font-medium">
+                  Enter your payload information below to dispatch message
                 </p>
 
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">

@@ -11,8 +11,6 @@ import { cn } from "@/lib/utils";
 import { TechText } from "@/components/tech-text";
 import { GlowCard } from "@/components/glow-card";
 
-const HolographicUAV = dynamic(() => import("@/components/holographic-uav"), { ssr: false });
-const UAVHotspots = dynamic(() => import("@/components/uav-hotspots"), { ssr: false });
 const InfiniteMarquee = dynamic(() => import("@/components/marquee"), { ssr: false });
 const StarryBackground = dynamic(() => import("@/components/StarryBackground"), { ssr: false });
 
@@ -74,22 +72,33 @@ export default function Home() {
 
   return (
     <div className="bg-background text-foreground relative min-h-screen overflow-hidden">
-      <HolographicUAV />
 
       {/* --- HERO SECTION --- */}
       <section className="relative min-h-screen flex flex-col justify-center px-4 overflow-hidden pt-16">
         
-        <div className="absolute inset-0 bg-gradient-to-b from-[#DFBA73]/5 via-background/50 to-background z-0 pointer-events-none" />
+        {/* Full-bleed Background Video */}
+        <div className="absolute inset-0 z-0 overflow-hidden w-full h-full">
+          <video
+            src="/images/home/hero.mp4"
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="w-full h-full object-cover grayscale brightness-[0.35] transition-all duration-1000"
+          />
+          {/* Subtle dark gradient overlay to ensure readability */}
+          <div className="absolute inset-0 bg-gradient-to-t from-background via-black/40 to-black/60 z-10" />
+        </div>
 
-        <div className="relative z-30 max-w-6xl mx-auto px-6 w-full grid lg:grid-cols-2 gap-12 items-center pointer-events-none pt-12">
-          <div id="hero-data" className="flex flex-col items-center text-center max-w-xl pointer-events-auto mx-auto lg:mx-0">
+        <div className="relative z-30 max-w-6xl mx-auto px-6 w-full pointer-events-none pt-12 flex items-center justify-center">
+          <div id="hero-data" className="flex flex-col items-center text-center max-w-3xl pointer-events-auto mx-auto">
             <motion.div
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
               className="mb-6"
             >
-              <span className="px-4 py-1.5 rounded-full border border-border bg-card/50 text-[10px] sm:text-xs font-semibold uppercase tracking-widest text-[#C29F53]">
+              <span className="px-4 py-1.5 rounded-full border border-[#DFBA73]/30 bg-black/55 backdrop-blur-sm text-[10px] sm:text-xs font-sans font-medium uppercase tracking-[0.2em] text-[#DFBA73]">
                 P.C.C.O.E. Pune • Unmanned Aerial Systems Team
               </span>
             </motion.div>
@@ -98,9 +107,9 @@ export default function Home() {
               initial={{ opacity: 0, y: 25 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1.0, delay: 0.4, ease: "easeOut" }}
-              className="text-4xl md:text-5xl lg:text-6xl xl:text-7.5xl font-extrabold uppercase tracking-tight text-foreground mb-6 font-montserrat leading-[1.1]"
+              className="text-4xl md:text-5xl lg:text-6xl xl:text-[72px] font-cormorant font-normal text-white mb-6 leading-[1.1]"
             >
-              Engineering the Future of <span className="text-[#DFBA73]">Aviation</span>
+              Engineering the Future of <span className="italic font-light text-[#DFBA73]">Aviation</span>
             </motion.h1>
             {/* ROTATING DESCRIPTION PARAGRAPH */}
             <div className="w-full h-[96px] sm:h-[80px] md:h-[68px] relative mb-8 flex items-center justify-center pointer-events-none">
@@ -111,98 +120,190 @@ export default function Home() {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -12 }}
                   transition={{ duration: 0.45, ease: "easeInOut" }}
-                  className="text-muted-foreground text-sm sm:text-base md:text-lg tracking-wide font-light leading-relaxed text-center absolute w-full max-w-xl mx-auto"
+                  className="text-gray-200 text-sm sm:text-base md:text-lg tracking-wide font-sans font-light leading-relaxed text-center absolute w-full max-w-xl mx-auto"
                 >
                   {heroDescriptions[descIndex]}
                 </motion.p>
               </AnimatePresence>
             </div>
 
-
-
             <motion.div
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.8, ease: "easeOut" }}
-              className="flex items-center justify-center gap-4 mb-8 pointer-events-auto w-full"
+              className="flex items-center justify-center gap-4 mb-10 pointer-events-auto w-full"
             >
-              <Button asChild size="lg" className="rounded-full bg-[#DFBA73] hover:bg-[#DFBA73]/90 text-background font-semibold tracking-wide">
+              <Button asChild size="lg" className="rounded-full bg-[#DFBA73] hover:bg-[#DFBA73]/90 text-background font-sans font-semibold tracking-wider px-8 uppercase text-[11px]">
                 <Link href="/planes">Explore Fleet</Link>
               </Button>
-              <Button asChild variant="outline" size="lg" className="rounded-full border-border hover:bg-muted text-foreground tracking-wide">
+              <Button asChild variant="outline" size="lg" className="rounded-full border-white/20 hover:border-white/50 hover:bg-white/5 text-white font-sans font-semibold tracking-wider px-8 uppercase text-[11px] backdrop-blur-sm">
                 <Link href="/contact">Contact Team</Link>
               </Button>
             </motion.div>
+
+            {/* Inline Stats Deck */}
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 1.0, delay: 1.0 }}
+              className="flex flex-wrap gap-8 justify-center border-t border-white/10 pt-6 w-full max-w-xl pointer-events-auto"
+            >
+              <div className="text-center px-4">
+                <span className="text-[10px] text-[#DFBA73] font-sans font-medium uppercase tracking-[0.18em] block mb-1">World Rank</span>
+                <span className="text-xl font-sans font-semibold text-white">06</span>
+              </div>
+              <div className="border-l border-white/10 px-8 text-center">
+                <span className="text-[10px] text-[#DFBA73] font-sans font-medium uppercase tracking-[0.18em] block mb-1">National Rank</span>
+                <span className="text-xl font-sans font-semibold text-white">02</span>
+              </div>
+              <div className="border-l border-white/10 px-8 text-center">
+                <span className="text-[10px] text-[#DFBA73] font-sans font-medium uppercase tracking-[0.18em] block mb-1">Podium Finishes</span>
+                <span className="text-xl font-sans font-semibold text-white">12+</span>
+              </div>
+            </motion.div>
           </div>
-          
-          {/* Right Column: Empty spacer for fixed 3D Drone */}
-          <div className="w-full h-[300px] lg:h-[500px] hidden lg:block pointer-events-none" />
         </div>
         
         {/* Animated scroll indicator */}
-        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 cursor-pointer opacity-70 hover:opacity-100 transition-opacity" onClick={() => scrollToSection(showcaseRef)}>
-          <span className="text-[10px] uppercase tracking-[0.25em] text-muted-foreground">Explore UAV Fleet</span>
-          <div className="w-[1.5px] h-8 bg-gradient-to-b from-[#DFBA73] to-transparent animate-pulse" />
+        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 cursor-pointer opacity-70 hover:opacity-100 transition-opacity z-20" onClick={() => scrollToSection(showcaseRef)}>
+          <span className="text-[10px] font-sans font-medium uppercase tracking-[0.25em] text-gray-300">Explore UAV Fleet</span>
+          <div className="w-[1px] h-8 bg-gradient-to-b from-[#DFBA73] to-transparent" />
         </div>
       </section>
 
-      {/* --- INTERACTIVE 3D VEHICLE SHOWCASE --- */}
+      {/* --- PREMIUM VEHICLE SHOWCASE / FEATURES GRID --- */}
       <section id="showcase-section" ref={showcaseRef} className="py-24 max-w-6xl mx-auto px-6 relative z-10">
         <div className="text-center mb-16">
-          <span className="text-[#DFBA73] text-xs font-bold uppercase tracking-[0.25em]">Telemetry & Specs</span>
-          <h2 className="text-3xl md:text-5xl font-extrabold uppercase tracking-wide text-foreground mt-2 mb-4 font-montserrat">
-            INTERACTIVE VEHICLE SHOWCASE
+          <span className="text-[#DFBA73] text-xs font-bold uppercase tracking-[0.25em] font-sans">Engineering Specs</span>
+          <h2 className="text-3xl md:text-5xl font-cormorant font-normal text-foreground mt-2 mb-4">
+            Aeronautical Excellence
           </h2>
-          <div className="w-24 h-1 bg-[#DFBA73] mx-auto rounded-full" />
+          <div className="w-16 h-[1px] bg-[#DFBA73]/50 mx-auto mb-6" />
+          <p className="text-muted-foreground text-sm tracking-wide max-w-xl mx-auto leading-relaxed font-sans font-light">
+            Pushing the boundaries of student-led aerospace engineering with advanced autonomous systems.
+          </p>
         </div>
 
-        <UAVHotspots />
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {/* Card 1: Aerodynamics */}
+          <div className="group rounded-2xl border border-border bg-card/10 backdrop-blur-sm overflow-hidden hover:border-[#DFBA73]/30 transition-all duration-300 flex flex-col justify-between shadow-lg">
+            <div className="p-8">
+              <span className="text-xs text-[#DFBA73] font-sans font-medium uppercase tracking-widest block mb-3">01 / Design</span>
+              <h3 className="text-2xl font-cormorant font-normal text-foreground mb-4">Aerodynamic Optimization</h3>
+              <p className="text-muted-foreground text-sm leading-relaxed font-sans font-light">
+                Utilizing ANSYS Fluent for high-fidelity computational fluid dynamics (CFD) simulation to maximize lift-to-drag ratios.
+              </p>
+            </div>
+            <div className="relative h-48 w-full overflow-hidden image-subtle-overlay">
+              <Image
+                src="/images/planes/daredevil.webp"
+                alt="Aerodynamics Design"
+                fill
+                sizes="(max-width: 768px) 100vw, 33vw"
+                className="object-cover grayscale hover:grayscale-0 transition-all duration-500"
+              />
+            </div>
+          </div>
+
+          {/* Card 2: Autopilot */}
+          <div className="group rounded-2xl border border-border bg-card/10 backdrop-blur-sm overflow-hidden hover:border-[#DFBA73]/30 transition-all duration-300 flex flex-col justify-between shadow-lg">
+            <div className="p-8">
+              <span className="text-xs text-[#DFBA73] font-sans font-medium uppercase tracking-widest block mb-3">02 / Systems</span>
+              <h3 className="text-2xl font-cormorant font-normal text-foreground mb-4">Autonomous Navigation</h3>
+              <p className="text-muted-foreground text-sm leading-relaxed font-sans font-light">
+                Equipped with Pixhawk autopilots and ArduPilot firmware for waypoint navigation, auto-takeoff, and automated landing sequences.
+              </p>
+            </div>
+            <div className="relative h-48 w-full overflow-hidden image-subtle-overlay">
+              <Image
+                src="/images/planes/shourya.webp"
+                alt="Autonomous Flight"
+                fill
+                sizes="(max-width: 768px) 100vw, 33vw"
+                className="object-cover grayscale hover:grayscale-0 transition-all duration-500"
+              />
+            </div>
+          </div>
+
+          {/* Card 3: Fabrication */}
+          <div className="group rounded-2xl border border-border bg-card/10 backdrop-blur-sm overflow-hidden hover:border-[#DFBA73]/30 transition-all duration-300 flex flex-col justify-between shadow-lg">
+            <div className="p-8">
+              <span className="text-xs text-[#DFBA73] font-sans font-medium uppercase tracking-widest block mb-3">03 / Structures</span>
+              <h3 className="text-2xl font-cormorant font-normal text-foreground mb-4">Composite Fabrication</h3>
+              <p className="text-muted-foreground text-sm leading-relaxed font-sans font-light">
+                Employing carbon fiber layup, vacuum bagging, and high-strength balsa ribs for optimal structural rigidity at minimum empty weight.
+              </p>
+            </div>
+            <div className="relative h-48 w-full overflow-hidden image-subtle-overlay">
+              <Image
+                src="/images/planes/mohav.webp"
+                alt="Carbon Fiber Structures"
+                fill
+                sizes="(max-width: 768px) 100vw, 33vw"
+                className="object-cover grayscale hover:grayscale-0 transition-all duration-500"
+              />
+            </div>
+          </div>
+        </div>
       </section>
 
       {/* --- VIRTUAL WORKSHOP / HANGAR CONSOLE --- */}
-      <section id="hangar-section" className="py-24 bg-slate-100/40 dark:bg-black/30 border-y border-[#DFBA73]/10 relative z-10">
+      <section id="hangar-section" className="py-24 bg-slate-100/30 dark:bg-card/10 border-y border-border relative z-10">
         <div className="max-w-6xl mx-auto px-6">
           <div className="grid md:grid-cols-2 gap-12 items-center">
-            {/* Left Column: Holographic Workbench placeholder frame for the 3D Drone */}
-            <div className="relative h-[350px] md:h-[450px] rounded-2xl border border-dashed border-[#DFBA73]/25 bg-gradient-to-br from-[#DFBA73]/5 to-transparent flex items-center justify-center p-4 overflow-hidden pointer-events-none order-2 md:order-1">
-              <div className="absolute inset-0 opacity-[0.06] bg-[linear-gradient(to_right,#808080_1px,transparent_1px),linear-gradient(to_bottom,#808080_1px,transparent_1px)] bg-[size:24px_24px]" />
-              <div className="absolute top-4 left-4 z-10 text-left">
-                <span className="text-[10px] font-bold uppercase tracking-widest text-[#DFBA73] bg-[#DFBA73]/15 px-2.5 py-1 rounded border border-[#DFBA73]/20">Holographic Workbench</span>
+            {/* Left Column: Workshop Hangar Image with subtle hover and overlay */}
+            <div className="relative h-[350px] md:h-[450px] rounded-2xl border border-border bg-card/10 overflow-hidden order-2 md:order-1 shadow-xl group">
+              <Image
+                src="/images/home/newabout.png"
+                alt="Maverick Fabrication Hangar"
+                fill
+                sizes="(max-width: 768px) 100vw, 50vw"
+                className="object-cover grayscale group-hover:grayscale-0 transition-all duration-700 ease-out"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-background/40 via-transparent to-transparent pointer-events-none" />
+              <div className="absolute top-4 left-4 z-10 text-left pointer-events-none">
+                <span className="text-[10px] font-sans font-medium uppercase tracking-widest text-[#DFBA73] bg-black/75 backdrop-blur-sm px-2.5 py-1 rounded border border-[#DFBA73]/20">Maverick Hangar</span>
               </div>
             </div>
 
             {/* Right Column: Workshop Data & Info */}
             <div className="flex flex-col text-left order-1 md:order-2">
-              <span className="text-[#DFBA73] text-xs font-bold uppercase tracking-[0.2em]">Wolves Workshop</span>
-              <h2 className="text-3xl md:text-4xl font-extrabold uppercase text-foreground mt-2 mb-6 font-montserrat">
-                VIRTUAL HANGAR CONSOLE
+              <span className="text-[#DFBA73] text-xs font-bold uppercase tracking-[0.2em] font-sans">Wolves Workshop</span>
+              <h2 className="text-3xl md:text-4xl font-cormorant font-normal text-foreground mt-2 mb-6">
+                Virtual Hangar Console
               </h2>
-              <p className="text-muted-foreground mb-6 leading-relaxed text-left">
+              <p className="text-muted-foreground mb-6 leading-relaxed text-left font-sans font-light text-sm sm:text-base">
                 Step inside our fabrication lab. From composite layup and mechanical milling to avionics programming and test flight data analysis, every wing surface is designed for peak efficiency.
               </p>
               
               {/* Virtual console nav links */}
               <div className="space-y-4">
-                <Link href="/planes" className="flex items-center justify-between p-4 rounded-lg bg-card/65 dark:bg-black/60 border border-[#DFBA73]/10 hover:border-[#DFBA73]/40 hover:bg-[#DFBA73]/5 transition-all group">
-                  <div className="flex items-center gap-3">
-                    <Plane className="w-5 h-5 text-[#DFBA73]" />
-                    <span className="font-semibold text-foreground tracking-wide">Aircraft Fleet Directory</span>
+                <Link href="/planes" className="flex items-center justify-between p-4 rounded-xl bg-card/40 dark:bg-card/20 backdrop-blur-sm border border-border hover:border-[#DFBA73]/30 hover:bg-[#DFBA73]/5 transition-all duration-300 group">
+                  <div className="flex items-center gap-4">
+                    <div className="p-2.5 rounded-lg bg-[#DFBA73]/8 border border-[#DFBA73]/20">
+                      <Plane className="w-5 h-5 text-[#DFBA73]" />
+                    </div>
+                    <span className="font-sans font-medium text-foreground tracking-wide text-sm sm:text-base">Aircraft Fleet Directory</span>
                   </div>
-                  <ChevronRight className="w-4 h-4 text-gray-500 group-hover:text-[#DFBA73] transition-colors" />
+                  <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:text-[#DFBA73] group-hover:translate-x-1 transition-all" />
                 </Link>
-                <Link href="/gallery" className="flex items-center justify-between p-4 rounded-lg bg-card/65 dark:bg-black/60 border border-[#DFBA73]/10 hover:border-[#DFBA73]/40 hover:bg-[#DFBA73]/5 transition-all group">
-                  <div className="flex items-center gap-3">
-                    <Users className="w-5 h-5 text-[#DFBA73]" />
-                    <span className="font-semibold text-foreground tracking-wide">Gallery & Test Flights</span>
+                <Link href="/gallery" className="flex items-center justify-between p-4 rounded-xl bg-card/40 dark:bg-card/20 backdrop-blur-sm border border-border hover:border-[#DFBA73]/30 hover:bg-[#DFBA73]/5 transition-all duration-300 group">
+                  <div className="flex items-center gap-4">
+                    <div className="p-2.5 rounded-lg bg-[#DFBA73]/8 border border-[#DFBA73]/20">
+                      <Users className="w-5 h-5 text-[#DFBA73]" />
+                    </div>
+                    <span className="font-sans font-medium text-foreground tracking-wide text-sm sm:text-base">Gallery & Test Flights</span>
                   </div>
-                  <ChevronRight className="w-4 h-4 text-gray-500 group-hover:text-[#DFBA73] transition-colors" />
+                  <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:text-[#DFBA73] group-hover:translate-x-1 transition-all" />
                 </Link>
-                <Link href="/sponsors" className="flex items-center justify-between p-4 rounded-lg bg-card/65 dark:bg-black/60 border border-[#DFBA73]/10 hover:border-[#DFBA73]/40 hover:bg-[#DFBA73]/5 transition-all group">
-                  <div className="flex items-center gap-3">
-                    <Award className="w-5 h-5 text-[#DFBA73]" />
-                    <span className="font-semibold text-foreground tracking-wide">Sponsors Showcase Wall</span>
+                <Link href="/sponsors" className="flex items-center justify-between p-4 rounded-xl bg-card/40 dark:bg-card/20 backdrop-blur-sm border border-border hover:border-[#DFBA73]/30 hover:bg-[#DFBA73]/5 transition-all duration-300 group">
+                  <div className="flex items-center gap-4">
+                    <div className="p-2.5 rounded-lg bg-[#DFBA73]/8 border border-[#DFBA73]/20">
+                      <Award className="w-5 h-5 text-[#DFBA73]" />
+                    </div>
+                    <span className="font-sans font-medium text-foreground tracking-wide text-sm sm:text-base">Sponsors Showcase Wall</span>
                   </div>
-                  <ChevronRight className="w-4 h-4 text-gray-500 group-hover:text-[#DFBA73] transition-colors" />
+                  <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:text-[#DFBA73] group-hover:translate-x-1 transition-all" />
                 </Link>
               </div>
             </div>
@@ -220,10 +321,10 @@ export default function Home() {
                 <div className="p-3 rounded-lg bg-[#DFBA73]/10 mb-4 border border-[#DFBA73]/10 w-fit">
                   <Icon className="w-6 h-6 text-[#DFBA73]" />
                 </div>
-                <span className="text-3xl md:text-4xl font-extrabold text-foreground mb-1 font-montserrat">
+                <span className="text-4xl md:text-5xl font-sans font-semibold text-foreground mb-1 tracking-tight">
                   <TechText text={stat.count} trigger="view" />
                 </span>
-                <span className="text-xs text-muted-foreground font-medium tracking-wider uppercase block mt-1">{stat.label}</span>
+                <span className="text-[10px] sm:text-xs text-[#DFBA73] font-sans font-medium tracking-widest uppercase block mt-2">{stat.label}</span>
               </GlowCard>
             );
           })}
@@ -231,11 +332,11 @@ export default function Home() {
       </section>
 
       {/* --- TESTIMONIALS SECTION --- */}
-      <section className="py-24 bg-black/20 border-t border-[#DFBA73]/10 relative z-10">
+      <section className="py-24 bg-card/10 border-t border-border relative z-10">
         <div className="max-w-4xl mx-auto px-6 text-center">
-          <span className="text-[#DFBA73] text-xs font-bold uppercase tracking-[0.25em]">Voices from Hangar</span>
-          <h2 className="text-3xl font-extrabold uppercase text-foreground mt-2 mb-12 font-montserrat">
-            MAVERICK FAMILY TESTIMONIALS
+          <span className="text-[#DFBA73] text-xs font-bold uppercase tracking-[0.25em] font-sans">Voices from the Hangar</span>
+          <h2 className="text-3xl md:text-4xl font-cormorant font-normal text-foreground mt-2 mb-12">
+            Maverick Family Testimonials
           </h2>
           
           <div className="relative min-h-[300px] flex items-center justify-center">
@@ -246,25 +347,25 @@ export default function Home() {
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -50 }}
                 transition={{ duration: 0.4 }}
-                className="glass-panel p-8 md:p-12 rounded-2xl relative border border-[#DFBA73]/20 text-justify"
+                className="glass-panel p-8 md:p-12 rounded-2xl relative border border-border text-justify"
               >
-                <p className="text-foreground/80 italic text-base md:text-lg mb-8 leading-relaxed text-center">
+                <p className="text-foreground/80 italic text-base md:text-lg mb-8 leading-relaxed text-center font-cormorant">
                   "{testimonials[currentIndex].text}"
                 </p>
                 <div className="flex items-center justify-center gap-4">
-                  <div className="w-14 h-14 rounded-full overflow-hidden border border-[#DFBA73]/30 flex-shrink-0">
+                  <div className="w-14 h-14 rounded-full overflow-hidden border border-[#DFBA73]/20 flex-shrink-0">
                     <Image
                       src={testimonials[currentIndex].image}
                       alt={testimonials[currentIndex].author}
                       width={100}
                       height={100}
-                      className="object-cover w-full h-full"
+                      className="object-cover w-full h-full filter grayscale hover:grayscale-0 transition-all duration-300"
                       loading="lazy"
                     />
                   </div>
-                  <div className="text-left">
-                    <p className="font-bold text-foreground tracking-wide">{testimonials[currentIndex].author}</p>
-                    <p className="text-xs text-[#DFBA73] font-medium tracking-wide uppercase mt-0.5">{testimonials[currentIndex].role}</p>
+                  <div className="text-left font-sans">
+                    <p className="font-semibold text-foreground tracking-wide">{testimonials[currentIndex].author}</p>
+                    <p className="text-[10px] text-[#DFBA73] font-medium tracking-widest uppercase mt-0.5">{testimonials[currentIndex].role}</p>
                   </div>
                 </div>
               </motion.div>
@@ -277,8 +378,8 @@ export default function Home() {
                 key={index}
                 onClick={() => setCurrentIndex(index)}
                 className={cn(
-                  "w-3 h-3 rounded-full transition-all duration-300",
-                  currentIndex === index ? "bg-[#DFBA73] scale-125 shadow-[0_0_8px_#DFBA73]" : "bg-gray-600 hover:bg-gray-500"
+                  "w-2 h-2 rounded-full transition-all duration-300",
+                  currentIndex === index ? "bg-[#DFBA73] scale-125" : "bg-gray-400 dark:bg-gray-600 hover:bg-[#DFBA73]/40"
                 )}
               />
             ))}
@@ -287,12 +388,14 @@ export default function Home() {
       </section>
 
       {/* --- SPONSORS INFINITE MARQUEE --- */}
-      <section className="py-16 bg-black/40 relative z-10">
+      <section className="py-16 bg-card/25 relative z-10 border-t border-border">
         <div className="text-center mb-8">
-          <span className="text-[#DFBA73] text-xs font-bold uppercase tracking-[0.2em]">Partner Network</span>
-          <h3 className="text-sm font-semibold tracking-[0.3em] uppercase text-muted-foreground mt-1">Our Sponsors & Partners</h3>
+          <span className="text-[#DFBA73] text-xs font-bold uppercase tracking-[0.2em] font-sans">Partner Network</span>
+          <h3 className="text-xs font-medium tracking-[0.3em] uppercase text-muted-foreground mt-1">Our Sponsors & Partners</h3>
         </div>
-        <InfiniteMarquee />
+        <div className="opacity-70 grayscale hover:opacity-100 hover:grayscale-0 transition-all duration-500">
+          <InfiniteMarquee />
+        </div>
       </section>
     </div>
   );

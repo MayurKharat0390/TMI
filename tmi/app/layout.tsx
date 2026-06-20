@@ -1,6 +1,6 @@
 import './globals.css';
 import type { Metadata } from 'next';
-import { Inter, Montserrat, Jost } from 'next/font/google';
+import { Inter, Montserrat, Jost, Cormorant_Garamond } from 'next/font/google';
 import { ThemeProvider } from '@/components/theme-provider';
 import { Navbar } from '@/components/navbar';
 import { Footer } from '@/components/footer';
@@ -27,6 +27,14 @@ const jost = Jost({
   variable: '--font-jost',
 });
 
+const cormorantGaramond = Cormorant_Garamond({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-cormorant',
+  weight: ['300', '400', '500', '600', '700'],
+  style: ['normal', 'italic'],
+});
+
 export const metadata: Metadata = {
   metadataBase: new URL('https://www.team-maverick-india.com'),
   title: {
@@ -40,6 +48,8 @@ export const metadata: Metadata = {
   },
 };
 
+import MiniDroneTour from '@/components/mini-drone-tour';
+
 export default function RootLayout({
   children,
 }: {
@@ -48,7 +58,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head />
-      <body className={`${inter.className} ${montserrat.variable} ${jost.variable}`}>
+      <body className={`${inter.className} ${montserrat.variable} ${jost.variable} ${cormorantGaramond.variable}`}>
         <ThemeProvider
           attribute="class"
           defaultTheme="light"
@@ -63,6 +73,7 @@ export default function RootLayout({
             <Footer />
             <ScrollToTop />
             <InfoButton />
+            <MiniDroneTour />
           </div>
           <Toaster />
         </ThemeProvider>

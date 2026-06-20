@@ -85,8 +85,8 @@ export default function SponsorsList() {
 }
 
 function TierHeading({ tier }: { tier: keyof SponsorsByTier }) {
-  const headingStyles = "font-bold uppercase tracking-widest text-yellow-400 drop-shadow-[0_0_8px_rgba(250,204,21,0.4)]";
-  const dividerStyles = "bg-yellow-400/30 mx-auto mt-3";
+  const headingStyles = "font-cormorant font-normal tracking-[0.1em] text-[#DFBA73]";
+  const dividerStyles = "bg-[#DFBA73]/30 mx-auto mt-3";
 
   switch (tier) {
     case 'platinum':
@@ -95,7 +95,7 @@ function TierHeading({ tier }: { tier: keyof SponsorsByTier }) {
           <h3 className={cn("text-3xl", headingStyles)}>
             TITLE SPONSOR
           </h3>
-          <div className={cn("w-20 h-[2px]", dividerStyles)} />
+          <div className={cn("w-12 h-[1px]", dividerStyles)} />
         </div>
       );
     case 'gold':

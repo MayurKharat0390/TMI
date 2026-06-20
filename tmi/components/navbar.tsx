@@ -66,7 +66,7 @@ export function Navbar() {
               key={href}
               href={href}
               className={cn(
-                "relative px-4 py-1.5 text-xs font-mono font-semibold uppercase tracking-widest transition-colors duration-300",
+                "relative px-4 py-1.5 text-[11px] font-sans font-medium uppercase tracking-[0.18em] transition-colors duration-300",
                 isActive(href) ? "text-[#DFBA73]" : "text-foreground/80 hover:text-[#DFBA73]"
               )}
             >
@@ -74,7 +74,7 @@ export function Navbar() {
               {isActive(href) && (
                 <motion.span
                   layoutId="activeNav"
-                  className="absolute inset-0 bg-[#DFBA73]/10 border border-[#DFBA73]/30 rounded-full -z-10 shadow-[0_0_10px_rgba(212,163,72,0.15)]"
+                  className="absolute inset-0 bg-[#DFBA73]/8 border border-[#DFBA73]/20 rounded-full -z-10"
                   transition={{ type: "spring", stiffness: 380, damping: 30 }}
                 />
               )}
@@ -116,7 +116,7 @@ export function Navbar() {
                   <Link
                     key={href}
                     href={href}
-                    className={cn("text-lg font-mono tracking-wider uppercase", isActive(href) ? "text-[#DFBA73]" : "text-foreground")}
+                    className={cn("text-base font-sans font-medium tracking-[0.12em] uppercase", isActive(href) ? "text-[#DFBA73]" : "text-foreground")}
                     onClick={() => setIsOpen(false)}
                   >
                     {label}

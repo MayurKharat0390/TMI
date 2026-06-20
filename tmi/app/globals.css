@@ -128,65 +128,80 @@ html {
 
 @layer utilities {
   .text-gold-glow {
-    text-shadow: 0 0 10px rgba(223, 186, 115, 0.5), 0 0 20px rgba(223, 186, 115, 0.25);
+    text-shadow: 0 1px 2px rgba(223, 186, 115, 0.15);
   }
   
   .border-gold-glow {
-    box-shadow: 0 0 15px rgba(223, 186, 115, 0.2), inset 0 0 15px rgba(223, 186, 115, 0.08);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(223, 186, 115, 0.2);
   }
 
   .bg-radial-glow {
-    background: radial-gradient(circle at center, rgba(223, 186, 115, 0.06) 0%, transparent 70%);
+    background: radial-gradient(circle at center, rgba(223, 186, 115, 0.03) 0%, transparent 70%);
   }
 
   .glass-panel {
-    background: rgba(255, 255, 255, 0.75);
-    backdrop-filter: blur(12px);
-    border: 1px solid rgba(223, 186, 115, 0.15);
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(223, 186, 115, 0.12);
   }
 
   .dark .glass-panel {
-    background: rgba(10, 10, 10, 0.65);
+    background: rgba(15, 15, 15, 0.75);
     border: 1px solid rgba(223, 186, 115, 0.08);
   }
 
   .glass-panel-hover {
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   .glass-panel-hover:hover {
-    background: rgba(245, 245, 245, 0.85);
-    border-color: rgba(223, 186, 115, 0.25);
-    box-shadow: 0 0 30px rgba(0, 0, 0, 0.05);
+    background: rgba(255, 255, 255, 0.95);
+    border-color: rgba(223, 186, 115, 0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
   }
 
   .dark .glass-panel-hover:hover {
-    background: rgba(20, 20, 20, 0.8);
+    background: rgba(22, 22, 22, 0.85);
     border-color: rgba(223, 186, 115, 0.25);
-    box-shadow: 0 0 30px rgba(223, 186, 115, 0.12);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
   }
 
-  /* Scanline overlay effect */
+  /* Scanline overlay effect - disabled for professional clarity */
   .scanlines {
     position: relative;
     overflow: hidden;
   }
   
   .dark .scanlines::before {
-    content: " ";
-    display: block;
-    position: absolute;
-    top: 0; left: 0; bottom: 0; right: 0;
-    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
-    z-index: 2;
-    background-size: 100% 3px, 3px 100%;
-    pointer-events: none;
+    display: none;
   }
 
   .grid-pattern {
-    background-size: 40px 40px;
+    background-size: 60px 60px;
     background-image: 
-      linear-gradient(to right, rgba(223, 186, 115, 0.02) 1px, transparent 1px),
-      linear-gradient(to bottom, rgba(223, 186, 115, 0.02) 1px, transparent 1px);
+      linear-gradient(to right, rgba(223, 186, 115, 0.015) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(223, 186, 115, 0.015) 1px, transparent 1px);
+  }
+
+  /* Clean, elegant image vignettes */
+  .image-subtle-overlay {
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .image-subtle-overlay::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, transparent 60%, rgba(10, 10, 10, 0.4) 100%);
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+  }
+
+  .image-subtle-overlay:hover::after {
+    opacity: 0.8;
   }
 }
