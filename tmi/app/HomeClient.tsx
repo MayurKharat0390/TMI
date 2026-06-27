@@ -124,12 +124,21 @@ export default function Home() {
           <div className="absolute inset-0 bg-gradient-to-t from-background via-black/25 to-black/40 z-10" />
         </div>
 
-        {/* 3D Assembling Drone Canvas container */}
-        <div className="absolute inset-x-0 bottom-16 lg:inset-0 w-full h-[380px] lg:h-full z-20 pointer-events-none">
+        {/* 3D Assembling Drone Canvas container:
+             - Mobile, forming: fullscreen (centered, parts fly in)
+             - Mobile, assembled: pinned to bottom below text
+             - Desktop: always fullscreen */}
+        <div
+          className={`absolute z-20 pointer-events-none transition-all duration-700 ease-in-out ${
+            isAssembled
+              ? "inset-x-0 bottom-0 h-[380px] lg:inset-0 lg:h-full"
+              : "inset-0 w-full h-full"
+          }`}
+        >
           <HeroDrone3D onAssemblyComplete={() => setIsAssembled(true)} />
         </div>
 
-        <div className="relative z-30 max-w-6xl mx-auto px-6 w-full pointer-events-auto pt-16 flex items-center justify-center pb-[400px] lg:pb-0">
+        <div className={`relative z-30 max-w-6xl mx-auto px-6 w-full pointer-events-auto pt-16 flex items-center justify-center transition-all duration-700 ${isAssembled ? "pb-[400px] lg:pb-0" : ""}`}>
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center w-full">
             
             {/* Left Column: Heading, description & actions (col-span-7) */}
