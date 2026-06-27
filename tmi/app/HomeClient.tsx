@@ -16,6 +16,7 @@ import { GlowCard } from "@/components/glow-card";
 
 const InfiniteMarquee = dynamic(() => import("@/components/marquee"), { ssr: false });
 const StarryBackground = dynamic(() => import("@/components/StarryBackground"), { ssr: false });
+const HeroDrone3D = dynamic(() => import("@/components/hero-drone-3d"), { ssr: false });
 
 const testimonials = [
   {
@@ -87,6 +88,7 @@ export default function Home() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [descIndex, setDescIndex] = useState(0);
   const [activeTab, setActiveTab] = useState("aero");
+  const [isAssembled, setIsAssembled] = useState(false);
   
   const showcaseRef = useRef<HTMLDivElement>(null);
 
@@ -114,114 +116,91 @@ export default function Home() {
     <div className="bg-background text-foreground relative min-h-screen overflow-hidden">
 
       {/* --- HERO SECTION --- */}
-      <section className="relative min-h-screen flex flex-col justify-center px-4 overflow-hidden pt-16">
+      <section className="relative min-h-screen flex flex-col justify-center px-4 overflow-hidden pt-16 bg-background grid-pattern">
         
-        {/* Full-bleed Background Video */}
-        <div className="absolute inset-0 z-0 overflow-hidden w-full h-full">
-          <video
-            src="/images/home/hero.mp4"
-            autoPlay
-            loop
-            muted
-            playsInline
-            className="w-full h-full object-cover grayscale brightness-[0.35] transition-all duration-1000"
-          />
-          {/* Subtle dark gradient overlay to ensure readability */}
-          <div className="absolute inset-0 bg-gradient-to-t from-background via-black/40 to-black/60 z-10" />
+        {/* High-Tech Grid & Radial Vignette Background */}
+        <div className="absolute inset-0 z-0 overflow-hidden w-full h-full pointer-events-none">
+          <div className="absolute inset-0 bg-radial-glow z-10" />
+          <div className="absolute inset-0 bg-gradient-to-t from-background via-black/25 to-black/40 z-10" />
+        </div>
+
+        {/* 3D Assembling Drone full-screen Canvas overlay */}
+        <div className="absolute inset-0 w-full h-full z-20 pointer-events-none">
+          <HeroDrone3D onAssemblyComplete={() => setIsAssembled(true)} />
         </div>
 
         <div className="relative z-30 max-w-6xl mx-auto px-6 w-full pointer-events-auto pt-16 flex items-center justify-center">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center w-full">
             
             {/* Left Column: Heading, description & actions (col-span-7) */}
-            <motion.div
-              initial={{ opacity: 0, x: -30 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-              className="lg:col-span-7 flex flex-col text-left space-y-6 max-w-xl"
-            >
-              <div>
-                <span className="text-[11px] sm:text-xs font-sans font-bold uppercase tracking-[0.3em] text-[#DFBA73]">
-                  DESIGN &bull; BUILD &bull; FLY
-                </span>
-              </div>
-              
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold uppercase tracking-tight text-white font-sans leading-[1.05]">
-                TEAM MAVERICK <span className="italic font-light text-[#DFBA73] font-cormorant font-normal">INDIA</span>
-              </h1>
+            <div className="lg:col-span-7 flex flex-col text-left space-y-6 max-w-xl pointer-events-none">
+              <AnimatePresence>
+                {isAssembled && (
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="flex flex-col space-y-6 pointer-events-auto"
+                  >
+                    <motion.div
+                      initial={{ opacity: 0, y: 15 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.6, delay: 0.1 }}
+                    >
+                      <span className="text-[11px] sm:text-xs font-sans font-bold uppercase tracking-[0.3em] text-[#DFBA73]">
+                        DESIGN &bull; BUILD &bull; FLY
+                      </span>
+                    </motion.div>
+                    
+                    <motion.h1
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.7, delay: 0.3 }}
+                      className="text-4xl md:text-5xl lg:text-6xl font-bold uppercase tracking-tight text-white font-sans leading-[1.05]"
+                    >
+                      TEAM MAVERICK <span className="italic font-light text-[#DFBA73] font-cormorant font-normal">INDIA</span>
+                    </motion.h1>
 
-              <h2 className="text-xs sm:text-sm font-semibold tracking-[0.22em] text-[#DFBA73] uppercase leading-relaxed max-w-lg">
-                ENGINEERING AUTONOMOUS AERIAL SYSTEMS FOR A SMARTER TOMORROW
-              </h2>
+                    <motion.h2
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.7, delay: 0.5 }}
+                      className="text-xs sm:text-sm font-semibold tracking-[0.22em] text-[#DFBA73] uppercase leading-relaxed max-w-lg"
+                    >
+                      ENGINEERING AUTONOMOUS AERIAL SYSTEMS FOR A SMARTER TOMORROW
+                    </motion.h2>
 
-              <p className="text-gray-200 text-sm sm:text-base font-light tracking-wide leading-relaxed">
-                We design, build and fly competition-grade UAVs that solve real-world problems through innovation, engineering and teamwork.
-              </p>
+                    <motion.p
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.7, delay: 0.7 }}
+                      className="text-gray-200 text-sm sm:text-base font-light tracking-wide leading-relaxed"
+                    >
+                      We design, build and fly competition-grade UAVs that solve real-world problems through innovation, engineering and teamwork.
+                    </motion.p>
 
-              <div className="flex flex-wrap items-center gap-4 pt-2">
-                <Button asChild size="lg" className="rounded-full bg-[#DFBA73] hover:bg-[#DFBA73]/90 text-background font-sans font-semibold tracking-wider px-8 uppercase text-[11px]">
-                  <Link href="/planes">Explore Our Aircraft</Link>
-                </Button>
-                <Button asChild variant="outline" size="lg" className="rounded-full border-white/20 hover:border-white/50 hover:bg-white/5 text-white font-sans font-semibold tracking-wider px-8 uppercase text-[11px] backdrop-blur-sm">
-                  <a href="https://youtube.com/@teammaverickindia" target="_blank" rel="noopener noreferrer">
-                    Watch Video <Play className="w-3 h-3 ml-1.5 inline-block text-[#DFBA73] fill-[#DFBA73]" />
-                  </a>
-                </Button>
-              </div>
-            </motion.div>
+                    <motion.div
+                      initial={{ opacity: 0, y: 15 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.6, delay: 0.9 }}
+                      className="flex flex-wrap items-center gap-4 pt-2"
+                    >
+                      <Button asChild size="lg" className="rounded-full bg-[#DFBA73] hover:bg-[#DFBA73]/90 text-background font-sans font-semibold tracking-wider px-8 uppercase text-[11px]">
+                        <Link href="/planes">Explore Our Aircraft</Link>
+                      </Button>
+                      <Button asChild variant="outline" size="lg" className="rounded-full border-white/20 hover:border-white/50 hover:bg-white/5 text-white font-sans font-semibold tracking-wider px-8 uppercase text-[11px] backdrop-blur-sm">
+                        <a href="https://youtube.com/@teammaverickindia" target="_blank" rel="noopener noreferrer">
+                          Watch Video <Play className="w-3 h-3 ml-1.5 inline-block text-[#DFBA73] fill-[#DFBA73]" />
+                        </a>
+                      </Button>
+                    </motion.div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
 
-            {/* Right Column: Radar (col-span-5) */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.8, delay: 0.5 }}
-              className="lg:col-span-5 flex items-center justify-center lg:justify-end"
-            >
-              {/* SVG Radar Graphic */}
-              <div className="relative w-40 h-40 flex items-center justify-center">
-                {/* Spinning Radar Sweeper */}
-                <motion.div
-                  animate={{ rotate: 360 }}
-                  transition={{ repeat: Infinity, duration: 10, ease: "linear" }}
-                  className="absolute inset-0 w-full h-full rounded-full border border-[#DFBA73]/10"
-                  style={{
-                    background: "conic-gradient(from 0deg, transparent 50%, rgba(223, 186, 115, 0.15) 100%)",
-                  }}
-                />
-
-                {/* Concentric Grid Circles */}
-                <div className="absolute inset-2 rounded-full border border-[#DFBA73]/15" />
-                <div className="absolute inset-8 rounded-full border border-[#DFBA73]/15" />
-                <div className="absolute inset-16 rounded-full border border-[#DFBA73]/15" />
-                <div className="absolute inset-[72px] rounded-full border border-[#DFBA73]/20 border-dashed" />
-
-                {/* Radar Grid Crosshairs */}
-                <div className="absolute top-0 bottom-0 left-1/2 w-[1px] bg-[#DFBA73]/15 -translate-x-1/2" />
-                <div className="absolute left-0 right-0 top-1/2 h-[1px] bg-[#DFBA73]/15 -translate-y-1/2" />
-
-                {/* Telemetry Dots/Blips */}
-                <motion.div
-                  animate={{ opacity: [0.2, 1, 0.2] }}
-                  transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
-                  className="absolute top-10 left-12 w-1.5 h-1.5 rounded-full bg-[#DFBA73] shadow-[0_0_8px_#DFBA73]"
-                />
-                <motion.div
-                  animate={{ opacity: [1, 0.1, 1] }}
-                  transition={{ repeat: Infinity, duration: 3, ease: "easeInOut", delay: 1 }}
-                  className="absolute bottom-12 right-10 w-1.5 h-1.5 rounded-full bg-[#DFBA73] shadow-[0_0_8px_#DFBA73]"
-                />
-
-                {/* Target box */}
-                <div className="absolute top-[35%] right-[30%] w-4 h-4 border border-[#DFBA73]/40 flex items-center justify-center animate-pulse">
-                  <div className="w-1 h-1 bg-[#DFBA73]" />
-                </div>
-
-                {/* HUD Text overlay */}
-                <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[8px] font-sans font-medium uppercase tracking-[0.2em] text-[#DFBA73] bg-black/60 dark:bg-black/85 backdrop-blur-sm px-2 py-0.5 rounded border border-[#DFBA73]/30 whitespace-nowrap text-center font-bold">
-                  MISSION READY // SYSTEMS CHECK: 100%
-                </div>
-              </div>
-            </motion.div>
+            {/* Right Column: Empty spacer representing the 3D drone position on desktop (col-span-5) */}
+            <div className="lg:col-span-5 h-[350px] lg:h-[500px] w-full pointer-events-none" />
           </div>
         </div>
 
