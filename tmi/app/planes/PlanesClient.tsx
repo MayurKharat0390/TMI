@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import { cn } from "@/lib/utils";
 import dynamic from "next/dynamic";
+import { motion } from "framer-motion";
 
 const StarryBackground = dynamic(() => import("@/components/StarryBackground"), { ssr: false });
 
@@ -136,27 +137,91 @@ const planes: Plane[] = [
   }
 ];
 
+const scannerVariants = {
+  hidden: { top: "-5%", opacity: 0 },
+  visible: {
+    top: "105%",
+    opacity: [0, 1, 1, 0],
+    transition: { duration: 1.4, ease: "easeInOut", delay: 0.2 }
+  }
+};
+
+const colorOverlayVariants = {
+  hidden: { clipPath: "inset(0% 0% 100% 0%)" },
+  visible: {
+    clipPath: "inset(0% 0% 0% 0%)",
+    transition: { duration: 1.4, ease: "easeInOut", delay: 0.2 }
+  }
+};
+
 function PlaneCard({ plane }: { plane: Plane }) {
   return (
-    <div className="group rounded-2xl border border-border bg-card/25 backdrop-blur-sm overflow-hidden hover:border-[#DFBA73]/30 hover:-translate-y-1 transition-all duration-300 flex flex-col h-full shadow-lg">
+    <motion.div 
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, margin: "-60px" }}
+      className="group rounded-2xl border border-border bg-card/25 backdrop-blur-sm overflow-hidden hover:border-[#DFBA73]/30 hover:-translate-y-1 transition-all duration-300 flex flex-col h-full shadow-lg"
+    >
       {/* Plane Image with subtle gradient overlay */}
       <div className="relative h-64 w-full overflow-hidden image-subtle-overlay bg-muted/20">
         {plane.image ? (
-          <Image
-            src={plane.image}
-            alt={plane.name}
-            fill
-            sizes="(max-width: 768px) 100vw, 50vw"
-            className="object-cover grayscale hover:grayscale-0 transition-all duration-700 ease-out"
-          />
+          <>
+            {/* Grayscale Base Image */}
+            <Image
+              src={plane.image}
+              alt={plane.name}
+              fill
+              sizes="(max-width: 768px) 100vw, 50vw"
+              className="object-cover grayscale"
+            />
+            {/* Color Overlay Revealed on Scroll */}
+            <motion.div
+              variants={colorOverlayVariants}
+              className="absolute inset-0 z-10 pointer-events-none"
+            >
+              <Image
+                src={plane.image}
+                alt={`${plane.name} Color`}
+                fill
+                sizes="(max-width: 768px) 100vw, 50vw"
+                className="object-cover"
+              />
+            </motion.div>
+            {/* Scanning laser line sweeper */}
+            <motion.div
+              variants={scannerVariants}
+              className="absolute left-0 right-0 h-[3px] bg-gradient-to-r from-transparent via-[#00ffff] to-transparent shadow-[0_0_10px_#00ffff] z-20 pointer-events-none"
+            />
+          </>
         ) : plane.projects && plane.projects[0] ? (
-          <Image
-            src={plane.projects[0].image}
-            alt={plane.name}
-            fill
-            sizes="(max-width: 768px) 100vw, 50vw"
-            className="object-cover grayscale hover:grayscale-0 transition-all duration-700 ease-out"
-          />
+          <>
+            {/* Grayscale Base Image */}
+            <Image
+              src={plane.projects[0].image}
+              alt={plane.name}
+              fill
+              sizes="(max-width: 768px) 100vw, 50vw"
+              className="object-cover grayscale"
+            />
+            {/* Color Overlay Revealed on Scroll */}
+            <motion.div
+              variants={colorOverlayVariants}
+              className="absolute inset-0 z-10 pointer-events-none"
+            >
+              <Image
+                src={plane.projects[0].image}
+                alt={`${plane.name} Color`}
+                fill
+                sizes="(max-width: 768px) 100vw, 50vw"
+                className="object-cover"
+              />
+            </motion.div>
+            {/* Scanning laser line sweeper */}
+            <motion.div
+              variants={scannerVariants}
+              className="absolute left-0 right-0 h-[3px] bg-gradient-to-r from-transparent via-[#00ffff] to-transparent shadow-[0_0_10px_#00ffff] z-20 pointer-events-none"
+            />
+          </>
         ) : (
           <div className="w-full h-full bg-muted/40 flex items-center justify-center text-muted-foreground text-xs font-sans font-light uppercase tracking-widest">
             No Image Available
@@ -192,7 +257,7 @@ function PlaneCard({ plane }: { plane: Plane }) {
                     alt={proj.name}
                     fill
                     sizes="(max-width: 768px) 50vw, 25vw"
-                    className="object-cover grayscale hover:grayscale-0 transition-all duration-300"
+                    className="object-cover transition-all duration-300"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
                   <div className="absolute bottom-2 left-2 text-[9px] font-sans font-medium tracking-wider text-[#DFBA73] uppercase">
@@ -224,7 +289,7 @@ function PlaneCard({ plane }: { plane: Plane }) {
           )}
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }
 

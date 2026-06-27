@@ -116,7 +116,7 @@ export default function Home() {
     <div className="bg-background text-foreground relative min-h-screen overflow-hidden">
 
       {/* --- HERO SECTION --- */}
-      <section className="relative min-h-screen flex flex-col justify-center px-4 overflow-hidden pt-16 bg-background grid-pattern">
+      <section className="relative min-h-screen flex flex-col justify-start lg:justify-center px-4 overflow-hidden pt-24 lg:pt-16 bg-background grid-pattern">
         
         {/* High-Tech Grid & Radial Vignette Background */}
         <div className="absolute inset-0 z-0 overflow-hidden w-full h-full pointer-events-none">
@@ -124,12 +124,12 @@ export default function Home() {
           <div className="absolute inset-0 bg-gradient-to-t from-background via-black/25 to-black/40 z-10" />
         </div>
 
-        {/* 3D Assembling Drone full-screen Canvas overlay */}
-        <div className="absolute inset-0 w-full h-full z-20 pointer-events-none">
+        {/* 3D Assembling Drone Canvas container */}
+        <div className="absolute inset-x-0 bottom-16 lg:inset-0 w-full h-[380px] lg:h-full z-20 pointer-events-none">
           <HeroDrone3D onAssemblyComplete={() => setIsAssembled(true)} />
         </div>
 
-        <div className="relative z-30 max-w-6xl mx-auto px-6 w-full pointer-events-auto pt-16 flex items-center justify-center">
+        <div className="relative z-30 max-w-6xl mx-auto px-6 w-full pointer-events-auto pt-16 flex items-center justify-center pb-[400px] lg:pb-0">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center w-full">
             
             {/* Left Column: Heading, description & actions (col-span-7) */}
@@ -200,7 +200,7 @@ export default function Home() {
             </div>
 
             {/* Right Column: Empty spacer representing the 3D drone position on desktop (col-span-5) */}
-            <div className="lg:col-span-5 h-[350px] lg:h-[500px] w-full pointer-events-none" />
+            <div className="lg:col-span-5 hidden lg:block h-[350px] lg:h-[500px] w-full pointer-events-none" />
           </div>
         </div>
 
@@ -304,7 +304,7 @@ export default function Home() {
                       alt={plane.name}
                       fill
                       sizes="(max-width: 768px) 100vw, 30vw"
-                      className="object-cover grayscale group-hover:grayscale-0 transition-all duration-500 ease-out"
+                      className="object-cover transition-all duration-500 ease-out"
                     />
                     <div className="absolute top-2 left-2 bg-black/75 backdrop-blur-sm border border-[#DFBA73]/20 rounded px-1.5 py-0.5 text-[8px] text-[#DFBA73] font-sans font-medium uppercase tracking-widest z-10">
                       {plane.tag}

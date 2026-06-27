@@ -49,6 +49,7 @@ export const metadata: Metadata = {
 };
 
 import MiniDroneTour from '@/components/mini-drone-tour';
+import PageTransition from '@/components/page-transition';
 
 export default function RootLayout({
   children,
@@ -74,6 +75,7 @@ export default function RootLayout({
             <ScrollToTop />
             <InfoButton />
             <MiniDroneTour />
+            <PageTransition />
           </div>
           <Toaster />
         </ThemeProvider>
