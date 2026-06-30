@@ -1,3 +1,4 @@
+@import url("https://cdn.jsdelivr.net/npm/remixicon@3.4.0/fonts/remixicon.css");
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -258,4 +259,619 @@ html {
       opacity: 0;
     }
   }
+
+  /* ====================================================================
+     FLIVAN TEMPLATE — exact CSS match (flv- prefix to avoid conflicts)
+     Variables mirror Flivan repo:
+       --primary-color : #DFBA73  (TMI gold, replaces Flivan blue)
+       --text-dark     : hsl(var(--foreground))
+       --text-light    : hsl(var(--muted-foreground))
+       --extra-light   : hsl(var(--muted))
+     ==================================================================== */
+}
+
+
+/* ── Flivan root tokens ───────────────────────────────────────────────── */
+:root {
+  --flv-primary       : #DFBA73;
+  --flv-primary-dark  : #c9a45e;
+  --flv-text-dark     : #0f172a;
+  --flv-text-light    : #64748b;
+  --flv-extra-light   : #f1f5f9;
+  --flv-white         : #ffffff;
+  --flv-max-width     : 1200px;
+}
+
+/* dark-mode token overrides */
+.dark {
+  --flv-text-dark    : #f1f5f9;
+  --flv-text-light   : #94a3b8;
+  --flv-extra-light  : #1e293b;
+  --flv-white        : #0f172a;
+}
+
+/* ── 1. SECTION CONTAINER  (Flivan: .section__container) ─────────────── */
+.flv-section__container {
+  max-width : var(--flv-max-width);
+  margin    : auto;
+  padding   : 5rem 1rem;
+}
+
+/* ── 2. SECTION HEADING  (Flivan: .section__header) ──────────────────── */
+.flv-section__header {
+  font-size   : 2.5rem;
+  font-weight : 600;
+  line-height : 3rem;
+  color       : var(--flv-text-dark);
+}
+
+/* ── 3. SECTION SUB-LABEL ─────────────────────────────────────────────── */
+.flv-section__subheader {
+  font-size      : 0.7rem;
+  font-weight    : 700;
+  text-transform : uppercase;
+  letter-spacing : 0.25em;
+  color          : var(--flv-primary);
+  display        : block;
+  margin-bottom  : 0.4rem;
+}
+
+/* ── 4. BUTTON  (Flivan: .btn) ────────────────────────────────────────── */
+.flv-btn {
+  display          : inline-flex;
+  align-items      : center;
+  gap              : 0.4rem;
+  padding          : 0.75rem 2rem;
+  border           : none;
+  font-size        : 0.95rem;
+  font-weight      : 500;
+  color            : var(--flv-white);
+  background-color : var(--flv-primary);
+  border-radius    : 2rem;
+  cursor           : pointer;
+  transition       : background-color 0.3s, color 0.3s, border-color 0.3s;
+  text-decoration  : none;
+}
+
+.flv-btn:hover {
+  background-color : var(--flv-primary-dark);
+}
+
+.flv-btn--outline {
+  background-color : transparent;
+  border           : 2px solid var(--flv-primary);
+  color            : var(--flv-primary);
+}
+
+.flv-btn--outline:hover {
+  background-color : var(--flv-primary);
+  color            : var(--flv-white);
+}
+
+/* ── 5. HEADER SECTION  (Flivan: header.section__container.header__container) */
+.flv-header__container {
+  padding-top    : 7rem;   /* clear fixed navbar */
+  padding-bottom : 1rem;
+  text-align     : center;
+}
+
+.flv-header__container .flv-section__header {
+  font-size   : 3rem;
+  line-height : 4rem;
+  text-align  : center;
+}
+
+.flv-header__accent {
+  display     : block;
+  font-size   : 1.1rem;
+  font-weight : 400;
+  color       : var(--flv-primary);
+  letter-spacing : 0.15em;
+  margin-top  : 0.5rem;
+}
+
+/* hero image/video — exact Flivan <img> style: width:100%, display:flex */
+.flv-hero__img {
+  width      : 100%;
+  display    : block;
+  margin-top : 2.5rem;
+  border-radius : 1rem;
+  overflow   : hidden;
+  max-height : 520px;
+  object-fit : cover;
+}
+
+/* CTA buttons row below hero image */
+.flv-hero__cta {
+  display         : flex;
+  align-items     : center;
+  justify-content : center;
+  gap             : 1rem;
+  margin-top      : 2rem;
+  flex-wrap       : wrap;
+}
+
+/* ── 6. BOOKING SECTION  (Flivan: section.booking__container) ─────────── */
+.flv-booking__container {
+  border-radius : 2rem;
+  border        : 1px solid var(--flv-extra-light);
+  box-shadow    : 5px 5px 30px rgba(0, 0, 0, 0.08);
+  padding       : 2.5rem 2rem;
+}
+
+/* tab strip  (Flivan: .booking__nav) */
+.flv-booking__nav {
+  max-width        : 520px;
+  margin           : 0 auto 2.5rem;
+  display          : flex;
+  align-items      : center;
+  background-color : var(--flv-extra-light);
+  border-radius    : 5px;
+  overflow         : hidden;
+}
+
+.flv-booking__nav span {
+  flex           : 1;
+  padding        : 0.85rem 1.5rem;
+  font-weight    : 500;
+  font-size      : 0.85rem;
+  color          : var(--flv-text-light);
+  text-align     : center;
+  cursor         : pointer;
+  transition     : background-color 0.25s, color 0.25s;
+  white-space    : nowrap;
+}
+
+.flv-booking__nav span:hover,
+.flv-booking__nav span.flv-booking__nav--active {
+  background-color : var(--flv-primary);
+  color            : var(--flv-white);
+}
+
+/* form row  (Flivan: <form> inside booking section) */
+.flv-booking__form {
+  display         : flex;
+  align-items     : center;
+  gap             : 0;
+  flex-wrap       : wrap;
+  border-top      : 1px solid var(--flv-extra-light);
+}
+
+/* search button inside form */
+.flv-booking__btn {
+  margin-left : auto;
+  flex-shrink : 0;
+}
+
+/* form group  (Flivan: .form__group) */
+.flv-form__group {
+  display     : flex;
+  align-items : center;
+  gap         : 0.75rem;
+  padding     : 1.25rem 1.5rem;
+  flex        : 1;
+  min-width   : 160px;
+  border-right: 1px solid var(--flv-extra-light);
+}
+
+.flv-form__group:last-of-type {
+  border-right : none;
+}
+
+/* icon circle */
+.flv-form__group > span {
+  display         : flex;
+  align-items     : center;
+  justify-content : center;
+  width           : 2.5rem;
+  height          : 2.5rem;
+  border-radius   : 50%;
+  background-color: var(--flv-extra-light);
+  font-size       : 1.2rem;
+  color           : var(--flv-primary);
+  flex-shrink     : 0;
+}
+
+/* input content wrapper  (Flivan: .input__content) */
+.flv-input__content {
+  flex : 1;
+}
+
+/* floating-label input  (Flivan: .input__group) */
+.flv-input__group {
+  position : relative;
+}
+
+.flv-input__group input {
+  width           : 100%;
+  border          : none;
+  outline         : none;
+  background      : transparent;
+  font-size       : 0.95rem;
+  font-weight     : 600;
+  color           : var(--flv-text-dark);
+  padding-top     : 1rem;
+}
+
+.flv-input__group label {
+  position    : absolute;
+  top         : 0;
+  left        : 0;
+  font-size   : 0.7rem;
+  font-weight : 500;
+  color       : var(--flv-primary);
+  pointer-events : none;
+  text-transform : uppercase;
+  letter-spacing : 0.08em;
+}
+
+.flv-input__content > p {
+  font-size  : 0.72rem;
+  color      : var(--flv-text-light);
+  margin-top : 0.15rem;
+}
+
+/* ── 7. DESTINATIONS → AIRCRAFT FLEET ───────────────────────────────── */
+.flv-destination__section {
+  border-top : 1px solid hsl(var(--border));
+}
+
+.flv-section__header-row {
+  display         : flex;
+  align-items     : flex-end;
+  justify-content : space-between;
+  flex-wrap       : wrap;
+  gap             : 1rem;
+  margin-bottom   : 2.5rem;
+}
+
+.flv-destination__grid {
+  display               : grid;
+  grid-template-columns : repeat(auto-fit, minmax(280px, 1fr));
+  gap                   : 1.5rem;
+}
+
+/* destination card */
+.flv-destination__card {
+  border-radius    : 1rem;
+  border           : 1px solid var(--flv-extra-light);
+  overflow         : hidden;
+  background-color : var(--flv-white);
+  box-shadow       : 5px 5px 30px rgba(0, 0, 0, 0.06);
+  transition       : transform 0.3s, box-shadow 0.3s;
+}
+
+.flv-destination__card:hover {
+  transform  : translateY(-4px);
+  box-shadow : 8px 8px 40px rgba(0, 0, 0, 0.12);
+}
+
+/* image wrapper */
+.flv-destination__image {
+  position : relative;
+  height   : 200px;
+  width    : 100%;
+  overflow : hidden;
+}
+
+.flv-destination__image img {
+  object-fit : cover;
+  transition : transform 0.4s;
+}
+
+.flv-destination__card:hover .flv-destination__image img {
+  transform : scale(1.05);
+}
+
+/* badge tag */
+.flv-destination__tag {
+  position         : absolute;
+  top              : 0.75rem;
+  left             : 0.75rem;
+  background-color : var(--flv-primary);
+  color            : var(--flv-white);
+  font-size        : 0.65rem;
+  font-weight      : 600;
+  text-transform   : uppercase;
+  letter-spacing   : 0.1em;
+  padding          : 0.2rem 0.6rem;
+  border-radius    : 2rem;
+  z-index          : 1;
+}
+
+/* body */
+.flv-destination__body {
+  padding : 1.25rem;
+}
+
+.flv-destination__name {
+  font-size   : 1.1rem;
+  font-weight : 600;
+  color       : var(--flv-text-dark);
+  margin-bottom: 0.2rem;
+}
+
+.flv-destination__sub {
+  font-size  : 0.72rem;
+  color      : var(--flv-text-light);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 0.9rem;
+}
+
+.flv-destination__specs {
+  display        : flex;
+  align-items    : center;
+  gap            : 1rem;
+  padding-top    : 0.75rem;
+  border-top     : 1px solid var(--flv-extra-light);
+  font-size      : 0.78rem;
+  color          : var(--flv-text-light);
+}
+
+.flv-destination__specs span {
+  display     : flex;
+  align-items : center;
+  gap         : 0.3rem;
+}
+
+.flv-destination__specs i {
+  color : var(--flv-primary);
+}
+
+/* ── 8. ABOUT SECTION ───────────────────────────────────────────────── */
+.flv-about__container {
+  display               : grid;
+  grid-template-columns : 1fr 1fr;
+  gap                   : 4rem;
+  align-items           : center;
+  border-top            : 1px solid hsl(var(--border));
+}
+
+@media (max-width: 768px) {
+  .flv-about__container { grid-template-columns: 1fr; gap: 2.5rem; }
+}
+
+/* image side */
+.flv-about__image-wrap {
+  position      : relative;
+  height        : 420px;
+  border-radius : 1rem;
+  overflow      : hidden;
+  box-shadow    : 5px 5px 30px rgba(0,0,0,0.1);
+}
+
+@media (max-width: 768px) {
+  .flv-about__image-wrap { height: 260px; }
+}
+
+/* text side */
+.flv-about__content .flv-section__header {
+  margin-bottom : 1.25rem;
+}
+
+.flv-about__text {
+  font-size    : 0.9rem;
+  color        : var(--flv-text-light);
+  line-height  : 1.8;
+  margin-bottom: 2rem;
+}
+
+/* stat strip */
+.flv-about__stats {
+  display               : grid;
+  grid-template-columns : repeat(auto-fit, minmax(80px, 1fr));
+  gap                   : 1rem;
+  margin-bottom         : 2rem;
+  padding               : 1.5rem;
+  background-color      : var(--flv-extra-light);
+  border-radius         : 1rem;
+}
+
+.flv-about__stat {
+  display        : flex;
+  flex-direction : column;
+  align-items    : center;
+  gap            : 0.2rem;
+}
+
+.flv-about__stat-count {
+  font-size   : 1.6rem;
+  font-weight : 700;
+  color       : var(--flv-primary);
+}
+
+.flv-about__stat-label {
+  font-size      : 0.62rem;
+  color          : var(--flv-text-light);
+  text-transform : uppercase;
+  letter-spacing : 0.1em;
+  text-align     : center;
+}
+
+/* capabilities grid */
+.flv-about__capabilities {
+  display               : grid;
+  grid-template-columns : repeat(3, 1fr);
+  gap                   : 1rem;
+}
+
+.flv-capability__card {
+  display         : flex;
+  flex-direction  : column;
+  align-items     : center;
+  justify-content : center;
+  gap             : 0.5rem;
+  padding         : 1.5rem 1rem;
+  border-radius   : 0.75rem;
+  border          : 1px solid var(--flv-extra-light);
+  background      : var(--flv-white);
+  cursor          : default;
+  transition      : border-color 0.25s, box-shadow 0.25s, transform 0.25s;
+  box-shadow      : 3px 3px 15px rgba(0, 0, 0, 0.04);
+}
+
+.flv-capability__card:hover {
+  border-color : var(--flv-primary);
+  transform    : translateY(-3px);
+  box-shadow   : 5px 8px 25px rgba(0, 0, 0, 0.08);
+}
+
+.flv-capability__card i {
+  font-size : 1.6rem;
+  color     : var(--flv-primary);
+}
+
+.flv-capability__card span {
+  font-size      : 0.72rem;
+  font-weight    : 500;
+  color          : var(--flv-text-light);
+  text-transform : uppercase;
+  letter-spacing : 0.1em;
+}
+
+/* ── 9. TESTIMONIALS ─────────────────────────────────────────────────── */
+.flv-testimonial__section {
+  border-top : 1px solid hsl(var(--border));
+}
+
+.flv-testimonial__header {
+  text-align    : center;
+  margin-bottom : 3rem;
+}
+
+.flv-testimonial__header .flv-section__header {
+  text-align : center;
+}
+
+.flv-testimonial__track {
+  max-width : 780px;
+  margin    : 0 auto;
+}
+
+.flv-testimonial__card {
+  background    : var(--flv-white);
+  border        : 1px solid var(--flv-extra-light);
+  border-radius : 1.5rem;
+  padding       : 2.5rem;
+  box-shadow    : 5px 5px 30px rgba(0, 0, 0, 0.07);
+  position      : relative;
+}
+
+.flv-testimonial__quote {
+  font-size  : 2.5rem;
+  color      : var(--flv-primary);
+  opacity    : 0.4;
+  line-height: 1;
+  display    : block;
+  margin-bottom: 1rem;
+}
+
+.flv-testimonial__text {
+  font-size   : 0.9rem;
+  line-height : 1.85;
+  color       : var(--flv-text-light);
+  margin-bottom: 1.75rem;
+  font-style  : italic;
+}
+
+.flv-testimonial__author {
+  display     : flex;
+  align-items : center;
+  gap         : 1rem;
+}
+
+.flv-testimonial__avatar {
+  width        : 56px;
+  height       : 56px;
+  border-radius: 50%;
+  overflow     : hidden;
+  border       : 2px solid var(--flv-primary);
+  flex-shrink  : 0;
+}
+
+.flv-testimonial__name {
+  font-size   : 0.9rem;
+  font-weight : 600;
+  color       : var(--flv-text-dark);
+}
+
+.flv-testimonial__role {
+  font-size      : 0.68rem;
+  color          : var(--flv-primary);
+  text-transform : uppercase;
+  letter-spacing : 0.1em;
+  margin-top     : 0.15rem;
+}
+
+/* dots */
+.flv-testimonial__dots {
+  display         : flex;
+  justify-content : center;
+  gap             : 0.5rem;
+  margin-top      : 1.75rem;
+}
+
+.flv-dot {
+  width         : 8px;
+  height        : 8px;
+  border-radius : 50%;
+  border        : none;
+  background    : #cbd5e1;
+  cursor        : pointer;
+  transition    : background 0.25s, transform 0.25s;
+}
+
+.flv-dot--active {
+  background : var(--flv-primary);
+  transform  : scale(1.3);
+}
+
+/* ── 10. SUBSCRIBE / SPONSORS SECTION ───────────────────────────────── */
+.flv-subscribe__section {
+  border-top : 1px solid hsl(var(--border));
+}
+
+.flv-subscribe__content {
+  text-align    : center;
+  margin-bottom : 2.5rem;
+}
+
+.flv-subscribe__content .flv-section__header {
+  text-align : center;
+}
+
+.flv-subscribe__text {
+  font-size   : 0.9rem;
+  color       : var(--flv-text-light);
+  max-width   : 520px;
+  margin      : 0.75rem auto 0;
+  line-height : 1.7;
+}
+
+.flv-subscribe__marquee {
+  opacity    : 0.75;
+  filter     : grayscale(1);
+  transition : opacity 0.4s, filter 0.4s;
+}
+
+.flv-subscribe__marquee:hover {
+  opacity : 1;
+  filter  : grayscale(0);
+}
+
+/* ── responsive tweaks ───────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .flv-section__container { padding: 3rem 1rem; }
+  .flv-header__container  { padding-top: 5.5rem; }
+  .flv-hero__img          { height: 280px; }
+  .flv-booking__container { padding: 1.5rem 1rem; }
+  .flv-booking__form      { flex-direction: column; }
+  .flv-form__group        { border-right: none; border-bottom: 1px solid var(--flv-extra-light); width: 100%; }
+  .flv-about__container   { grid-template-columns: 1fr; }
+  .flv-section__header    { font-size: 2rem; line-height: 2.5rem; }
+  .flv-header__container .flv-section__header { font-size: 2.2rem; line-height: 3rem; }
+}
+
+@layer utilities {
 }

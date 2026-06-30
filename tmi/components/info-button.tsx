@@ -32,6 +32,7 @@ export function InfoButton() {
       <Tooltip open={isOpen} onOpenChange={setIsOpen}>
         <TooltipTrigger asChild>
           <Button
+            suppressHydrationWarning
             className="fixed left-4 bottom-4 z-50 rounded-full p-2 hover:scale-110 transition-transform duration-200 hover:ring-2 hover:ring-[#DFBA73] hover:ring-opacity-50"
             size="icon"
             variant="outline"

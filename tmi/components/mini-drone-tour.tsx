@@ -132,7 +132,8 @@ export default function MiniDroneTour() {
                   Telemetry Feed
                 </span>
               </div>
-              <button 
+              <button
+                suppressHydrationWarning
                 onClick={() => setIsOpen(false)}
                 className="text-gray-400 hover:text-[#DFBA73] transition-colors p-0.5 rounded hover:bg-white/5"
               >
