@@ -292,6 +292,7 @@ export default function AdminPage() {
                   onChange={(e) => setPassword(e.target.value)}
                   className="border-border focus:border-[#DFBA73] h-11"
                   required
+                  suppressHydrationWarning
                 />
               </div>
               <Button type="submit" disabled={isLoading} className="w-full h-11 bg-[#DFBA73] hover:bg-[#c9a45e] text-white gap-1.5">
