@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { Trash2, Plus, LogIn, LogOut, ShieldAlert, Edit, Save, X, Layout, Users, Image as ImageIcon } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
+import { Trash2, Plus, LogIn, LogOut, ShieldAlert, Edit, Save, X, Layout, Users, Image as ImageIcon, Upload, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
@@ -65,6 +65,7 @@ export default function AdminPage() {
   const [mLinkedin, setMLinkedin] = useState("");
   const [mTeam, setMTeam] = useState("");
   const [mActive, setMActive] = useState(true);
+  const [isUploadingMember, setIsUploadingMember] = useState(false);
 
   const [editingMemberId, setEditingMemberId] = useState<number | null>(null);
   const [editingMemberType, setEditingMemberType] = useState<"faculty" | "founding" | "members">("members");
@@ -74,6 +75,7 @@ export default function AdminPage() {
   const [gYear, setGYear] = useState("2026");
   const [gSrc, setGSrc] = useState("");
   const [gAlt, setGAlt] = useState("");
+  const [isUploadingGallery, setIsUploadingGallery] = useState(false);
 
   // Announcements states
   const [posts, setPosts] = useState<Post[]>([]);
@@ -88,6 +90,10 @@ export default function AdminPage() {
 
   const [editingSectionId, setEditingSectionId] = useState<string | null>(null);
   const [editSectionDesc, setEditSectionDesc] = useState("");
+
+  // File input refs
+  const memberFileRef = useRef<HTMLInputElement>(null);
+  const galleryFileRef = useRef<HTMLInputElement>(null);
 
   const fetchPosts = async () => {
     try {
@@ -167,6 +173,57 @@ export default function AdminPage() {
         toast.success("Logged out successfully");
       }
     } catch (err) { toast.error("Logout failed"); }
+  };
+
+  /* ── FILE UPLOAD LOGIC ── */
+  const uploadFile = async (file: File): Promise<string | null> => {
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      const res = await fetch("/api/upload", {
+        method: "POST",
+        body: formData
+      });
+      const data = await res.json();
+      if (res.ok) {
+        return data.url;
+      } else {
+        toast.error(data.error || "Upload failed");
+        return null;
+      }
+    } catch (err) {
+      toast.error("Upload error. Check file size/type.");
+      return null;
+    }
+  };
+
+  const handleMemberPhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setIsUploadingMember(true);
+    const url = await uploadFile(file);
+    setIsUploadingMember(false);
+
+    if (url) {
+      setMImage(url);
+      toast.success("Photo uploaded successfully!");
+    }
+  };
+
+  const handleGalleryPhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setIsUploadingGallery(true);
+    const url = await uploadFile(file);
+    setIsUploadingGallery(false);
+
+    if (url) {
+      setGSrc(url);
+      toast.success("Image cataloged successfully!");
+    }
   };
 
   /* ── ANNOUNCEMENTS CRUD ── */
@@ -318,13 +375,14 @@ export default function AdminPage() {
   const clearMemberForm = () => {
     setEditingMemberId(null);
     setMName(""); setMRole(""); setMYear(""); setMImage(""); setMEmail(""); setMLinkedin(""); setMTeam(""); setMActive(true);
+    if (memberFileRef.current) memberFileRef.current.value = "";
   };
 
   /* ── GALLERY CRUD ── */
   const handleAddPhoto = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!gYear || !gSrc) {
-      toast.error("Year and Source are mandatory");
+      toast.error("Year and Image are mandatory");
       return;
     }
     setIsLoading(true);
@@ -337,6 +395,7 @@ export default function AdminPage() {
       if (res.ok) {
         toast.success("Photo added to catalog!");
         setGSrc(""); setGAlt("");
+        if (galleryFileRef.current) galleryFileRef.current.value = "";
         fetchGallery();
       } else {
         const data = await res.json();
@@ -463,7 +522,7 @@ export default function AdminPage() {
                     <div className="flex items-center justify-between border-b border-[#DFBA73]/20 pb-3">
                       <div className="flex items-center gap-2">
                         <Edit className="w-5 h-5 text-[#DFBA73]" />
-                        <h3 className="font-semibold text-lg text-foreground uppercase tracking-wider">
+                        <h3 className="font-semibold text-lg text-foreground uppercase tracking-wider font-sans">
                           Edit Announcement
                         </h3>
                       </div>
@@ -475,23 +534,23 @@ export default function AdminPage() {
                     <form onSubmit={handleSavePostEdit} className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div className="space-y-4">
                         <div className="space-y-1.5">
-                          <label htmlFor="edit-title" className="text-xs uppercase font-medium text-muted-foreground">Title</label>
+                          <label htmlFor="edit-title" className="text-xs uppercase font-medium text-muted-foreground font-sans">Title</label>
                           <Input
                             id="edit-title"
                             value={editTitle}
                             onChange={(e) => setEditTitle(e.target.value)}
-                            className="border-border focus:border-[#DFBA73] bg-white"
+                            className="border-border focus:border-[#DFBA73] bg-white font-sans text-xs"
                             required
                           />
                         </div>
 
                         <div className="space-y-1.5">
-                          <label htmlFor="edit-cat" className="text-xs uppercase font-medium text-muted-foreground">Category</label>
+                          <label htmlFor="edit-cat" className="text-xs uppercase font-medium text-muted-foreground font-sans">Category</label>
                           <select
                             id="edit-cat"
                             value={editCategory}
                             onChange={(e) => setEditCategory(e.target.value)}
-                            className="w-full h-10 px-3 rounded-md border border-border bg-white text-sm focus:outline-none focus:border-[#DFBA73]"
+                            className="w-full h-10 px-3 rounded-md border border-border bg-white text-xs font-sans focus:outline-none focus:border-[#DFBA73]"
                           >
                             {categories.map((cat) => (
                               <option key={cat} value={cat}>{cat}</option>
@@ -502,21 +561,21 @@ export default function AdminPage() {
 
                       <div className="space-y-4 flex flex-col justify-between">
                         <div className="space-y-1.5 flex-grow flex flex-col">
-                          <label htmlFor="edit-desc" className="text-xs uppercase font-medium text-muted-foreground">Description</label>
+                          <label htmlFor="edit-desc" className="text-xs uppercase font-medium text-muted-foreground font-sans">Description</label>
                           <textarea
                             id="edit-desc"
                             value={editDescription}
                             onChange={(e) => setEditDescription(e.target.value)}
-                            className="w-full p-3 flex-grow rounded-md border border-border bg-white text-sm focus:outline-none focus:border-[#DFBA73] min-h-[100px]"
+                            className="w-full p-3 flex-grow rounded-md border border-border bg-white text-xs font-sans focus:outline-none focus:border-[#DFBA73] min-h-[100px]"
                             required
                           />
                         </div>
 
                         <div className="flex gap-4">
-                          <Button type="button" variant="outline" onClick={() => setEditingPostId(null)} className="flex-1">
+                          <Button type="button" variant="outline" onClick={() => setEditingPostId(null)} className="flex-1 font-sans text-xs">
                             Cancel
                           </Button>
-                          <Button type="submit" disabled={isLoading} className="flex-grow bg-[#DFBA73] hover:bg-[#c9a45e] text-white">
+                          <Button type="submit" disabled={isLoading} className="flex-grow bg-[#DFBA73] hover:bg-[#c9a45e] text-white font-sans text-xs">
                             {isLoading ? "Saving..." : "Save Changes"}
                           </Button>
                         </div>
@@ -528,7 +587,7 @@ export default function AdminPage() {
                   <div className="bg-white border border-[#DFBA73]/20 p-6 sm:p-8 rounded-2xl shadow-md space-y-6">
                     <div className="flex items-center gap-2 border-b border-border pb-3">
                       <Plus className="w-5 h-5 text-[#DFBA73]" />
-                      <h3 className="font-semibold text-lg text-foreground uppercase tracking-wider">
+                      <h3 className="font-semibold text-lg text-foreground uppercase tracking-wider font-sans">
                         Publish New Forum Announcement
                       </h3>
                     </div>
@@ -536,24 +595,24 @@ export default function AdminPage() {
                     <form onSubmit={handleAddPost} className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div className="space-y-4">
                         <div className="space-y-1.5">
-                          <label htmlFor="adm-title" className="text-xs uppercase font-medium text-muted-foreground">Title</label>
+                          <label htmlFor="adm-title" className="text-xs uppercase font-medium text-muted-foreground font-sans">Title</label>
                           <Input
                             id="adm-title"
                             placeholder="e.g. Aerodynamics Design Bootcamp"
                             value={newTitle}
                             onChange={(e) => setNewTitle(e.target.value)}
-                            className="border-border focus:border-[#DFBA73]"
+                            className="border-border focus:border-[#DFBA73] font-sans text-xs"
                             required
                           />
                         </div>
 
                         <div className="space-y-1.5">
-                          <label htmlFor="adm-cat" className="text-xs uppercase font-medium text-muted-foreground">Category</label>
+                          <label htmlFor="adm-cat" className="text-xs uppercase font-medium text-muted-foreground font-sans">Category</label>
                           <select
                             id="adm-cat"
                             value={newCategory}
                             onChange={(e) => setNewCategory(e.target.value)}
-                            className="w-full h-10 px-3 rounded-md border border-border bg-white text-sm focus:outline-none focus:border-[#DFBA73]"
+                            className="w-full h-10 px-3 rounded-md border border-border bg-white text-xs font-sans focus:outline-none focus:border-[#DFBA73]"
                           >
                             {categories.map((cat) => (
                               <option key={cat} value={cat}>{cat}</option>
@@ -564,18 +623,18 @@ export default function AdminPage() {
 
                       <div className="space-y-4 flex flex-col justify-between">
                         <div className="space-y-1.5 flex-grow flex flex-col">
-                          <label htmlFor="adm-desc" className="text-xs uppercase font-medium text-muted-foreground">Description</label>
+                          <label htmlFor="adm-desc" className="text-xs uppercase font-medium text-muted-foreground font-sans">Description</label>
                           <textarea
                             id="adm-desc"
                             placeholder="Enter session or outreach event details..."
                             value={newDescription}
                             onChange={(e) => setNewDescription(e.target.value)}
-                            className="w-full p-3 flex-grow rounded-md border border-border bg-white text-sm focus:outline-none focus:border-[#DFBA73] min-h-[100px]"
+                            className="w-full p-3 flex-grow rounded-md border border-border bg-white text-xs font-sans focus:outline-none focus:border-[#DFBA73] min-h-[100px]"
                             required
                           />
                         </div>
 
-                        <Button type="submit" disabled={isLoading} className="w-full bg-[#DFBA73] hover:bg-[#c9a45e] text-white">
+                        <Button type="submit" disabled={isLoading} className="w-full bg-[#DFBA73] hover:bg-[#c9a45e] text-white font-sans text-xs">
                           {isLoading ? "Publishing..." : "Publish Announcement"}
                         </Button>
                       </div>
@@ -585,7 +644,7 @@ export default function AdminPage() {
 
                 {/* List of Existing Posts */}
                 <div className="space-y-4">
-                  <h3 className="font-semibold text-lg text-foreground uppercase tracking-wider border-b border-border pb-2">
+                  <h3 className="font-semibold text-lg text-foreground uppercase tracking-wider border-b border-border pb-2 font-sans">
                     Active Announcements ({posts.length})
                   </h3>
                   
@@ -598,7 +657,7 @@ export default function AdminPage() {
                               <span className="bg-[#DFBA73]/10 text-[#DFBA73] rounded-full px-2.5 py-0.5 text-[9px] font-bold uppercase tracking-widest font-sans">
                                 {post.category}
                               </span>
-                              <span className="text-[10px] text-muted-foreground">
+                              <span className="text-[10px] text-muted-foreground font-sans">
                                 {post.date}
                               </span>
                             </div>
@@ -621,7 +680,7 @@ export default function AdminPage() {
                         </div>
                       ))
                     ) : (
-                      <div className="rounded-xl border border-dashed border-border p-12 text-center text-muted-foreground text-xs uppercase tracking-wider">
+                      <div className="rounded-xl border border-dashed border-border p-12 text-center text-muted-foreground text-xs uppercase tracking-wider font-sans">
                         No Announcements published. Use form above to add one.
                       </div>
                     )}
@@ -636,11 +695,11 @@ export default function AdminPage() {
                 <div className="bg-white border border-[#DFBA73]/15 p-6 rounded-2xl shadow-md space-y-4">
                   <div className="flex items-center gap-2 border-b border-border pb-3">
                     <Layout className="w-5 h-5 text-[#DFBA73]" />
-                    <h3 className="font-semibold text-lg text-foreground uppercase tracking-wider">
+                    <h3 className="font-semibold text-lg text-foreground uppercase tracking-wider font-sans">
                       Edit Forum Category Descriptions
                     </h3>
                   </div>
-                  <p className="text-xs text-muted-foreground leading-relaxed">
+                  <p className="text-xs text-muted-foreground leading-relaxed font-sans">
                     Update the description text that appears under the main Workshop, Technical Sessions, Collaborative, and Outreach cards on the public page.
                   </p>
                 </div>
@@ -649,7 +708,7 @@ export default function AdminPage() {
                   {sections.map((section) => (
                     <div key={section.id} className="bg-white border border-border rounded-xl p-6 space-y-4 shadow-sm hover:border-[#DFBA73]/10 transition-all">
                       <div className="flex justify-between items-center border-b border-border/40 pb-2">
-                        <h4 className="font-bold text-foreground uppercase tracking-wider text-sm text-[#DFBA73]">
+                        <h4 className="font-bold text-foreground uppercase tracking-wider text-xs text-[#DFBA73] font-sans">
                           {section.title}
                         </h4>
                         
@@ -658,7 +717,7 @@ export default function AdminPage() {
                             variant="outline"
                             size="sm"
                             onClick={() => startEditSection(section)}
-                            className="gap-1.5 h-8 border-[#DFBA73]/30 text-[#DFBA73] hover:bg-[#DFBA73]/5"
+                            className="gap-1.5 h-8 border-[#DFBA73]/30 text-[#DFBA73] hover:bg-[#DFBA73]/5 font-sans text-xs"
                           >
                             <Edit className="w-3.5 h-3.5" /> Edit Description
                           </Button>
@@ -670,18 +729,18 @@ export default function AdminPage() {
                           <textarea
                             value={editSectionDesc}
                             onChange={(e) => setEditSectionDesc(e.target.value)}
-                            className="w-full p-3 rounded-md border border-border bg-white text-sm focus:outline-none focus:border-[#DFBA73] min-h-[80px]"
+                            className="w-full p-3 rounded-md border border-border bg-white text-xs font-sans focus:outline-none focus:border-[#DFBA73] min-h-[80px]"
                             required
                           />
                           <div className="flex justify-end gap-3">
-                            <Button size="sm" variant="outline" onClick={() => setEditingSectionId(null)} className="h-8">
+                            <Button size="sm" variant="outline" onClick={() => setEditingSectionId(null)} className="h-8 font-sans text-xs">
                               Cancel
                             </Button>
                             <Button
                               size="sm"
                               onClick={() => handleSaveSectionEdit(section.id)}
                               disabled={isLoading}
-                              className="h-8 bg-[#DFBA73] hover:bg-[#c9a45e] text-white gap-1"
+                              className="h-8 bg-[#DFBA73] hover:bg-[#c9a45e] text-white gap-1 font-sans text-xs"
                             >
                               <Save className="w-3.5 h-3.5" /> Save
                             </Button>
@@ -706,12 +765,12 @@ export default function AdminPage() {
                   <div className="flex items-center justify-between border-b border-border pb-3">
                     <div className="flex items-center gap-2">
                       <Users className="w-5 h-5 text-[#DFBA73]" />
-                      <h3 className="font-semibold text-lg text-foreground uppercase tracking-wider">
+                      <h3 className="font-semibold text-lg text-foreground uppercase tracking-wider font-sans">
                         {editingMemberId !== null ? "Edit Team Member" : "Add Team Member"}
                       </h3>
                     </div>
                     {editingMemberId !== null && (
-                      <Button variant="ghost" size="sm" onClick={clearMemberForm} className="h-8 text-muted-foreground">
+                      <Button variant="ghost" size="sm" onClick={clearMemberForm} className="h-8 text-muted-foreground font-sans text-xs">
                         Cancel Edit
                       </Button>
                     )}
@@ -720,13 +779,13 @@ export default function AdminPage() {
                   <form onSubmit={handleSaveMember} className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-4">
                       <div className="space-y-1.5">
-                        <label htmlFor="m-type" className="text-xs uppercase font-medium text-muted-foreground">List / Category</label>
+                        <label htmlFor="m-type" className="text-xs uppercase font-medium text-muted-foreground font-sans">List / Category</label>
                         <select
                           id="m-type"
                           value={memberType}
                           onChange={(e) => setMemberType(e.target.value as any)}
                           disabled={editingMemberId !== null}
-                          className="w-full h-10 px-3 rounded-md border border-border bg-white text-sm focus:outline-none focus:border-[#DFBA73] disabled:opacity-50"
+                          className="w-full h-10 px-3 rounded-md border border-border bg-white text-xs font-sans focus:outline-none focus:border-[#DFBA73] disabled:opacity-50"
                         >
                           <option value="members">General Members (Alumni & Students)</option>
                           <option value="faculty">Faculty Advisor</option>
@@ -735,34 +794,37 @@ export default function AdminPage() {
                       </div>
 
                       <div className="space-y-1.5">
-                        <label htmlFor="m-name" className="text-xs uppercase font-medium text-muted-foreground">Full Name</label>
+                        <label htmlFor="m-name" className="text-xs uppercase font-medium text-muted-foreground font-sans">Full Name</label>
                         <Input
                           id="m-name"
                           placeholder="e.g. Dwaipayan Dhar"
                           value={mName}
                           onChange={(e) => setMName(e.target.value)}
+                          className="font-sans text-xs"
                           required
                         />
                       </div>
 
                       <div className="space-y-1.5">
-                        <label htmlFor="m-role" className="text-xs uppercase font-medium text-muted-foreground">Role / Designation</label>
+                        <label htmlFor="m-role" className="text-xs uppercase font-medium text-muted-foreground font-sans">Role / Designation</label>
                         <Input
                           id="m-role"
                           placeholder="e.g. Ex-Managing Director"
                           value={mRole}
                           onChange={(e) => setMRole(e.target.value)}
+                          className="font-sans text-xs"
                           required
                         />
                       </div>
 
                       <div className="space-y-1.5">
-                        <label htmlFor="m-team" className="text-xs uppercase font-medium text-muted-foreground">Sub-Team / Department</label>
+                        <label htmlFor="m-team" className="text-xs uppercase font-medium text-muted-foreground font-sans">Sub-Team / Department</label>
                         <Input
                           id="m-team"
                           placeholder="e.g. Aerodynamics Team, Ex-Management, Directors"
                           value={mTeam}
                           onChange={(e) => setMTeam(e.target.value)}
+                          className="font-sans text-xs"
                         />
                       </div>
                     </div>
@@ -771,44 +833,82 @@ export default function AdminPage() {
                       <div className="space-y-4">
                         <div className="grid grid-cols-2 gap-4">
                           <div className="space-y-1.5">
-                            <label htmlFor="m-year" className="text-xs uppercase font-medium text-muted-foreground">Year / Batch</label>
+                            <label htmlFor="m-year" className="text-xs uppercase font-medium text-muted-foreground font-sans">Year / Batch</label>
                             <Input
                               id="m-year"
                               placeholder="e.g. 2026"
                               value={mYear}
                               onChange={(e) => setMYear(e.target.value)}
+                              className="font-sans text-xs"
                             />
                           </div>
 
+                          {/* Interactive File Upload Option */}
                           <div className="space-y-1.5">
-                            <label htmlFor="m-img" className="text-xs uppercase font-medium text-muted-foreground">Photo Path</label>
-                            <Input
-                              id="m-img"
-                              placeholder="/images/team/name.webp"
-                              value={mImage}
-                              onChange={(e) => setMImage(e.target.value)}
+                            <label className="text-xs uppercase font-medium text-muted-foreground font-sans">Upload Photo</label>
+                            <input
+                              type="file"
+                              accept="image/*"
+                              ref={memberFileRef}
+                              onChange={handleMemberPhotoUpload}
+                              className="hidden"
                             />
+                            <Button
+                              type="button"
+                              variant="outline"
+                              onClick={() => memberFileRef.current?.click()}
+                              disabled={isUploadingMember}
+                              className="w-full h-10 border-[#DFBA73]/30 text-[#DFBA73] hover:bg-[#DFBA73]/5 gap-1.5 font-sans text-xs"
+                            >
+                              {isUploadingMember ? (
+                                <>
+                                  <Loader2 className="w-3.5 h-3.5 animate-spin" /> Uploading...
+                                </>
+                              ) : (
+                                <>
+                                  <Upload className="w-3.5 h-3.5" /> Choose Image File
+                                </>
+                              )}
+                            </Button>
                           </div>
                         </div>
 
+                        {/* Image Preview Thumbnail */}
+                        {mImage && (
+                          <div className="flex items-center gap-3 bg-muted/40 p-2 rounded-lg border border-border">
+                            <div className="relative w-12 h-12 rounded-md overflow-hidden border border-border bg-white flex-shrink-0">
+                              <Image src={mImage} alt="Member preview" fill className="object-cover object-top" />
+                            </div>
+                            <div className="overflow-hidden">
+                              <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider font-sans">Photo Preview</p>
+                              <p className="text-[10px] text-foreground truncate font-sans">{mImage}</p>
+                            </div>
+                            <Button type="button" variant="ghost" size="icon" onClick={() => setMImage("")} className="h-7 w-7 text-destructive hover:bg-destructive/10 ml-auto">
+                              <X className="w-3.5 h-3.5" />
+                            </Button>
+                          </div>
+                        )}
+
                         <div className="grid grid-cols-2 gap-4">
                           <div className="space-y-1.5">
-                            <label htmlFor="m-email" className="text-xs uppercase font-medium text-muted-foreground">Email</label>
+                            <label htmlFor="m-email" className="text-xs uppercase font-medium text-muted-foreground font-sans">Email</label>
                             <Input
                               id="m-email"
                               placeholder="name@pccoepune.org"
                               value={mEmail}
                               onChange={(e) => setMEmail(e.target.value)}
+                              className="font-sans text-xs"
                             />
                           </div>
 
                           <div className="space-y-1.5">
-                            <label htmlFor="m-link" className="text-xs uppercase font-medium text-muted-foreground">LinkedIn</label>
+                            <label htmlFor="m-link" className="text-xs uppercase font-medium text-muted-foreground font-sans">LinkedIn</label>
                             <Input
                               id="m-link"
                               placeholder="https://linkedin.com/in/..."
                               value={mLinkedin}
                               onChange={(e) => setMLinkedin(e.target.value)}
+                              className="font-sans text-xs"
                             />
                           </div>
                         </div>
@@ -821,13 +921,13 @@ export default function AdminPage() {
                             onChange={(e) => setMActive(e.target.checked)}
                             className="rounded border-border text-[#DFBA73] focus:ring-[#DFBA73]"
                           />
-                          <label htmlFor="m-active" className="text-xs uppercase font-medium text-muted-foreground">
+                          <label htmlFor="m-active" className="text-xs uppercase font-medium text-muted-foreground font-sans">
                             Active Status (visible on page)
                           </label>
                         </div>
                       </div>
 
-                      <Button type="submit" disabled={isLoading} className="w-full bg-[#DFBA73] hover:bg-[#c9a45e] text-white">
+                      <Button type="submit" disabled={isLoading || isUploadingMember} className="w-full bg-[#DFBA73] hover:bg-[#c9a45e] text-white font-sans text-xs">
                         {isLoading ? "Saving Details..." : editingMemberId !== null ? "Update Team Member" : "Add to Roster"}
                       </Button>
                     </div>
@@ -836,13 +936,13 @@ export default function AdminPage() {
 
                 {/* Team roster lists preview */}
                 <div className="space-y-6">
-                  <h3 className="font-semibold text-lg text-foreground uppercase tracking-wider border-b border-border pb-2">
+                  <h3 className="font-semibold text-lg text-foreground uppercase tracking-wider border-b border-border pb-2 font-sans">
                     Current Team Directory
                   </h3>
 
                   {(["faculty", "founding", "members"] as const).map((type) => (
                     <div key={type} className="space-y-3">
-                      <h4 className="font-bold text-xs uppercase text-[#DFBA73] tracking-widest pl-2">
+                      <h4 className="font-bold text-xs uppercase text-[#DFBA73] tracking-widest pl-2 font-sans">
                         {type === "faculty" ? "Faculty Advisor List" : type === "founding" ? "Founding Board List" : "Members Directory"} ({roster[type]?.length || 0})
                       </h4>
 
@@ -855,9 +955,9 @@ export default function AdminPage() {
                                   <Image src={member.image || "/images/logo.png"} alt={member.name} fill className="object-cover object-top" />
                                 </div>
                                 <div>
-                                  <h5 className="font-bold text-xs text-foreground">{member.name}</h5>
-                                  <p className="text-[10px] text-muted-foreground font-medium">{member.role} {member.year && `• Batch ${member.year}`}</p>
-                                  <p className="text-[9px] text-[#DFBA73] uppercase tracking-wider font-semibold">{member.team}</p>
+                                  <h5 className="font-bold text-xs text-foreground font-sans">{member.name}</h5>
+                                  <p className="text-[10px] text-muted-foreground font-medium font-sans">{member.role} {member.year && `• Batch ${member.year}`}</p>
+                                  <p className="text-[9px] text-[#DFBA73] uppercase tracking-wider font-semibold font-sans">{member.team}</p>
                                 </div>
                               </div>
 
@@ -872,7 +972,7 @@ export default function AdminPage() {
                             </div>
                           ))
                         ) : (
-                          <div className="col-span-full py-6 text-center text-xs text-muted-foreground uppercase border border-dashed rounded-lg">
+                          <div className="col-span-full py-6 text-center text-xs text-muted-foreground uppercase border border-dashed rounded-lg font-sans">
                             No member entries found under this section.
                           </div>
                         )}
@@ -891,7 +991,7 @@ export default function AdminPage() {
                 <div className="bg-white border border-[#DFBA73]/20 p-6 sm:p-8 rounded-2xl shadow-md space-y-6">
                   <div className="flex items-center gap-2 border-b border-border pb-3">
                     <ImageIcon className="w-5 h-5 text-[#DFBA73]" />
-                    <h3 className="font-semibold text-lg text-foreground uppercase tracking-wider">
+                    <h3 className="font-semibold text-lg text-foreground uppercase tracking-wider font-sans">
                       Register Photo in Catalog
                     </h3>
                   </div>
@@ -899,12 +999,12 @@ export default function AdminPage() {
                   <form onSubmit={handleAddPhoto} className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-4">
                       <div className="space-y-1.5">
-                        <label htmlFor="g-year" className="text-xs uppercase font-medium text-muted-foreground">Year / Season</label>
+                        <label htmlFor="g-year" className="text-xs uppercase font-medium text-muted-foreground font-sans">Year / Season</label>
                         <select
                           id="g-year"
                           value={gYear}
                           onChange={(e) => setGYear(e.target.value)}
-                          className="w-full h-10 px-3 rounded-md border border-border bg-white text-sm focus:outline-none focus:border-[#DFBA73]"
+                          className="w-full h-10 px-3 rounded-md border border-border bg-white text-xs font-sans focus:outline-none focus:border-[#DFBA73]"
                         >
                           {["2026", "2025", "2024", "2023", "2022", "2021"].map((y) => (
                             <option key={y} value={y}>{y} Season</option>
@@ -912,30 +1012,65 @@ export default function AdminPage() {
                         </select>
                       </div>
 
+                      {/* Interactive File Upload Option */}
                       <div className="space-y-1.5">
-                        <label htmlFor="g-src" className="text-xs uppercase font-medium text-muted-foreground">Image Path / URL</label>
-                        <Input
-                          id="g-src"
-                          placeholder="e.g. /images/gallery/2026/image_15.webp"
-                          value={gSrc}
-                          onChange={(e) => setGSrc(e.target.value)}
-                          required
+                        <label className="text-xs uppercase font-medium text-muted-foreground font-sans">Upload Image</label>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          ref={galleryFileRef}
+                          onChange={handleGalleryPhotoUpload}
+                          className="hidden"
                         />
+                        <Button
+                          type="button"
+                          variant="outline"
+                          onClick={() => galleryFileRef.current?.click()}
+                          disabled={isUploadingGallery}
+                          className="w-full h-10 border-[#DFBA73]/30 text-[#DFBA73] hover:bg-[#DFBA73]/5 gap-1.5 font-sans text-xs"
+                        >
+                          {isUploadingGallery ? (
+                            <>
+                              <Loader2 className="w-3.5 h-3.5 animate-spin" /> Uploading...
+                            </>
+                          ) : (
+                            <>
+                              <Upload className="w-3.5 h-3.5" /> Choose Image File
+                            </>
+                          )}
+                        </Button>
                       </div>
                     </div>
 
                     <div className="space-y-4 flex flex-col justify-between">
                       <div className="space-y-1.5">
-                        <label htmlFor="g-alt" className="text-xs uppercase font-medium text-muted-foreground">Alt Text / Caption</label>
+                        <label htmlFor="g-alt" className="text-xs uppercase font-medium text-muted-foreground font-sans">Alt Text / Caption</label>
                         <Input
                           id="g-alt"
                           placeholder="e.g. PCCOE Shourya Takeoff Flight Test"
                           value={gAlt}
                           onChange={(e) => setGAlt(e.target.value)}
+                          className="font-sans text-xs"
                         />
                       </div>
 
-                      <Button type="submit" disabled={isLoading} className="w-full bg-[#DFBA73] hover:bg-[#c9a45e] text-white">
+                      {/* Image Preview Thumbnail */}
+                      {gSrc && (
+                        <div className="flex items-center gap-3 bg-muted/40 p-2 rounded-lg border border-border">
+                          <div className="relative w-16 aspect-video rounded-md overflow-hidden border border-border bg-white flex-shrink-0">
+                            <Image src={gSrc} alt="Gallery preview" fill className="object-cover" />
+                          </div>
+                          <div className="overflow-hidden">
+                            <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider font-sans">Image Preview</p>
+                            <p className="text-[10px] text-foreground truncate font-sans">{gSrc}</p>
+                          </div>
+                          <Button type="button" variant="ghost" size="icon" onClick={() => setGSrc("")} className="h-7 w-7 text-destructive hover:bg-destructive/10 ml-auto">
+                            <X className="w-3.5 h-3.5" />
+                          </Button>
+                        </div>
+                      )}
+
+                      <Button type="submit" disabled={isLoading || isUploadingGallery} className="w-full bg-[#DFBA73] hover:bg-[#c9a45e] text-white font-sans text-xs">
                         {isLoading ? "Publishing Photo..." : "Register Photo"}
                       </Button>
                     </div>
@@ -944,13 +1079,13 @@ export default function AdminPage() {
 
                 {/* Catalog lists grouped by year */}
                 <div className="space-y-6">
-                  <h3 className="font-semibold text-lg text-foreground uppercase tracking-wider border-b border-border pb-2">
+                  <h3 className="font-semibold text-lg text-foreground uppercase tracking-wider border-b border-border pb-2 font-sans">
                     Active Gallery Catalog
                   </h3>
 
                   {Object.keys(gallery).sort((a,b)=>Number(b)-Number(a)).map((year) => (
                     <div key={year} className="space-y-3">
-                      <h4 className="font-bold text-xs uppercase text-[#DFBA73] tracking-widest pl-2">
+                      <h4 className="font-bold text-xs uppercase text-[#DFBA73] tracking-widest pl-2 font-sans">
                         {year} Season Catalog ({gallery[year].length})
                       </h4>
 
