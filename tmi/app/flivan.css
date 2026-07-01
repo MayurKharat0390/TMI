@@ -92,13 +92,14 @@ nav {
   list-style  : none;
   display     : flex;
   align-items : center;
-  gap         : 2rem;
+  gap         : 1.2rem;
 }
 
 .link a {
   font-weight : 500;
   color       : var(--text-light);
   transition  : 0.3s;
+  white-space : nowrap;
 }
 
 .link a:hover { color: var(--text-dark); }
