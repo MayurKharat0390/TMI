@@ -53,7 +53,7 @@
 @layer base {
   * {
     @apply border-border;
-    font-family: var(--font-jost), sans-serif;
+    font-family: var(--font-poppins), sans-serif;
     font-optical-sizing: auto;
     font-style: normal;
   }

@@ -1,6 +1,6 @@
 import './globals.css';
 import type { Metadata } from 'next';
-import { Inter, Montserrat, Jost, Cormorant_Garamond } from 'next/font/google';
+import { Inter, Montserrat, Jost, Cormorant_Garamond, Poppins } from 'next/font/google';
 import { ThemeProvider } from '@/components/theme-provider';
 import { Navbar } from '@/components/navbar';
 import { Footer } from '@/components/footer';
@@ -25,6 +25,13 @@ const jost = Jost({
   subsets: ['latin'],
   display: 'swap',
   variable: '--font-jost',
+});
+
+const poppins = Poppins({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-poppins',
+  weight: ['300', '400', '500', '600', '700', '800'],
 });
 
 const cormorantGaramond = Cormorant_Garamond({
@@ -58,7 +65,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head />
-      <body className={`${inter.className} ${montserrat.variable} ${jost.variable} ${cormorantGaramond.variable}`}>
+      <body className={`${inter.className} ${montserrat.variable} ${jost.variable} ${poppins.variable} ${cormorantGaramond.variable}`}>
         <ThemeProvider
           attribute="class"
           defaultTheme="light"
