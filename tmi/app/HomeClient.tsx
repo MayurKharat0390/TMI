@@ -22,8 +22,8 @@ export default function Home() {
           Design And Build<br />A Smarter Tomorrow
         </h1>
         <img
-          src="/images/home/header.jpg"
-          alt="Team Maverick India Plane"
+          src="/images/planes/shourya.webp"
+          alt="Team Maverick India UAV"
         />
       </header>
 
