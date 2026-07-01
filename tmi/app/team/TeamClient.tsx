@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import dynamic from 'next/dynamic';
@@ -8,35 +8,85 @@ import dynamic from 'next/dynamic';
 const StarryBackground = dynamic(() => import('@/components/StarryBackground'), { ssr: false });
 const MemberCard = dynamic(() => import('./MemberCard'), { ssr: true });
 
-import teamData from "@/data/team.json";
+interface Member {
+  id: number;
+  name: string;
+  role: string;
+  year: string;
+  image: string;
+  email?: string;
+  linkedin?: string;
+  active: boolean;
+  team: string;
+}
 
-const teamMembers = teamData.members;
-const foundingTeam = teamData.founding;
-const Faculty = teamData.faculty;
+interface TeamData {
+  faculty: Member[];
+  founding: Member[];
+  members: Member[];
+}
 
 export default function TeamsPage() {
+  const [teamData, setTeamData] = useState<TeamData>({ faculty: [], founding: [], members: [] });
+  const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState("");
+  const [selectedRole, setSelectedRole] = useState("all");
+  const [selectedYear, setSelectedYear] = useState("");
+
+  const fetchTeamData = async () => {
+    try {
+      const res = await fetch("/api/team/members");
+      if (res.ok) {
+        const data = await res.json();
+        setTeamData(data);
+        
+        // Calculate years list
+        const yearsList = Array.from(
+          new Set(
+            (data.members || [])
+              .map((m: Member) => m.year)
+              .filter((y: string) => y && y !== "")
+          )
+        );
+
+        if (yearsList.length > 0) {
+          const maxYear = Math.max(...yearsList.map(y => Number(y))).toString();
+          setSelectedYear(maxYear);
+        }
+      }
+    } catch (e) {
+      console.error("Failed to load roster", e);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchTeamData();
+  }, []);
+
   const years = Array.from(
     new Set(
-      teamData.members
+      (teamData.members || [])
         .map(member => member.year)
         .filter(year => year && year !== "")
     )
+  ).sort((a, b) => Number(b) - Number(a));
+
+  const latestYear = years.length > 0 ? years[0] : "";
+
+  const roles = Array.from(
+    new Set([
+      ...(teamData.members || []).map(member => member.role),
+      "Managing Director",
+      "Executive Director"
+    ])
   );
 
-  const latestYear = Math.max(
-    ...years.map(year => Number(year))
-  ).toString();
-
-  const [search, setSearch] = useState("");
-  const [selectedRole, setSelectedRole] = useState("all");
-  const [selectedYear, setSelectedYear] = useState(latestYear);
-
-  const roles = Array.from(new Set([...teamMembers.map(member => member.role), "Managing Director", "Executive Director"]));
-
-  const filteredMembers = teamData.members.filter(member => {
+  const filteredMembers = (teamData.members || []).filter(member => {
     const matchesSearch = search
       ? member.name.toLowerCase().includes(search.toLowerCase()) ||
-      member.role.toLowerCase().includes(search.toLowerCase())
+        member.role.toLowerCase().includes(search.toLowerCase())
       : true;
 
     const matchesRole =
@@ -51,16 +101,25 @@ export default function TeamsPage() {
   });
 
   const showFoundingMembers = !search && selectedRole === "all" && selectedYear === latestYear;
-  const filteredFoundingMembers = showFoundingMembers ? foundingTeam : [];
+  const filteredFoundingMembers = showFoundingMembers ? teamData.founding : [];
 
   const showFacultyMembers = !search && selectedRole === "all" && selectedYear === latestYear;
-  const filteredFacultyMembers = showFacultyMembers ? Faculty : [];
+  const filteredFacultyMembers = showFacultyMembers ? teamData.faculty : [];
 
-  const categorizedMembers = filteredMembers.reduce<Record<string, typeof teamMembers>>((acc, member) => {
+  const categorizedMembers = filteredMembers.reduce<Record<string, Member[]>>((acc, member) => {
     if (!acc[member.team]) acc[member.team] = [];
     acc[member.team].push(member);
     return acc;
   }, {});
+
+  if (loading) {
+    return (
+      <div className="pt-40 pb-20 min-h-screen bg-background flex flex-col items-center justify-center space-y-3">
+        <div className="w-8 h-8 rounded-full border-2 border-[#DFBA73] border-t-transparent animate-spin" />
+        <p className="text-xs uppercase tracking-widest text-[#DFBA73]">Loading Team Roster...</p>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -138,7 +197,7 @@ export default function TeamsPage() {
 
                 if (isCurrentManagementTeam) {
                   badge = "Current Leadership";
-                } else if (selectedYear === "2028") {
+                } else if (selectedYear === latestYear) {
                   badge = "Active Members";
                 } else if (team === "Ex-Management") {
                   badge = "Alumni Board";
@@ -153,7 +212,7 @@ export default function TeamsPage() {
               })
           ) : (
             <div className="text-center text-xl text-muted-foreground tracking-wider font-semibold py-12">
-              No matching wolves found in this hangar.
+              No matching members found in this hangar.
             </div>
           )}
 
@@ -163,7 +222,7 @@ export default function TeamsPage() {
   );
 }
 
-function Section({ title, badge, members }: { title: string; badge?: string; members: typeof teamMembers }) {
+function Section({ title, badge, members }: { title: string; badge?: string; members: Member[] }) {
   return (
     <div className="mb-20">
       <div className="text-center mb-12">
