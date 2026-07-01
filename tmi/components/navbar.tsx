@@ -6,12 +6,14 @@ import Image from "next/image";
 import "../app/flivan.css";
 
 const navLinks = [
-  { href: "/",         label: "Home"     },
-  { href: "/planes",   label: "Planes"   },
-  { href: "/team",     label: "Team"     },
-  { href: "/gallery",  label: "Gallery"  },
+  { href: "/",         label: "Home"       },
+  { href: "/planes",   label: "Planes"     },
+  { href: "/team",     label: "Team"       },
+  { href: "/gallery",  label: "Gallery"    },
+  { href: "/forum",    label: "Forum"      },
   { href: "/sponsors", label: "Sponsors" },
-  { href: "/contact",  label: "Contact"  },
+  { href: "/support_us", label: "Support Us" },
+  { href: "/contact",  label: "Contact"    },
 ];
 
 export function Navbar() {
