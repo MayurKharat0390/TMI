@@ -1,16 +1,1 @@
-[
-  {
-    "id": "1",
-    "title": "Unmanned Systems Design Workshop",
-    "category": "Workshops",
-    "date": "2026-07-15",
-    "description": "Learn the fundamentals of aerodynamic simulation, CAD modeling, and carbon-fiber fabrication techniques from our design team leads."
-  },
-  {
-    "id": "2",
-    "title": "Composite Layup Practical Session",
-    "category": "Technical Sessions",
-    "date": "2026-08-02",
-    "description": "A hands-on technical session on manufacturing airfoils with lightweight fiberglass and vacuum bagging setups."
-  }
-]
+[]
