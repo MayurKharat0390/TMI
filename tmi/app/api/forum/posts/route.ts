@@ -109,3 +109,42 @@ export async function DELETE(request: Request) {
     return NextResponse.json({ error: 'Server error' }, { status: 500 });
   }
 }
+
+// PUT handler — updates an existing post (Admin only)
+export async function PUT(request: Request) {
+  try {
+    if (!await isAuthenticated()) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const ip = getClientIp(request);
+    const rateLimitResult = rateLimiter(ip, 20, 60000);
+    if (!rateLimitResult.success) {
+      return NextResponse.json({ error: 'Too many edits. Please slow down.' }, { status: 429 });
+    }
+
+    const { id, title, category, description } = await request.json();
+
+    if (!id || !title || !category || !description) {
+      return NextResponse.json({ error: 'Missing parameters' }, { status: 400 });
+    }
+
+    const posts = await readPosts();
+    const postIndex = posts.findIndex((post: any) => post.id === id);
+
+    if (postIndex === -1) {
+      return NextResponse.json({ error: 'Post not found' }, { status: 404 });
+    }
+
+    // Update fields
+    posts[postIndex].title = title.trim().substring(0, 100);
+    posts[postIndex].category = category.trim().substring(0, 50);
+    posts[postIndex].description = description.trim().substring(0, 1000);
+
+    await writePosts(posts);
+    return NextResponse.json({ success: true, post: posts[postIndex] });
+  } catch (error) {
+    console.error('Forum post update error:', error);
+    return NextResponse.json({ error: 'Server error' }, { status: 500 });
+  }
+}

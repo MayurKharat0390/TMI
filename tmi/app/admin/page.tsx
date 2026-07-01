@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Trash2, Plus, LogIn, LogOut, ShieldAlert, Award, FileText } from "lucide-react";
+import { Trash2, Plus, LogIn, LogOut, ShieldAlert, Edit, Save, X, Layout } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
@@ -16,18 +16,35 @@ interface Post {
   description: string;
 }
 
+interface Section {
+  id: string;
+  title: string;
+  description: string;
+}
+
 const categories = ["Workshops", "Technical Sessions", "Collaborative Events", "Outreach Programs"];
 
 export default function AdminPage() {
   const [posts, setPosts] = useState<Post[]>([]);
+  const [sections, setSections] = useState<Section[]>([]);
   const [isAdmin, setIsAdmin] = useState(false);
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [activeTab, setActiveTab] = useState<"posts" | "categories">("posts");
 
   // New post form fields
   const [newTitle, setNewTitle] = useState("");
   const [newCategory, setNewCategory] = useState("Workshops");
   const [newDescription, setNewDescription] = useState("");
+
+  // Editing states
+  const [editingPostId, setEditingPostId] = useState<string | null>(null);
+  const [editTitle, setEditTitle] = useState("");
+  const [editCategory, setEditCategory] = useState("Workshops");
+  const [editDescription, setEditDescription] = useState("");
+
+  const [editingSectionId, setEditingSectionId] = useState<string | null>(null);
+  const [editSectionDesc, setEditSectionDesc] = useState("");
 
   const fetchPosts = async () => {
     try {
@@ -35,6 +52,18 @@ export default function AdminPage() {
       if (res.ok) {
         const data = await res.json();
         setPosts(data);
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const fetchSections = async () => {
+    try {
+      const res = await fetch("/api/forum/sections");
+      if (res.ok) {
+        const data = await res.json();
+        setSections(data);
       }
     } catch (e) {
       console.error(e);
@@ -55,6 +84,7 @@ export default function AdminPage() {
 
   useEffect(() => {
     fetchPosts();
+    fetchSections();
     checkAuth();
   }, []);
 
@@ -113,7 +143,7 @@ export default function AdminPage() {
       });
       const data = await res.json();
       if (res.ok) {
-        toast.success("Announcement published successfully!");
+        toast.success("Announcement published!");
         setNewTitle("");
         setNewDescription("");
         fetchPosts();
@@ -122,6 +152,43 @@ export default function AdminPage() {
       }
     } catch (err) {
       toast.error("Error creating post");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const startEditPost = (post: Post) => {
+    setEditingPostId(post.id);
+    setEditTitle(post.title);
+    setEditCategory(post.category);
+    setEditDescription(post.description);
+  };
+
+  const handleSavePostEdit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editTitle || !editDescription || !editingPostId) return;
+    setIsLoading(true);
+    try {
+      const res = await fetch("/api/forum/posts", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: editingPostId,
+          title: editTitle,
+          category: editCategory,
+          description: editDescription
+        })
+      });
+      const data = await res.json();
+      if (res.ok) {
+        toast.success("Announcement updated successfully!");
+        setEditingPostId(null);
+        fetchPosts();
+      } else {
+        toast.error(data.error || "Failed to update");
+      }
+    } catch (e) {
+      toast.error("Error updating announcement");
     } finally {
       setIsLoading(false);
     }
@@ -142,6 +209,38 @@ export default function AdminPage() {
       }
     } catch (err) {
       toast.error("Error deleting post");
+    }
+  };
+
+  const startEditSection = (section: Section) => {
+    setEditingSectionId(section.id);
+    setEditSectionDesc(section.description);
+  };
+
+  const handleSaveSectionEdit = async (id: string) => {
+    if (!editSectionDesc || !id) return;
+    setIsLoading(true);
+    try {
+      const res = await fetch("/api/forum/sections", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id,
+          description: editSectionDesc
+        })
+      });
+      if (res.ok) {
+        toast.success("Category description updated!");
+        setEditingSectionId(null);
+        fetchSections();
+      } else {
+        const data = await res.json();
+        toast.error(data.error || "Failed to update description");
+      }
+    } catch (e) {
+      toast.error("Error updating description");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -218,108 +317,286 @@ export default function AdminPage() {
               </Button>
             </div>
 
-            {/* Creation Form */}
-            <div className="bg-white border border-[#DFBA73]/20 p-6 sm:p-8 rounded-2xl shadow-md space-y-6">
-              <div className="flex items-center gap-2 border-b border-border pb-3">
-                <Plus className="w-5 h-5 text-[#DFBA73]" />
-                <h3 className="font-semibold text-lg text-foreground uppercase tracking-wider">
-                  Publish New Forum Announcement
-                </h3>
-              </div>
-
-              <form onSubmit={handleAddPost} className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-4">
-                  <div className="space-y-1.5">
-                    <label htmlFor="adm-title" className="text-xs uppercase font-medium text-muted-foreground">Title</label>
-                    <Input
-                      id="adm-title"
-                      placeholder="e.g. Aerodynamics Design Bootcamp"
-                      value={newTitle}
-                      onChange={(e) => setNewTitle(e.target.value)}
-                      className="border-border focus:border-[#DFBA73]"
-                      required
-                    />
-                  </div>
-
-                  <div className="space-y-1.5">
-                    <label htmlFor="adm-cat" className="text-xs uppercase font-medium text-muted-foreground">Category</label>
-                    <select
-                      id="adm-cat"
-                      value={newCategory}
-                      onChange={(e) => setNewCategory(e.target.value)}
-                      className="w-full h-10 px-3 rounded-md border border-border bg-white text-sm focus:outline-none focus:border-[#DFBA73]"
-                    >
-                      {categories.map((cat) => (
-                        <option key={cat} value={cat}>{cat}</option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
-
-                <div className="space-y-4 flex flex-col justify-between">
-                  <div className="space-y-1.5 flex-grow flex flex-col">
-                    <label htmlFor="adm-desc" className="text-xs uppercase font-medium text-muted-foreground">Description</label>
-                    <textarea
-                      id="adm-desc"
-                      placeholder="Enter session or outreach event details..."
-                      value={newDescription}
-                      onChange={(e) => setNewDescription(e.target.value)}
-                      className="w-full p-3 flex-grow rounded-md border border-border bg-white text-sm focus:outline-none focus:border-[#DFBA73] min-h-[100px]"
-                      required
-                    />
-                  </div>
-
-                  <Button type="submit" disabled={isLoading} className="w-full bg-[#DFBA73] hover:bg-[#c9a45e] text-white">
-                    {isLoading ? "Publishing..." : "Publish Announcement"}
-                  </Button>
-                </div>
-              </form>
+            {/* Navigation Tabs */}
+            <div className="flex border-b border-border gap-6">
+              <button
+                onClick={() => setActiveTab("posts")}
+                className={cn(
+                  "pb-3 text-sm font-bold uppercase tracking-wider transition-all border-b-2",
+                  activeTab === "posts"
+                    ? "border-[#DFBA73] text-[#DFBA73]"
+                    : "border-transparent text-muted-foreground hover:text-foreground"
+                )}
+              >
+                Announcements
+              </button>
+              <button
+                onClick={() => setActiveTab("categories")}
+                className={cn(
+                  "pb-3 text-sm font-bold uppercase tracking-wider transition-all border-b-2",
+                  activeTab === "categories"
+                    ? "border-[#DFBA73] text-[#DFBA73]"
+                    : "border-transparent text-muted-foreground hover:text-foreground"
+                )}
+              >
+                Forum Categories
+              </button>
             </div>
 
-            {/* List of Existing Posts */}
-            <div className="space-y-4">
-              <h3 className="font-semibold text-lg text-foreground uppercase tracking-wider border-b border-border pb-2">
-                Active Announcements ({posts.length})
-              </h3>
-              
-              <div className="space-y-4">
-                {posts.length > 0 ? (
-                  posts.map((post) => (
-                    <div key={post.id} className="bg-white border border-border rounded-xl p-5 flex justify-between items-start gap-4 hover:border-[#DFBA73]/20 transition-all shadow-sm">
-                      <div className="space-y-1.5 flex-grow">
-                        <div className="flex flex-wrap items-center gap-2">
-                          <span className="bg-[#DFBA73]/10 text-[#DFBA73] rounded-full px-2.5 py-0.5 text-[9px] font-bold uppercase tracking-widest">
-                            {post.category}
-                          </span>
-                          <span className="text-[10px] text-muted-foreground">
-                            {post.date}
-                          </span>
-                        </div>
-                        <h4 className="font-bold text-foreground tracking-wide text-base">
-                          {post.title}
-                        </h4>
-                        <p className="text-muted-foreground text-xs leading-relaxed">
-                          {post.description}
-                        </p>
+            {/* ──────── TAB 1: ANNOUNCEMENTS ──────── */}
+            {activeTab === "posts" && (
+              <div className="space-y-10">
+                {/* Creation Form / Editing Form */}
+                {editingPostId ? (
+                  /* Editing Post Form */
+                  <div className="bg-[#DFBA73]/5 border border-[#DFBA73]/30 p-6 sm:p-8 rounded-2xl shadow-md space-y-6">
+                    <div className="flex items-center justify-between border-b border-[#DFBA73]/20 pb-3">
+                      <div className="flex items-center gap-2">
+                        <Edit className="w-5 h-5 text-[#DFBA73]" />
+                        <h3 className="font-semibold text-lg text-foreground uppercase tracking-wider">
+                          Edit Announcement
+                        </h3>
                       </div>
-
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => handleDeletePost(post.id)}
-                        className="text-destructive hover:bg-destructive/10 hover:text-destructive h-9 w-9 flex-shrink-0"
-                      >
-                        <Trash2 className="w-4 h-4" />
+                      <Button variant="ghost" size="icon" onClick={() => setEditingPostId(null)} className="h-8 w-8 text-muted-foreground hover:text-foreground">
+                        <X className="w-4 h-4" />
                       </Button>
                     </div>
-                  ))
+
+                    <form onSubmit={handleSavePostEdit} className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="space-y-4">
+                        <div className="space-y-1.5">
+                          <label htmlFor="edit-title" className="text-xs uppercase font-medium text-muted-foreground">Title</label>
+                          <Input
+                            id="edit-title"
+                            value={editTitle}
+                            onChange={(e) => setEditTitle(e.target.value)}
+                            className="border-border focus:border-[#DFBA73] bg-white"
+                            required
+                          />
+                        </div>
+
+                        <div className="space-y-1.5">
+                          <label htmlFor="edit-cat" className="text-xs uppercase font-medium text-muted-foreground">Category</label>
+                          <select
+                            id="edit-cat"
+                            value={editCategory}
+                            onChange={(e) => setEditCategory(e.target.value)}
+                            className="w-full h-10 px-3 rounded-md border border-border bg-white text-sm focus:outline-none focus:border-[#DFBA73]"
+                          >
+                            {categories.map((cat) => (
+                              <option key={cat} value={cat}>{cat}</option>
+                            ))}
+                          </select>
+                        </div>
+                      </div>
+
+                      <div className="space-y-4 flex flex-col justify-between">
+                        <div className="space-y-1.5 flex-grow flex flex-col">
+                          <label htmlFor="edit-desc" className="text-xs uppercase font-medium text-muted-foreground">Description</label>
+                          <textarea
+                            id="edit-desc"
+                            value={editDescription}
+                            onChange={(e) => setEditDescription(e.target.value)}
+                            className="w-full p-3 flex-grow rounded-md border border-border bg-white text-sm focus:outline-none focus:border-[#DFBA73] min-h-[100px]"
+                            required
+                          />
+                        </div>
+
+                        <div className="flex gap-4">
+                          <Button type="button" variant="outline" onClick={() => setEditingPostId(null)} className="flex-1">
+                            Cancel
+                          </Button>
+                          <Button type="submit" disabled={isLoading} className="flex-grow bg-[#DFBA73] hover:bg-[#c9a45e] text-white">
+                            {isLoading ? "Saving..." : "Save Changes"}
+                          </Button>
+                        </div>
+                      </div>
+                    </form>
+                  </div>
                 ) : (
-                  <div className="rounded-xl border border-dashed border-border p-12 text-center text-muted-foreground text-xs uppercase tracking-wider">
-                    No Announcements published. Use form above to add one.
+                  /* Creation Form */
+                  <div className="bg-white border border-[#DFBA73]/20 p-6 sm:p-8 rounded-2xl shadow-md space-y-6">
+                    <div className="flex items-center gap-2 border-b border-border pb-3">
+                      <Plus className="w-5 h-5 text-[#DFBA73]" />
+                      <h3 className="font-semibold text-lg text-foreground uppercase tracking-wider">
+                        Publish New Forum Announcement
+                      </h3>
+                    </div>
+
+                    <form onSubmit={handleAddPost} className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="space-y-4">
+                        <div className="space-y-1.5">
+                          <label htmlFor="adm-title" className="text-xs uppercase font-medium text-muted-foreground">Title</label>
+                          <Input
+                            id="adm-title"
+                            placeholder="e.g. Aerodynamics Design Bootcamp"
+                            value={newTitle}
+                            onChange={(e) => setNewTitle(e.target.value)}
+                            className="border-border focus:border-[#DFBA73]"
+                            required
+                          />
+                        </div>
+
+                        <div className="space-y-1.5">
+                          <label htmlFor="adm-cat" className="text-xs uppercase font-medium text-muted-foreground">Category</label>
+                          <select
+                            id="adm-cat"
+                            value={newCategory}
+                            onChange={(e) => setNewCategory(e.target.value)}
+                            className="w-full h-10 px-3 rounded-md border border-border bg-white text-sm focus:outline-none focus:border-[#DFBA73]"
+                          >
+                            {categories.map((cat) => (
+                              <option key={cat} value={cat}>{cat}</option>
+                            ))}
+                          </select>
+                        </div>
+                      </div>
+
+                      <div className="space-y-4 flex flex-col justify-between">
+                        <div className="space-y-1.5 flex-grow flex flex-col">
+                          <label htmlFor="adm-desc" className="text-xs uppercase font-medium text-muted-foreground">Description</label>
+                          <textarea
+                            id="adm-desc"
+                            placeholder="Enter session or outreach event details..."
+                            value={newDescription}
+                            onChange={(e) => setNewDescription(e.target.value)}
+                            className="w-full p-3 flex-grow rounded-md border border-border bg-white text-sm focus:outline-none focus:border-[#DFBA73] min-h-[100px]"
+                            required
+                          />
+                        </div>
+
+                        <Button type="submit" disabled={isLoading} className="w-full bg-[#DFBA73] hover:bg-[#c9a45e] text-white">
+                          {isLoading ? "Publishing..." : "Publish Announcement"}
+                        </Button>
+                      </div>
+                    </form>
                   </div>
                 )}
+
+                {/* List of Existing Posts */}
+                <div className="space-y-4">
+                  <h3 className="font-semibold text-lg text-foreground uppercase tracking-wider border-b border-border pb-2">
+                    Active Announcements ({posts.length})
+                  </h3>
+                  
+                  <div className="space-y-4">
+                    {posts.length > 0 ? (
+                      posts.map((post) => (
+                        <div key={post.id} className="bg-white border border-border rounded-xl p-5 flex justify-between items-start gap-4 hover:border-[#DFBA73]/20 transition-all shadow-sm">
+                          <div className="space-y-1.5 flex-grow">
+                            <div className="flex flex-wrap items-center gap-2">
+                              <span className="bg-[#DFBA73]/10 text-[#DFBA73] rounded-full px-2.5 py-0.5 text-[9px] font-bold uppercase tracking-widest">
+                                {post.category}
+                              </span>
+                              <span className="text-[10px] text-muted-foreground">
+                                {post.date}
+                              </span>
+                            </div>
+                            <h4 className="font-bold text-foreground tracking-wide text-base">
+                              {post.title}
+                            </h4>
+                            <p className="text-muted-foreground text-xs leading-relaxed text-justify">
+                              {post.description}
+                            </p>
+                          </div>
+
+                          <div className="flex flex-col gap-2 flex-shrink-0">
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => startEditPost(post)}
+                              className="text-foreground hover:bg-[#DFBA73]/10 hover:text-[#DFBA73] h-9 w-9"
+                            >
+                              <Edit className="w-4 h-4" />
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => handleDeletePost(post.id)}
+                              className="text-destructive hover:bg-destructive/10 hover:text-destructive h-9 w-9"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </Button>
+                          </div>
+                        </div>
+                      ))
+                    ) : (
+                      <div className="rounded-xl border border-dashed border-border p-12 text-center text-muted-foreground text-xs uppercase tracking-wider">
+                        No Announcements published. Use form above to add one.
+                      </div>
+                    )}
+                  </div>
+                </div>
               </div>
-            </div>
+            )}
+
+            {/* ──────── TAB 2: CATEGORIES ──────── */}
+            {activeTab === "categories" && (
+              <div className="space-y-6">
+                <div className="bg-white border border-[#DFBA73]/15 p-6 rounded-2xl shadow-md space-y-4">
+                  <div className="flex items-center gap-2 border-b border-border pb-3">
+                    <Layout className="w-5 h-5 text-[#DFBA73]" />
+                    <h3 className="font-semibold text-lg text-foreground uppercase tracking-wider">
+                      Edit Forum Category Descriptions
+                    </h3>
+                  </div>
+                  <p className="text-xs text-muted-foreground leading-relaxed">
+                    Update the description text that appears under the main Workshop, Technical Sessions, Collaborative, and Outreach cards on the public page.
+                  </p>
+                </div>
+
+                <div className="space-y-4">
+                  {sections.map((section) => (
+                    <div key={section.id} className="bg-white border border-border rounded-xl p-6 space-y-4 shadow-sm hover:border-[#DFBA73]/10 transition-all">
+                      <div className="flex justify-between items-center border-b border-border/40 pb-2">
+                        <h4 className="font-bold text-foreground uppercase tracking-wider text-sm text-[#DFBA73]">
+                          {section.title}
+                        </h4>
+                        
+                        {editingSectionId !== section.id && (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => startEditSection(section)}
+                            className="gap-1.5 h-8 border-[#DFBA73]/30 text-[#DFBA73] hover:bg-[#DFBA73]/5"
+                          >
+                            <Edit className="w-3.5 h-3.5" /> Edit Description
+                          </Button>
+                        )}
+                      </div>
+
+                      {editingSectionId === section.id ? (
+                        <div className="space-y-3 pt-2">
+                          <textarea
+                            value={editSectionDesc}
+                            onChange={(e) => setEditSectionDesc(e.target.value)}
+                            className="w-full p-3 rounded-md border border-border bg-white text-sm focus:outline-none focus:border-[#DFBA73] min-h-[80px]"
+                            required
+                          />
+                          <div className="flex justify-end gap-3">
+                            <Button size="sm" variant="outline" onClick={() => setEditingSectionId(null)} className="h-8">
+                              Cancel
+                            </Button>
+                            <Button
+                              size="sm"
+                              onClick={() => handleSaveSectionEdit(section.id)}
+                              disabled={isLoading}
+                              className="h-8 bg-[#DFBA73] hover:bg-[#c9a45e] text-white gap-1"
+                            >
+                              <Save className="w-3.5 h-3.5" /> Save
+                            </Button>
+                          </div>
+                        </div>
+                      ) : (
+                        <p className="text-muted-foreground text-xs leading-relaxed">
+                          {section.description || "No description set. Displays dynamic fallback or default Coming Soon."}
+                        </p>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
 
           </div>
         )}

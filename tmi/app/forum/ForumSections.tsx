@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
-import { FileText, Calendar } from "lucide-react";
+import { FileText } from "lucide-react";
 
 interface Post {
   id: string;
@@ -12,20 +12,30 @@ interface Post {
   description: string;
 }
 
-const forumSections = [
+interface Section {
+  id: string;
+  title: string;
+  description: string;
+}
+
+const defaultSections: Section[] = [
   {
+    id: "workshops",
     title: "Workshops",
     description: "Hands-on learning experiences and skill-building sessions."
   },
   {
+    id: "technical-sessions",
     title: "Technical Sessions",
     description: "Deep dives into aerospace engineering and UAV technology."
   },
   {
+    id: "collaborative-events",
     title: "Collaborative Events",
     description: "Partnering with industry and academic leaders for innovation."
   },
   {
+    id: "outreach-programs",
     title: "Outreach Programs",
     description: "Spreading awareness about aerospace and STEM to the community."
   }
@@ -33,8 +43,9 @@ const forumSections = [
 
 export default function ForumSections() {
   const [posts, setPosts] = useState<Post[]>([]);
+  const [sections, setSections] = useState<Section[]>(defaultSections);
 
-  // Fetch published announcements from API
+  // Fetch published announcements and custom categories from API
   const fetchPosts = async () => {
     try {
       const res = await fetch("/api/forum/posts");
@@ -47,22 +58,37 @@ export default function ForumSections() {
     }
   };
 
+  const fetchSections = async () => {
+    try {
+      const res = await fetch("/api/forum/sections");
+      if (res.ok) {
+        const data = await res.json();
+        if (data && data.length > 0) {
+          setSections(data);
+        }
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
   useEffect(() => {
     fetchPosts();
+    fetchSections();
   }, []);
 
   return (
     <div className="space-y-20 max-w-5xl mx-auto">
       
-      {/* 1. Original 4 Circular Activity Cards */}
+      {/* 1. Category Cards with Dynamic Descriptions */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        {forumSections.map((section, index) => {
+        {sections.map((section, index) => {
           // Check if there are dynamic posts matching this category
           const categoryPosts = posts.filter(p => p.category === section.title);
 
           return (
             <div
-              key={index}
+              key={section.id}
               className={cn(
                 "rounded-xl border border-border/80 bg-white p-8 transition-all duration-300 ease-in-out",
                 "hover:scale-105 hover:border-[#DFBA73]/30 hover:shadow-lg hover:shadow-[#DFBA73]/5",
@@ -77,26 +103,31 @@ export default function ForumSections() {
               {categoryPosts.length > 0 ? (
                 /* Render actual dynamic announcements for this category */
                 <div className="space-y-4 text-left">
-                  {categoryPosts.map((post) => (
-                    <div key={post.id} className="border-l-2 border-[#DFBA73]/40 pl-3 py-1 space-y-1">
-                      <div className="flex justify-between items-center text-[10px] text-muted-foreground font-medium uppercase tracking-wider">
-                        <span>{post.date}</span>
+                  <p className="text-muted-foreground text-xs leading-relaxed border-b border-border/40 pb-3 mb-2">
+                    {section.description}
+                  </p>
+                  <div className="space-y-4 max-h-[220px] overflow-y-auto pr-1">
+                    {categoryPosts.map((post) => (
+                      <div key={post.id} className="border-l-2 border-[#DFBA73]/40 pl-3 py-1 space-y-1">
+                        <div className="flex justify-between items-center text-[9px] text-muted-foreground font-medium uppercase tracking-wider">
+                          <span>{post.date}</span>
+                        </div>
+                        <h4 className="font-semibold text-xs text-foreground uppercase tracking-wide">
+                          {post.title}
+                        </h4>
+                        <p className="text-muted-foreground text-[11px] leading-relaxed">
+                          {post.description}
+                        </p>
                       </div>
-                      <h4 className="font-semibold text-sm text-foreground uppercase tracking-wide">
-                        {post.title}
-                      </h4>
-                      <p className="text-muted-foreground text-xs leading-relaxed">
-                        {post.description}
-                      </p>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
               ) : (
-                /* Fallback "Coming Soon" original display */
+                /* Fallback display if no posts exist for the category */
                 <div className="space-y-4">
                   <p className="text-foreground font-semibold text-lg">Coming Soon</p>
                   <p className="text-muted-foreground text-sm leading-relaxed">
-                    {section.description} We will update this section with upcoming activities.
+                    {section.description}
                   </p>
                 </div>
               )}
@@ -105,7 +136,7 @@ export default function ForumSections() {
         })}
       </div>
 
-      {/* 2. Dynamic Announcements List (if any posts exist) */}
+      {/* 2. Dynamic Recent Announcements List (if any exist) */}
       {posts.length > 0 && (
         <div className="space-y-6 pt-10 border-t border-border/60">
           <div className="flex items-center gap-2 mb-2">

@@ -1,0 +1,22 @@
+[
+  {
+    "id": "workshops",
+    "title": "Workshops",
+    "description": "Hands-on learning experiences and skill-building sessions."
+  },
+  {
+    "id": "technical-sessions",
+    "title": "Technical Sessions",
+    "description": "Deep dives into aerospace engineering and UAV technology."
+  },
+  {
+    "id": "collaborative-events",
+    "title": "Collaborative Events",
+    "description": "Partnering with industry and academic leaders for innovation."
+  },
+  {
+    "id": "outreach-programs",
+    "title": "Outreach Programs",
+    "description": "Spreading awareness about aerospace and STEM to the community."
+  }
+]
