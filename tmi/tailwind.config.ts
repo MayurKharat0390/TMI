@@ -55,7 +55,7 @@ const config: Config = {
         ring: 'hsl(var(--ring))',
       },
       fontFamily: {
-        sans: ['var(--font-jost)', 'sans-serif'],
+        sans: ['var(--font-poppins)', 'sans-serif'],
         montserrat: ['var(--font-montserrat)', 'sans-serif'],
         cormorant: ['var(--font-cormorant)', 'serif'],
       },
