@@ -5,19 +5,14 @@ import fs from 'fs/promises';
 import path from 'path';
 import { cookies } from 'next/headers';
 
-const sponsorsFilePath = path.join(process.cwd(), 'data', 'sponsors.json');
+import { readData, writeData } from '@/lib/db';
 
 async function readSponsors() {
-  try {
-    const data = await fs.readFile(sponsorsFilePath, 'utf8');
-    return JSON.parse(data);
-  } catch (error) {
-    return [];
-  }
+  return readData<any[]>('sponsors_list', 'data/sponsors.json', []);
 }
 
 async function writeSponsors(sponsors: any[]) {
-  await fs.writeFile(sponsorsFilePath, JSON.stringify(sponsors, null, 2), 'utf8');
+  await writeData<any[]>('sponsors_list', 'data/sponsors.json', sponsors);
 }
 
 async function isAuthenticated(): Promise<boolean> {

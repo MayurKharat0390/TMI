@@ -5,19 +5,14 @@ import fs from 'fs/promises';
 import path from 'path';
 import { cookies } from 'next/headers';
 
-const teamFilePath = path.join(process.cwd(), 'data', 'team.json');
+import { readData, writeData } from '@/lib/db';
 
 async function readTeam() {
-  try {
-    const data = await fs.readFile(teamFilePath, 'utf8');
-    return JSON.parse(data);
-  } catch (error) {
-    return { faculty: [], founding: [], members: [] };
-  }
+  return readData<any>('team_roster', 'data/team.json', { faculty: [], founding: [], members: [] });
 }
 
 async function writeTeam(team: any) {
-  await fs.writeFile(teamFilePath, JSON.stringify(team, null, 2), 'utf8');
+  await writeData<any>('team_roster', 'data/team.json', team);
 }
 
 async function isAuthenticated(): Promise<boolean> {

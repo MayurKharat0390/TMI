@@ -5,22 +5,16 @@ import fs from 'fs/promises';
 import path from 'path';
 
 import { cookies } from 'next/headers';
-
-const postsFilePath = path.join(process.cwd(), 'data', 'forum_posts.json');
+import { readData, writeData } from '@/lib/db';
 
 // Helper to read posts from JSON file
 async function readPosts() {
-  try {
-    const data = await fs.readFile(postsFilePath, 'utf8');
-    return JSON.parse(data);
-  } catch (error) {
-    return [];
-  }
+  return readData<any[]>('forum_posts', 'data/forum_posts.json', []);
 }
 
 // Helper to write posts to JSON file
 async function writePosts(posts: any[]) {
-  await fs.writeFile(postsFilePath, JSON.stringify(posts, null, 2), 'utf8');
+  await writeData<any[]>('forum_posts', 'data/forum_posts.json', posts);
 }
 
 // Helper to check if request is authenticated

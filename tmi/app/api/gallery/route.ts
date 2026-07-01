@@ -5,19 +5,14 @@ import fs from 'fs/promises';
 import path from 'path';
 import { cookies } from 'next/headers';
 
-const galleryFilePath = path.join(process.cwd(), 'data', 'gallery.json');
+import { readData, writeData } from '@/lib/db';
 
 async function readGallery() {
-  try {
-    const data = await fs.readFile(galleryFilePath, 'utf8');
-    return JSON.parse(data);
-  } catch (error) {
-    return {};
-  }
+  return readData<any>('gallery_catalog', 'data/gallery.json', {});
 }
 
 async function writeGallery(gallery: any) {
-  await fs.writeFile(galleryFilePath, JSON.stringify(gallery, null, 2), 'utf8');
+  await writeData<any>('gallery_catalog', 'data/gallery.json', gallery);
 }
 
 async function isAuthenticated(): Promise<boolean> {

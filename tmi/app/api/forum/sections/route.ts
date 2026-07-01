@@ -5,19 +5,14 @@ import fs from 'fs/promises';
 import path from 'path';
 import { cookies } from 'next/headers';
 
-const sectionsFilePath = path.join(process.cwd(), 'data', 'forum_sections.json');
+import { readData, writeData } from '@/lib/db';
 
 async function readSections() {
-  try {
-    const data = await fs.readFile(sectionsFilePath, 'utf8');
-    return JSON.parse(data);
-  } catch (error) {
-    return [];
-  }
+  return readData<any[]>('forum_sections', 'data/forum_sections.json', []);
 }
 
 async function writeSections(sections: any[]) {
-  await fs.writeFile(sectionsFilePath, JSON.stringify(sections, null, 2), 'utf8');
+  await writeData<any[]>('forum_sections', 'data/forum_sections.json', sections);
 }
 
 async function isAuthenticated(): Promise<boolean> {
