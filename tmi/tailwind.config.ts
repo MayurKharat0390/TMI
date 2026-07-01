@@ -56,8 +56,8 @@ const config: Config = {
       },
       fontFamily: {
         sans: ['var(--font-poppins)', 'sans-serif'],
-        montserrat: ['var(--font-montserrat)', 'sans-serif'],
-        cormorant: ['var(--font-cormorant)', 'serif'],
+        montserrat: ['var(--font-poppins)', 'sans-serif'],
+        cormorant: ['var(--font-poppins)', 'sans-serif'],
       },
       keyframes: {
         'accordion-down': {
