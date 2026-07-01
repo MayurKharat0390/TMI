@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { Trash2, Plus, LogIn, LogOut, ShieldAlert, Edit, Save, X, Layout, Users, Image as ImageIcon, Upload, Loader2 } from "lucide-react";
+import { Trash2, Plus, LogIn, LogOut, ShieldAlert, Edit, Save, X, Layout, Users, Image as ImageIcon, Upload, Loader2, Award } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
@@ -46,13 +46,21 @@ interface GalleryImage {
   alt: string;
 }
 
+interface Sponsor {
+  id: number;
+  name: string;
+  logo: string;
+  link?: string;
+  tier: 'platinum' | 'gold' | 'silver' | 'bronze';
+}
+
 const categories = ["Workshops", "Technical Sessions", "Collaborative Events", "Outreach Programs"];
 
 export default function AdminPage() {
   const [isAdmin, setIsAdmin] = useState(false);
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [activeTab, setActiveTab] = useState<"posts" | "categories" | "team" | "gallery">("posts");
+  const [activeTab, setActiveTab] = useState<"posts" | "categories" | "team" | "gallery" | "sponsors">("posts");
 
   // Roster states
   const [roster, setRoster] = useState<TeamRoster>({ faculty: [], founding: [], members: [] });
@@ -77,6 +85,15 @@ export default function AdminPage() {
   const [gAlt, setGAlt] = useState("");
   const [isUploadingGallery, setIsUploadingGallery] = useState(false);
 
+  // Sponsors states
+  const [sponsors, setSponsors] = useState<Sponsor[]>([]);
+  const [sName, setSName] = useState("");
+  const [sLink, setSLink] = useState("");
+  const [sLogo, setSLogo] = useState("");
+  const [sTier, setSTier] = useState<'platinum' | 'gold' | 'silver' | 'bronze'>("platinum");
+  const [isUploadingSponsor, setIsUploadingSponsor] = useState(false);
+  const [editingSponsorId, setEditingSponsorId] = useState<number | null>(null);
+
   // Announcements states
   const [posts, setPosts] = useState<Post[]>([]);
   const [sections, setSections] = useState<Section[]>([]);
@@ -94,6 +111,7 @@ export default function AdminPage() {
   // File input refs
   const memberFileRef = useRef<HTMLInputElement>(null);
   const galleryFileRef = useRef<HTMLInputElement>(null);
+  const sponsorFileRef = useRef<HTMLInputElement>(null);
 
   const fetchPosts = async () => {
     try {
@@ -123,6 +141,13 @@ export default function AdminPage() {
     } catch (e) { console.error(e); }
   };
 
+  const fetchSponsors = async () => {
+    try {
+      const res = await fetch("/api/sponsors");
+      if (res.ok) setSponsors(await res.json());
+    } catch (e) { console.error(e); }
+  };
+
   const checkAuth = async () => {
     try {
       const res = await fetch("/api/auth/check");
@@ -138,6 +163,7 @@ export default function AdminPage() {
     fetchSections();
     fetchRoster();
     fetchGallery();
+    fetchSponsors();
     checkAuth();
   }, []);
 
@@ -223,6 +249,20 @@ export default function AdminPage() {
     if (url) {
       setGSrc(url);
       toast.success("Image cataloged successfully!");
+    }
+  };
+
+  const handleSponsorLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setIsUploadingSponsor(true);
+    const url = await uploadFile(file);
+    setIsUploadingSponsor(false);
+
+    if (url) {
+      setSLogo(url);
+      toast.success("Logo uploaded successfully!");
     }
   };
 
@@ -413,6 +453,63 @@ export default function AdminPage() {
     } catch (e) { toast.error("Error removing photo"); }
   };
 
+  /* ── SPONSORS CRUD ── */
+  const handleSaveSponsor = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!sName || !sLogo) {
+      toast.error("Name and Logo Image are mandatory");
+      return;
+    }
+    setIsLoading(true);
+    const method = editingSponsorId !== null ? "PUT" : "POST";
+    const payload = {
+      id: editingSponsorId,
+      name: sName,
+      logo: sLogo,
+      link: sLink,
+      tier: sTier
+    };
+
+    try {
+      const res = await fetch("/api/sponsors", {
+        method,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+      if (res.ok) {
+        toast.success(editingSponsorId !== null ? "Sponsor updated!" : "Sponsor added!");
+        clearSponsorForm();
+        fetchSponsors();
+      } else {
+        const data = await res.json();
+        toast.error(data.error || "Failed to save sponsor");
+      }
+    } catch (e) { toast.error("Error saving sponsor details"); }
+    finally { setIsLoading(false); }
+  };
+
+  const startEditSponsor = (sponsor: Sponsor) => {
+    setEditingSponsorId(sponsor.id);
+    setSName(sponsor.name);
+    setSLink(sponsor.link || "");
+    setSLogo(sponsor.logo);
+    setSTier(sponsor.tier);
+  };
+
+  const handleDeleteSponsor = async (id: number) => {
+    if (!confirm("Remove this sponsor from the catalog?")) return;
+    try {
+      const res = await fetch(`/api/sponsors?id=${id}`, { method: "DELETE" });
+      if (res.ok) { toast.success("Sponsor removed"); fetchSponsors(); }
+    } catch (e) { toast.error("Error deleting sponsor"); }
+  };
+
+  const clearSponsorForm = () => {
+    setEditingSponsorId(null);
+    setSName(""); setSLink(""); setSLogo(""); setSTier("platinum");
+    if (sponsorFileRef.current) sponsorFileRef.current.value = "";
+  };
+
   return (
     <div className="pt-28 pb-20 min-h-screen bg-background relative flex flex-col items-center">
       
@@ -493,7 +590,8 @@ export default function AdminPage() {
                 { id: "posts",      label: "Announcements", icon: Edit },
                 { id: "categories", label: "Categories",     icon: Layout },
                 { id: "team",       label: "Roster Team",    icon: Users },
-                { id: "gallery",    label: "Gallery Grid",   icon: ImageIcon }
+                { id: "gallery",    label: "Gallery Grid",   icon: ImageIcon },
+                { id: "sponsors",   label: "Sponsors List",  icon: Award }
               ].map((tab) => {
                 const Icon = tab.icon;
                 return (
@@ -843,7 +941,6 @@ export default function AdminPage() {
                             />
                           </div>
 
-                          {/* Interactive File Upload Option */}
                           <div className="space-y-1.5">
                             <label className="text-xs uppercase font-medium text-muted-foreground font-sans">Upload Photo</label>
                             <input
@@ -1108,6 +1205,176 @@ export default function AdminPage() {
                       </div>
                     </div>
                   ))}
+                </div>
+
+              </div>
+            )}
+
+            {/* ──────── TAB 5: SPONSORS ──────── */}
+            {activeTab === "sponsors" && (
+              <div className="space-y-10">
+                {/* Form to Add/Edit Sponsor */}
+                <div className="bg-white border border-[#DFBA73]/20 p-6 sm:p-8 rounded-2xl shadow-md space-y-6">
+                  <div className="flex items-center justify-between border-b border-border pb-3">
+                    <div className="flex items-center gap-2">
+                      <Award className="w-5 h-5 text-[#DFBA73]" />
+                      <h3 className="font-semibold text-lg text-foreground uppercase tracking-wider font-sans">
+                        {editingSponsorId !== null ? "Edit Sponsor" : "Add Sponsor"}
+                      </h3>
+                    </div>
+                    {editingSponsorId !== null && (
+                      <Button variant="ghost" size="sm" onClick={clearSponsorForm} className="h-8 text-muted-foreground font-sans text-xs">
+                        Cancel Edit
+                      </Button>
+                    )}
+                  </div>
+
+                  <form onSubmit={handleSaveSponsor} className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-4">
+                      <div className="space-y-1.5">
+                        <label htmlFor="s-name" className="text-xs uppercase font-medium text-muted-foreground font-sans">Sponsor Name</label>
+                        <Input
+                          id="s-name"
+                          placeholder="e.g. Dassault Systemes"
+                          value={sName}
+                          onChange={(e) => setSName(e.target.value)}
+                          className="font-sans text-xs"
+                          required
+                        />
+                      </div>
+
+                      <div className="space-y-1.5">
+                        <label htmlFor="s-tier" className="text-xs uppercase font-medium text-muted-foreground font-sans">Sponsorship Tier</label>
+                        <select
+                          id="s-tier"
+                          value={sTier}
+                          onChange={(e) => setSTier(e.target.value as any)}
+                          className="w-full h-10 px-3 rounded-md border border-border bg-white text-xs font-sans focus:outline-none focus:border-[#DFBA73]"
+                        >
+                          <option value="platinum">Platinum Tier (displays as TITLE SPONSOR)</option>
+                          <option value="gold">Gold Tier (displays as PLATINUM SPONSOR)</option>
+                          <option value="silver">Silver Tier (displays as GOLD SPONSOR)</option>
+                          <option value="bronze">Bronze Tier (displays as SILVER SPONSOR)</option>
+                        </select>
+                      </div>
+
+                      <div className="space-y-1.5">
+                        <label htmlFor="s-link" className="text-xs uppercase font-medium text-muted-foreground font-sans">Sponsor Website Link</label>
+                        <Input
+                          id="s-link"
+                          placeholder="e.g. https://www.3ds.com/"
+                          value={sLink}
+                          onChange={(e) => setSLink(e.target.value)}
+                          className="font-sans text-xs"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="space-y-4 flex flex-col justify-between">
+                      <div className="space-y-4">
+                        <div className="space-y-1.5">
+                          <label className="text-xs uppercase font-medium text-muted-foreground font-sans">Upload Logo Image</label>
+                          <input
+                            type="file"
+                            accept="image/*"
+                            ref={sponsorFileRef}
+                            onChange={handleSponsorLogoUpload}
+                            className="hidden"
+                          />
+                          <Button
+                            type="button"
+                            variant="outline"
+                            onClick={() => sponsorFileRef.current?.click()}
+                            disabled={isUploadingSponsor}
+                            className="w-full h-10 border-[#DFBA73]/30 text-[#DFBA73] hover:bg-[#DFBA73]/5 gap-1.5 font-sans text-xs"
+                          >
+                            {isUploadingSponsor ? (
+                              <>
+                                <Loader2 className="w-3.5 h-3.5 animate-spin" /> Uploading Logo...
+                              </>
+                            ) : (
+                              <>
+                                <Upload className="w-3.5 h-3.5" /> Choose Logo File
+                              </>
+                            )}
+                          </Button>
+                        </div>
+
+                        {/* Image Preview Thumbnail */}
+                        {sLogo && (
+                          <div className="flex items-center gap-3 bg-muted/40 p-2 rounded-lg border border-border">
+                            <div className="relative w-16 h-12 rounded-md overflow-hidden border border-border bg-white flex-shrink-0 p-1 flex items-center justify-center">
+                              <Image src={sLogo} alt="Sponsor logo preview" fill className="object-contain" />
+                            </div>
+                            <div className="overflow-hidden">
+                              <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider font-sans">Logo Preview</p>
+                              <p className="text-[10px] text-foreground truncate font-sans">{sLogo}</p>
+                            </div>
+                            <Button type="button" variant="ghost" size="icon" onClick={() => setSLogo("")} className="h-7 w-7 text-destructive hover:bg-destructive/10 ml-auto">
+                              <X className="w-3.5 h-3.5" />
+                            </Button>
+                          </div>
+                        )}
+                      </div>
+
+                      <Button type="submit" disabled={isLoading || isUploadingSponsor} className="w-full bg-[#DFBA73] hover:bg-[#c9a45e] text-white font-sans text-xs">
+                        {isLoading ? "Saving Sponsor..." : editingSponsorId !== null ? "Update Sponsor" : "Register Sponsor"}
+                      </Button>
+                    </div>
+                  </form>
+                </div>
+
+                {/* List of current Sponsors grouped by tier */}
+                <div className="space-y-6">
+                  <h3 className="font-semibold text-lg text-foreground uppercase tracking-wider border-b border-border pb-2 font-sans">
+                    Sponsor Directory Directory
+                  </h3>
+
+                  {(['platinum', 'gold', 'silver', 'bronze'] as const).map((tier) => {
+                    const tierSponsors = sponsors.filter(s => s.tier === tier);
+                    return (
+                      <div key={tier} className="space-y-3">
+                        <h4 className="font-bold text-xs uppercase text-[#DFBA73] tracking-widest pl-2 font-sans">
+                          {tier === 'platinum' ? "Platinum (Title Sponsors)" : tier === 'gold' ? "Gold (Platinum Sponsors)" : tier === 'silver' ? "Silver (Gold Sponsors)" : "Bronze (Silver Sponsors)"} ({tierSponsors.length})
+                        </h4>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-h-[300px] overflow-y-auto pr-1">
+                          {tierSponsors.length > 0 ? (
+                            tierSponsors.map((sponsor) => (
+                              <div key={sponsor.id} className="bg-white border border-border rounded-xl p-4 flex justify-between items-center hover:border-[#DFBA73]/10 shadow-sm transition-all">
+                                <div className="flex items-center gap-3">
+                                  <div className="relative w-12 h-10 rounded border border-border bg-muted/20 p-1 flex items-center justify-center overflow-hidden">
+                                    <Image src={sponsor.logo} alt={sponsor.name} fill className="object-contain p-1" />
+                                  </div>
+                                  <div>
+                                    <h5 className="font-bold text-xs text-foreground font-sans">{sponsor.name}</h5>
+                                    {sponsor.link && (
+                                      <a href={sponsor.link} target="_blank" rel="noopener noreferrer" className="text-[10px] text-blue-500 hover:underline truncate max-w-[200px] block font-sans">
+                                        {sponsor.link}
+                                      </a>
+                                    )}
+                                  </div>
+                                </div>
+
+                                <div className="flex gap-2">
+                                  <Button variant="ghost" size="icon" onClick={() => startEditSponsor(sponsor)} className="text-foreground hover:bg-[#DFBA73]/10 h-8 w-8">
+                                    <Edit className="w-3.5 h-3.5" />
+                                  </Button>
+                                  <Button variant="ghost" size="icon" onClick={() => handleDeleteSponsor(sponsor.id)} className="text-destructive hover:bg-destructive/10 h-8 w-8">
+                                    <Trash2 className="w-3.5 h-3.5" />
+                                  </Button>
+                                </div>
+                              </div>
+                            ))
+                          ) : (
+                            <div className="col-span-full py-6 text-center text-xs text-muted-foreground uppercase border border-dashed rounded-lg font-sans">
+                              No sponsor entries listed in this tier.
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
 
               </div>

@@ -1,3 +1,6 @@
+"use client";
+
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { cn } from "@/lib/utils";
 
@@ -16,35 +19,28 @@ type SponsorsByTier = {
   bronze: Sponsor[];
 };
 
-const sponsors: Sponsor[] = [
-  { id: 1, name: "Dassult Systemes", logo: "/images/sponsors/platinum/dassault.png", link: "https://www.3ds.com/", tier: "platinum" },
-  { id: 2, name: "Trade Syndicate", logo: "/images/sponsors/gold/tradesyndicate.png", link: "http://tradesyndicate.co.in/", tier: "gold" },
-  { id: 3, name: "Tattu UAV", logo: "/images/sponsors/silver/tattu.png", link: "https://genstattu.com/", tier: "silver" },
-  { id: 4, name: "3D Wizard", logo: "/images/sponsors/bronze/3d.png", link: "https://3dwizardstudio.com/", tier: "bronze" },
-  { id: 5, name: "Altium Designer", logo: "/images/sponsors/platinum/altium_designer.png", link: "https://www.altium.com/in", tier: "platinum" },
-  { id: 6, name: "Ansys", logo: "/images/sponsors/platinum/ansys.png", link: "https://www.ansys.com/", tier: "platinum" },
-  { id: 7, name: "APC Propellers", logo: "/images/sponsors/platinum/APC.png", link: "https://www.apcprop.com/", tier: "platinum" },
-  { id: 8, name: "Solidworks", logo: "/images/sponsors/platinum/Solidworks.png", link: "https://www.solidworks.com/", tier: "platinum" },
-  { id: 9, name: "Mathworks", logo: "/images/sponsors/platinum/mathworks.png", link: "https://in.mathworks.com/", tier: "platinum" },
-  { id: 10, name: "T-Motor", logo: "/images/sponsors/gold/tmotor.png", link: "https://uav-en.tmotor.com/", tier: "gold" },
-  { id: 11, name: "HiTec RCD", logo: "/images/sponsors/gold/hitech.png", link: "https://hitecrcd.com/", tier: "gold" },
-  { id: 12, name: "Synopsis India", logo: "/images/sponsors/gold/synopsisindia.png", tier: "gold", link: "https://www.synopsisindia.co.in/" },
-  { id: 13, name: "Simscale", logo: "/images/sponsors/gold/simscale.png", link: "https://www.simscale.com/", tier: "gold" },
-  { id: 14, name: "Onyx Technology", logo: "/images/sponsors/gold/onyx.png", link: "https://www.onyxtechnology.in/", tier: "gold" },
-  { id: 15, name: "XPS Precision Screws", logo: "/images/sponsors/silver/xps.png", link: "https://xpsindia.com/", tier: "silver" },
-  { id: 16, name: "DU-BRO", logo: "/images/sponsors/silver/dubro.png", link: "https://www.dubro.com/", tier: "silver" },
-  { id: 17, name: "Art Adds", logo: "/images/sponsors/silver/artadds.png", tier: "silver" },
-  { id: 18, name: "E-Calc", logo: "/images/sponsors/silver/ecalc.png", link: "https://www.ecalc.ch/", tier: "silver" },
-  { id: 19, name: "PackSquare", logo: "/images/sponsors/bronze/packsquare.png", link: "https://packsquare.in/", tier: "bronze" },
-  { id: 20, name: "Chetan Enterprises", logo: "/images/sponsors/bronze/chetan.png", tier: "bronze" },
-  { id: 21, name: "Horizon Engineers", logo: "/images/sponsors/bronze/horizon.png", link: "https://horizonengineers.in/", tier: "bronze" },
-  { id: 22, name: "Mitter Fastners", logo: "/images/sponsors/bronze/mitter.png", link: "http://www.mitterfasteners.com/", tier: "bronze" },
-  { id: 23, name: "Shreeyash Enterprises", logo: "/images/sponsors/bronze/shreeyash.png", tier: "bronze" },
-  { id: 24, name: "Cad & Cart", logo: "/images/sponsors/bronze/cadncart.png", link: "http://cadandcart.com/", tier: "bronze" },
-  { id: 25, name: "Elite", logo: "/images/sponsors/silver/elite.png", link: "https://www.esmwindia.com/", tier: "silver" }
-];
-
 export default function SponsorsList() {
+  const [sponsors, setSponsors] = useState<Sponsor[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const fetchSponsors = async () => {
+    try {
+      const res = await fetch('/api/sponsors');
+      if (res.ok) {
+        const data = await res.json();
+        setSponsors(data);
+      }
+    } catch (e) {
+      console.error("Failed to load sponsors", e);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchSponsors();
+  }, []);
+
   const sponsorsByTier: SponsorsByTier = sponsors.reduce((acc, sponsor) => {
     if (!acc[sponsor.tier]) {
       acc[sponsor.tier] = [];
@@ -60,11 +56,20 @@ export default function SponsorsList() {
 
   const tierOrder: (keyof SponsorsByTier)[] = ['platinum', 'gold', 'silver', 'bronze'];
 
+  if (loading) {
+    return (
+      <div className="flex flex-col items-center justify-center space-y-3 py-16">
+        <div className="w-8 h-8 rounded-full border-2 border-[#DFBA73] border-t-transparent animate-spin" />
+        <p className="text-xs uppercase tracking-widest text-[#DFBA73]">Loading Sponsors...</p>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-32">
       {tierOrder.map((tierKey) => {
         const tierSponsors = sponsorsByTier[tierKey];
-        if (tierSponsors.length === 0) return null;
+        if (!tierSponsors || tierSponsors.length === 0) return null;
 
         return (
           <div key={tierKey}>
@@ -75,7 +80,7 @@ export default function SponsorsList() {
                   key={sponsor.id}
                   sponsor={sponsor}
                 />
-              ))}
+               ))}
             </div>
           </div>
         );
@@ -85,7 +90,7 @@ export default function SponsorsList() {
 }
 
 function TierHeading({ tier }: { tier: keyof SponsorsByTier }) {
-  const headingStyles = "font-cormorant font-normal tracking-[0.1em] text-[#DFBA73]";
+  const headingStyles = "font-cormorant font-normal tracking-[0.1em] text-[#DFBA73] uppercase";
   const dividerStyles = "bg-[#DFBA73]/30 mx-auto mt-3";
 
   switch (tier) {
@@ -139,10 +144,10 @@ function SponsorCard({ sponsor }: { sponsor: Sponsor }) {
       "before:absolute before:inset-0 before:rounded-xl before:bg-gradient-to-b before:from-foreground/5 before:to-transparent before:pointer-events-none before:z-10",
 
       isDiamond
-        ? "h-56 p-10 border border-border bg-card/60 shadow-xl dark:shadow-black/40 backdrop-blur-sm hover:scale-105 hover:translate-y-[-4px] hover:border-[#DFBA73]/40 hover:shadow-2xl hover:shadow-black/50"
+        ? "h-56 p-10 border border-border bg-card/60 shadow-xl backdrop-blur-sm hover:scale-105 hover:translate-y-[-4px] hover:border-[#DFBA73]/40 hover:shadow-2xl"
         : isPlatinum
-          ? "h-48 p-8 border border-border/80 bg-card/40 shadow-lg dark:shadow-black/30 hover:scale-105 hover:translate-y-[-3px] hover:border-[#DFBA73]/30 hover:shadow-xl hover:shadow-black/40"
-          : "h-40 p-6 border border-border/60 bg-card/30 shadow-md dark:shadow-black/20 hover:scale-105 hover:border-[#DFBA73]/20 hover:shadow-lg hover:shadow-black/30"
+          ? "h-48 p-8 border border-border/80 bg-card/40 shadow-lg hover:scale-105 hover:translate-y-[-3px] hover:border-[#DFBA73]/30 hover:shadow-xl"
+          : "h-40 p-6 border border-border/60 bg-card/30 shadow-md hover:scale-105 hover:border-[#DFBA73]/20 hover:shadow-lg"
     )}>
       <Image
         src={sponsor.logo}
