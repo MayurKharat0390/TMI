@@ -4,6 +4,8 @@ import { rateLimiter, getClientIp } from '@/lib/rate-limiter';
 import fs from 'fs/promises';
 import path from 'path';
 
+import { cookies } from 'next/headers';
+
 const postsFilePath = path.join(process.cwd(), 'data', 'forum_posts.json');
 
 // Helper to read posts from JSON file
@@ -22,15 +24,9 @@ async function writePosts(posts: any[]) {
 }
 
 // Helper to check if request is authenticated
-function isAuthenticated(request: Request): boolean {
-  const cookieHeader = request.headers.get('cookie') || '';
-  const cookies = cookieHeader.split(';').reduce<Record<string, string>>((acc, c) => {
-    const [key, ...val] = c.trim().split('=');
-    acc[key] = val.join('=');
-    return acc;
-  }, {});
-  
-  const token = cookies['tmi_session'];
+async function isAuthenticated(): Promise<boolean> {
+  const cookieStore = await cookies();
+  const token = cookieStore.get('tmi_session')?.value;
   return !!(token && verifySessionToken(token));
 }
 
@@ -44,7 +40,7 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     // 1. Auth check
-    if (!isAuthenticated(request)) {
+    if (!await isAuthenticated()) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -88,7 +84,7 @@ export async function POST(request: Request) {
 // DELETE handler — removes a post by ID (Admin only)
 export async function DELETE(request: Request) {
   try {
-    if (!isAuthenticated(request)) {
+    if (!await isAuthenticated()) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 

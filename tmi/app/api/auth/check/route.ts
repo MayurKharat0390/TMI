@@ -1,17 +1,10 @@
 import { NextResponse } from 'next/server';
 import { verifySessionToken } from '@/lib/auth';
+import { cookies } from 'next/headers';
 
-export async function GET(request: Request) {
-  const cookieHeader = request.headers.get('cookie') || '';
-  
-  // Find cookie 'tmi_session' value
-  const cookies = cookieHeader.split(';').reduce<Record<string, string>>((acc, c) => {
-    const [key, ...val] = c.trim().split('=');
-    acc[key] = val.join('=');
-    return acc;
-  }, {});
-  
-  const token = cookies['tmi_session'];
+export async function GET() {
+  const cookieStore = await cookies();
+  const token = cookieStore.get('tmi_session')?.value;
   
   if (!token || !verifySessionToken(token)) {
     return NextResponse.json({ authenticated: false });
