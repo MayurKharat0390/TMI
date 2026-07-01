@@ -3,6 +3,8 @@ import { verifySessionToken } from '@/lib/auth';
 import { rateLimiter, getClientIp } from '@/lib/rate-limiter';
 import { cookies } from 'next/headers';
 import { put } from '@vercel/blob';
+import fs from 'fs/promises';
+import path from 'path';
 
 async function isAuthenticated(): Promise<boolean> {
   const cookieStore = await cookies();
@@ -41,8 +43,6 @@ export async function POST(request: Request) {
     // 5. Upload handling
     // If running locally without Vercel Blob configured, fall back to local disk storage
     if (!process.env.BLOB_READ_WRITE_TOKEN) {
-      const fs = require('fs/promises');
-      const path = require('path');
       const uploadsDir = path.join(process.cwd(), 'public', 'images', 'uploads');
       
       await fs.mkdir(uploadsDir, { recursive: true });
@@ -60,7 +60,6 @@ export async function POST(request: Request) {
     }
 
     // Production Mode: Upload directly to Vercel Blob CDN
-    const path = require('path');
     const fileExt = path.extname(file.name) || '.webp';
     const cleanBase = path.basename(file.name, fileExt).replace(/[^a-zA-Z0-9_-]/g, '');
     const blobPath = `uploads/${cleanBase}_${Date.now()}${fileExt}`;
